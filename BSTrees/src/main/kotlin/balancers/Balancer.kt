@@ -1,15 +1,24 @@
 package balancers
 
-abstract class Balancer {
-    protected fun leftRotate(){
+import BTree
+import Node
+
+abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>, TREE_TYPE : BTree<K, V, NODE_TYPE>>(
+    val tree: TREE_TYPE
+) {
+    protected fun leftRotate() {
+        val temp = tree.getLeftTree()
+        tree.setLeftTree(temp?.getRightTree())
+        temp?.setRightTree(tree)
+        tree.updateHeight()
+        temp?.updateHeight()
+    }
+
+    protected fun rightRotate() {
         TODO("Not yet implemented")
     }
 
-    protected fun rightRotate(){
-        TODO("Not yet implemented")
-    }
-
-    protected fun balanceFactory(){
+    protected fun balanceFactory() {
         TODO("Not yet implemented")
     }
 
