@@ -22,8 +22,8 @@ abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>,
         tree.updateHeight()
     }
 
-    protected fun balanceFactory() {
-        TODO("Not yet implemented")
+    protected fun balanceFactory(): Int {
+        return (tree.getRightTree()?.getRoot()?.getHeight() ?: 0) - (tree.getLeftTree()?.getRoot()?.getHeight() ?: 0)
     }
 
     abstract fun balance()
