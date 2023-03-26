@@ -3,7 +3,7 @@ package avlTree
 import balancers.AvlBalancer
 import BTree
 
-class AvlTree<K: Comparable<K>, V>(root: AvlNode<K, V>): BTree<K, V, AvlNode<K, V>>(root){
+class AvlTree<K: Comparable<K>, V>(root: AvlNode<K, V>): BTree<K, V, AvlNode<K, V>, AvlTree<K, V>>(root){
 
     private val balancer = AvlBalancer()
 
