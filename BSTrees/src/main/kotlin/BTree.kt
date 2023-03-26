@@ -1,4 +1,3 @@
-
 abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(private var root: NODE_TYPE?) {
 
     private var leftBTree: BTree<K, V, NODE_TYPE>? = null
@@ -39,7 +38,13 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pr
     abstract fun add(node: NODE_TYPE)
 
     fun find(key: K): V? {
-        TODO("Not yet implemented")
+        if (this.root == null) return null
+        if (this.root?.getKey() == key) return this.root?.getValue()
+        return if (this.root!!.getKey() > key) {
+            this.getLeftTree()?.find(key)
+        } else {
+            this.getRightTree()?.find(key)
+        }
     }
 
     abstract fun delete(key: K)
