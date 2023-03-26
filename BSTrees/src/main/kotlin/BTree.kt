@@ -1,11 +1,11 @@
-abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(private var root: NODE_TYPE?) {
+abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(private var root: NODE_TYPE) {
 
     private var leftBTree: BTree<K, V, NODE_TYPE>? = null
     private var rightBTree: BTree<K, V, NODE_TYPE>? = null
 
     fun getRoot() = this.root
 
-    fun setRoot(newRoot: NODE_TYPE?) {
+    fun setRoot(newRoot: NODE_TYPE) {
         this.root = newRoot
     }
 
@@ -22,11 +22,11 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pr
     }
 
     fun getHeight(): Int {
-        return this.root?.getHeight() ?: 0
+        return this.root.getHeight()
     }
 
     fun setHeight(newValue: Int) {
-        this.root?.setHeight(newValue)
+        this.root.setHeight(newValue)
     }
 
     fun updateHeight() {
@@ -38,9 +38,8 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pr
     abstract fun add(node: NODE_TYPE)
 
     fun find(key: K): V? {
-        if (this.root == null) return null
-        if (this.root?.getKey() == key) return this.root?.getValue()
-        return if (this.root!!.getKey() > key) {
+        if (this.root.getKey() == key) return this.root.getValue()
+        return if (this.root.getKey() > key) {
             this.getLeftTree()?.find(key)
         } else {
             this.getRightTree()?.find(key)
