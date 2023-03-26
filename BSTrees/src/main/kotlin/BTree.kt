@@ -31,7 +31,9 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pr
     }
 
     fun updateHeight() {
-        TODO("Not yet implemented")
+        val leftHeight = this.getLeftTree()?.getHeight() ?: 0
+        val rightHeight = this.getRightTree()?.getHeight() ?: 0
+        setHeight(leftHeight + rightHeight + 1)
     }
 
     abstract fun add(node: NODE_TYPE)
