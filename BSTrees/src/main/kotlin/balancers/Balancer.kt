@@ -15,7 +15,11 @@ abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>,
     }
 
     protected fun rightRotate() {
-        TODO("Not yet implemented")
+        val temp = tree.getRightTree()
+        temp?.setRightTree(tree.getLeftTree())
+        tree.setLeftTree(temp)
+        temp?.updateHeight()
+        tree.updateHeight()
     }
 
     protected fun balanceFactory() {
