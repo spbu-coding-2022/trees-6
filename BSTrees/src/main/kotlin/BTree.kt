@@ -1,7 +1,9 @@
-abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(private var root: NODE_TYPE) {
+abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>, TREE_TYPE : BTree<K, V, NODE_TYPE, TREE_TYPE>>(
+    private var root: NODE_TYPE
+) {
 
-    private var leftBTree: BTree<K, V, NODE_TYPE>? = null
-    private var rightBTree: BTree<K, V, NODE_TYPE>? = null
+    private var leftBTree: TREE_TYPE? = null
+    private var rightBTree: TREE_TYPE? = null
 
     fun getRoot() = this.root
 
@@ -11,13 +13,13 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pr
 
     fun getLeftTree() = this.leftBTree
 
-    fun setLeftTree(newValue: BTree<K, V, NODE_TYPE>?) {
+    fun setLeftTree(newValue: TREE_TYPE?) {
         this.leftBTree = newValue
     }
 
     fun getRightTree() = this.rightBTree
 
-    fun setRightTree(newValue: BTree<K, V, NODE_TYPE>?) {
+    fun setRightTree(newValue: TREE_TYPE?) {
         this.rightBTree = newValue
     }
 

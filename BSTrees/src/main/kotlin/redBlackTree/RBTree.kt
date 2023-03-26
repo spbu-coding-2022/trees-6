@@ -3,7 +3,7 @@ package redBlackTree
 import BTree
 import balancers.RBBalancer
 
-class RBTree<K: Comparable<K>, V>(root: RBNode<K, V>): BTree<K, V, RBNode<K, V>>(root) {
+class RBTree<K: Comparable<K>, V>(root: RBNode<K, V>): BTree<K, V, RBNode<K, V>, RBTree<K, V>>(root) {
 
     private val balancer = RBBalancer()
 
