@@ -1,5 +1,7 @@
+import kotlin.math.max
+
 abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>, TREE_TYPE : BTree<K, V, NODE_TYPE, TREE_TYPE>>(
-    private var root: NODE_TYPE
+    private var root: NODE_TYPE?
 ) {
 
     private var leftBTree: TREE_TYPE? = null
@@ -7,7 +9,7 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>, TR
 
     fun getRoot() = this.root
 
-    fun setRoot(newRoot: NODE_TYPE) {
+    fun setRoot(newRoot: NODE_TYPE?) {
         this.root = newRoot
     }
 
@@ -24,24 +26,25 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>, TR
     }
 
     fun getHeight(): Int {
-        return this.root.getHeight()
+        return this.root?.getHeight() ?: 0
     }
 
     fun setHeight(newValue: Int) {
-        this.root.setHeight(newValue)
+        this.root?.setHeight(newValue)
     }
 
     fun updateHeight() {
         val leftHeight = this.getLeftTree()?.getHeight() ?: 0
         val rightHeight = this.getRightTree()?.getHeight() ?: 0
-        setHeight(leftHeight + rightHeight + 1)
+        setHeight(max(leftHeight, rightHeight) + 1)
     }
 
     abstract fun add(node: NODE_TYPE)
 
     fun find(key: K): V? {
-        if (this.root.getKey() == key) return this.root.getValue()
-        return if (this.root.getKey() > key) {
+        val temp = this.root ?: return null
+        if (temp.getKey() == key) return temp.getValue()
+        return if (temp.getKey() > key) {
             this.getLeftTree()?.find(key)
         } else {
             this.getRightTree()?.find(key)
