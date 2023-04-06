@@ -5,7 +5,7 @@ import BTree
 
 class AvlTree<K: Comparable<K>, V>(root: AvlNode<K, V>): BTree<K, V, AvlNode<K, V>, AvlTree<K, V>>(root){
 
-    private val balancer = AvlBalancer()
+    private val balancer = AvlBalancer(this)
 
     override fun add(node: AvlNode<K, V>) {
         TODO("Not yet implemented")

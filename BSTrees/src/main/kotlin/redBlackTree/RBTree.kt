@@ -5,7 +5,7 @@ import balancers.RBBalancer
 
 class RBTree<K: Comparable<K>, V>(root: RBNode<K, V>): BTree<K, V, RBNode<K, V>, RBTree<K, V>>(root) {
 
-    private val balancer = RBBalancer()
+    private val balancer = RBBalancer(this)
 
     override fun add(node: RBNode<K, V>) {
         TODO("Not yet implemented")
