@@ -1,32 +1,29 @@
 package balancers
 
-import BTree
 import Node
 
-abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>, TREE_TYPE : BTree<K, V, NODE_TYPE, TREE_TYPE>>(
-    protected var tree: TREE_TYPE?
-) {
-    protected fun leftRotate() {
-        val temp = tree?.getLeftTree()
-        tree?.setLeftTree(temp?.getRightTree())
-        temp?.setRightTree(tree)
-        tree?.updateHeight()
+abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>{
+    protected fun leftRotate(node: NODE_TYPE?): NODE_TYPE? {
+        val temp = node?.getLeftNode()
+        node?.setLeftNode(temp?.getRightNode())
+        temp?.setRightNode(node)
+        node?.updateHeight()
         temp?.updateHeight()
-        tree = temp
+        return temp
     }
 
-    protected fun rightRotate() {
-        val temp = tree?.getRightTree()
-        tree?.setRightTree(temp?.getLeftTree())
-        temp?.setLeftTree(tree)
-        tree?.updateHeight()
+    protected fun rightRotate(node: NODE_TYPE?): NODE_TYPE? {
+        val temp = node?.getRightNode()
+        node?.setRightNode(temp?.getLeftNode())
+        temp?.setLeftNode(node)
+        node?.updateHeight()
         temp?.updateHeight()
-        tree = temp
+        return temp
     }
 
-    protected fun balanceFactory(): Int {
-        return (tree?.getRightTree()?.getRoot()?.getHeight() ?: 0) - (tree?.getLeftTree()?.getRoot()?.getHeight() ?: 0)
+    protected fun balanceFactory(node: NODE_TYPE?): Int {
+        return (node?.getRightNode()?.getHeight() ?: 0) - (node?.getLeftNode()?.getHeight() ?: 0)
     }
 
-    abstract fun balance()
+    abstract fun balance(node: NODE_TYPE?)
 }

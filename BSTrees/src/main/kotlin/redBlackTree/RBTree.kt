@@ -3,9 +3,13 @@ package redBlackTree
 import BTree
 import balancers.RBBalancer
 
-class RBTree<K: Comparable<K>, V>(root: RBNode<K, V>): BTree<K, V, RBNode<K, V>, RBTree<K, V>>(root) {
+class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
 
-    private val balancer = RBBalancer(this)
+    private val balancer = RBBalancer<K, V>()
+
+    override fun insert(key: K, value: V) {
+        add(RBNode(key, value))
+    }
 
     override fun add(node: RBNode<K, V>) {
         TODO("Not yet implemented")
