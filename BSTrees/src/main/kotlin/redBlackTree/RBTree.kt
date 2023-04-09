@@ -2,6 +2,7 @@ package redBlackTree
 
 import BTree
 import balancers.RBBalancer
+import redBlackTree.RBNode.Color
 
 class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
 
@@ -18,27 +19,25 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
             return
         }
         while (true) {
-            root ?: error("IT IS IMPOSSIBLE!!!")
+            root ?: error("adding error")
             if (root.getKey() > node.getKey()) {
                 val leftNode = root.getLeftNode()
                 if (leftNode == null) {
-                    node.color = RBNode.Color.RED
+                    node.color = Color.RED
                     root.setLeftNode(node)
-                    root.getLeftNode()?.setParent(root)
-                    balancer.balance(root)
+                    node.setParent(root)
+                    this.root = balancer.balance(node)
                     break
                 } else {
                     root = leftNode
-                    val newTree = RBTree<K, V>()
-                    newTree.root = root
-
                 }
             } else {
                 val rightNode = root.getRightNode()
                 if (rightNode == null) {
-                    node.color = RBNode.Color.RED
+                    node.color = Color.RED
                     root.setRightNode(node)
-                    root.getRightNode()?.setParent(root)
+                    node.setParent(root)
+                    this.root = balancer.balance(node)
                     break
                 } else {
                     root = rightNode
