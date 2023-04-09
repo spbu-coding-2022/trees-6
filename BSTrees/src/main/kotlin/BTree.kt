@@ -1,12 +1,11 @@
 abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>{
 
-    private var root: NODE_TYPE? = null
+    var root: NODE_TYPE? = null
+        get() = field
+        set(value){
+            field = value
+        }
 
-    fun getRoot() = root
-
-    fun setRoot(newRoot: NODE_TYPE?) {
-        root = newRoot
-    }
 
     fun getHeight(): Int {
         return root?.getHeight() ?: 0

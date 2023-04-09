@@ -12,9 +12,9 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
     }
 
     override fun add(node: RBNode<K, V>) {
-        var root = this.getRoot()
+        var root = this.root
         if (root == null) {
-            this.setRoot(node)
+            this.root = node
             return
         }
         while (true) {
@@ -22,7 +22,7 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
             if (root.getKey() > node.getKey()) {
                 val leftNode = root.getLeftNode()
                 if (leftNode == null) {
-                    node.setNodeColor(RBNode.Color.RED)
+                    node.color = RBNode.Color.RED
                     root.setLeftNode(node)
                     root.getLeftNode()?.setParent(root)
                     balancer.balance(root)
@@ -30,13 +30,13 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
                 } else {
                     root = leftNode
                     val newTree = RBTree<K, V>()
-                    newTree.setRoot(root)
+                    newTree.root = root
 
                 }
             } else {
                 val rightNode = root.getRightNode()
                 if (rightNode == null) {
-                    node.setNodeColor(RBNode.Color.RED)
+                    node.color = RBNode.Color.RED
                     root.setRightNode(node)
                     root.getRightNode()?.setParent(root)
                     break

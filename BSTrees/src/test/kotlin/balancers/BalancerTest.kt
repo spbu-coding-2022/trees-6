@@ -6,6 +6,7 @@ import binarySearchTree.BSNode
 import org.junit.jupiter.api.Test
 import utils.BSTreeUtil
 
+@Suppress("UNCHECKED_CAST")
 class BalancerTest {
 
     @Test
@@ -14,9 +15,9 @@ class BalancerTest {
 
         val privateLeftRotateField = Balancer::class.java.getDeclaredMethod("leftRotate", Node::class.java)
         privateLeftRotateField.isAccessible = true
-        val newNode = privateLeftRotateField.invoke(balancer, BSTreeUtil.createBSTree().getRoot()) as BSNode<Int, Int>
+        val newNode = privateLeftRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as BSNode<Int, Int>
 
-        assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createLeftRotatedBSTree().getRoot()))
+        assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createLeftRotatedBSTree().root))
     }
 
     @Test
@@ -25,8 +26,8 @@ class BalancerTest {
 
         val privateRightRotateField = Balancer::class.java.getDeclaredMethod("rightRotate", Node::class.java)
         privateRightRotateField.isAccessible = true
-        val newNode = privateRightRotateField.invoke(balancer, BSTreeUtil.createBSTree().getRoot()) as BSNode<Int, Int>
+        val newNode = privateRightRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as BSNode<Int, Int>
 
-        assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createRightRotatedBSTree().getRoot()))
+        assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createRightRotatedBSTree().root))
     }
 }
