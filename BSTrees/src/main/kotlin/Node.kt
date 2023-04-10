@@ -6,6 +6,13 @@ abstract class Node<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pri
     private var leftNode: NODE_TYPE? = null
     private var rightNode: NODE_TYPE? = null
     private var height = 1
+    private var size = 1
+
+    fun getSize() = size
+
+    fun setSize(newSize: Int){
+        this.size = newSize
+    }
 
     fun getKey() = this.key
 
@@ -43,6 +50,12 @@ abstract class Node<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pri
         val leftHeight = leftNode?.getHeight() ?: 0
         val rightHeight = rightNode?.getHeight() ?: 0
         setHeight(max(leftHeight, rightHeight) + 1)
+    }
+
+    fun updateSize(){
+        val leftSize = getLeftNode()?.getHeight() ?: 0
+        val rightSize = getRightNode()?.getHeight() ?: 0
+        setHeight(leftSize + rightSize + 1)
     }
 
 }

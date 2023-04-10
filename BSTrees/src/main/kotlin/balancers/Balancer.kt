@@ -16,7 +16,9 @@ abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>
         node.setParent(temp)
 
         node.updateHeight()
+        node.updateSize()
         temp?.updateHeight()
+        temp?.updateSize()
 
         return temp ?: node
     }
@@ -34,7 +36,9 @@ abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>
         node.setParent(temp)
 
         node.updateHeight()
+        node.updateSize()
         temp?.updateHeight()
+        temp?.updateSize()
 
         return temp ?: node
     }
