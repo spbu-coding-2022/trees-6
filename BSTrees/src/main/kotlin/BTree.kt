@@ -17,7 +17,7 @@ abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>{
 
     abstract fun insert(key: K, value: V)
 
-    abstract fun add(node: NODE_TYPE)
+    protected abstract fun add(node: NODE_TYPE)
 
     fun find(key: K): V? {
         var temp: NODE_TYPE? = root ?: return null
