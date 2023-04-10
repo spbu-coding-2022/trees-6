@@ -1,12 +1,10 @@
 package balancers
 
 import redBlackTree.RBNode
-import redBlackTree.RBTree
 
-open class RBBalancer<K : Comparable<K>, V>(tree: RBTree<K, V>?) : Balancer<K, V, RBNode<K, V>, RBTree<K, V>>(tree) {
+open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
 
-    //update parent
-    override fun balance() {
+    override fun balance(node: RBNode<K, V>): RBNode<K, V> {
         TODO("Not yet implemented")
     }
 }

@@ -1,12 +1,12 @@
 package avlTree
 
-import balancers.AvlBalancer
 import BTree
 
-class AvlTree<K: Comparable<K>, V>(root: AvlNode<K, V>): BTree<K, V, AvlNode<K, V>, AvlTree<K, V>>(root){
+class AvlTree<K: Comparable<K>, V>: BTree<K, V, AvlNode<K, V>>() {
 
-    private val balancer = AvlBalancer(this)
-
+    override fun insert(key: K, value: V) {
+        TODO("Not yet implemented")
+    }
     override fun add(node: AvlNode<K, V>) {
         TODO("Not yet implemented")
     }

@@ -1,32 +1,51 @@
 package balancers
 
-import BTree
 import Node
 
-abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>, TREE_TYPE : BTree<K, V, NODE_TYPE, TREE_TYPE>>(
-    protected var tree: TREE_TYPE?
-) {
-    protected fun leftRotate() {
-        val temp = tree?.getLeftTree()
-        tree?.setLeftTree(temp?.getRightTree())
-        temp?.setRightTree(tree)
-        tree?.updateHeight()
+abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>{
+    fun leftRotate(node: NODE_TYPE): NODE_TYPE {
+        val nodeParent = node.getParent()
+        val temp = node.getRightNode()
+        temp?.setParent(nodeParent)
+        if(nodeParent?.getLeftNode() == node)nodeParent.setLeftNode(temp) else nodeParent?.setRightNode(temp)
+
+        node.setRightNode(temp?.getLeftNode())
+        node.getRightNode()?.setParent(node)
+
+        temp?.setLeftNode(node)
+        node.setParent(temp)
+
+        node.updateHeight()
+        node.updateSize()
         temp?.updateHeight()
-        tree = temp
+        temp?.updateSize()
+
+        return temp ?: node
     }
 
-    protected fun rightRotate() {
-        val temp = tree?.getRightTree()
-        tree?.setRightTree(temp?.getLeftTree())
-        temp?.setLeftTree(tree)
-        tree?.updateHeight()
+    fun rightRotate(node: NODE_TYPE): NODE_TYPE{
+        val nodeParent = node.getParent()
+        val temp = node.getLeftNode()
+        temp?.setParent(nodeParent)
+        if(nodeParent?.getLeftNode() == node)nodeParent.setLeftNode(temp) else nodeParent?.setRightNode(temp)
+
+        node.setLeftNode(temp?.getRightNode())
+        node.getLeftNode()?.setParent(node)
+
+        temp?.setRightNode(node)
+        node.setParent(temp)
+
+        node.updateHeight()
+        node.updateSize()
         temp?.updateHeight()
-        tree = temp
+        temp?.updateSize()
+
+        return temp ?: node
     }
 
-    protected fun balanceFactory(): Int {
-        return (tree?.getRightTree()?.getRoot()?.getHeight() ?: 0) - (tree?.getLeftTree()?.getRoot()?.getHeight() ?: 0)
+    fun balanceFactory(node: NODE_TYPE): Int {
+        return (node.getRightNode()?.getHeight() ?: 0) - (node.getLeftNode()?.getHeight() ?: 0)
     }
 
-    abstract fun balance()
+    abstract fun balance(node: NODE_TYPE): NODE_TYPE
 }

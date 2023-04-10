@@ -9,67 +9,77 @@ import binarySearchTree.BSTree
  */
 object BSTreeUtil {
 
-    fun checkTreeEquals(tree1: BSTree<*, *>?, tree2: BSTree<*, *>?): Boolean {
-        if (tree1 == null || tree2 == null) {
-            return tree1 == null && tree2 == null
-        }
-        return checkRootEquals(tree1.getRoot(), tree2.getRoot()) &&
-                checkTreeEquals(tree1.getLeftTree(), tree2.getLeftTree()) &&
-                checkTreeEquals(tree1.getRightTree(), tree2.getRightTree())
-    }
-
-    fun checkRootEquals(root1: BSNode<*, *>?, root2: BSNode<*, *>?): Boolean {
+    fun checkNodeEquals(root1: BSNode<*, *>?, root2: BSNode<*, *>?): Boolean {
         if (root1 == null || root2 == null) {
             return root1 == null && root2 == null
         }
-        return root1.getKey() == root2.getKey() && root1.getValue() == root1.getValue()
+        return root1.getKey() == root2.getKey() && root1.getValue() == root1.getValue() &&
+                checkNodeEquals(root1.getLeftNode(), root2.getLeftNode()) &&
+                checkNodeEquals(root1.getRightNode(), root2.getRightNode())
     }
 
+
+    // This will be rewritten when the BSTree implementation is added
     fun createBSTree(): BSTree<Int, Int> {
-        val testBSTree: BSTree<Int, Int> = BSTree(BSNode(0, 0))
+        val testBSTree: BSTree<Int, Int> = BSTree()
+        testBSTree.root = BSNode(0, 0)
+        val testBSTreeRoot = testBSTree.root!!
 
-        val leftSubTestBSTree = BSTree(BSNode(-2, 2))
-        leftSubTestBSTree.setLeftTree(BSTree(BSNode(-3, 5)))
-        leftSubTestBSTree.setRightTree(BSTree(BSNode(-1, 6)))
+        val leftSubTestBSTree: BSTree<Int, Int> = BSTree()
+        leftSubTestBSTree.root = BSNode(-2, 2)
+        val leftSubTestBSTreeRoot = leftSubTestBSTree.root!!
+        leftSubTestBSTreeRoot.setLeftNode(BSNode(-3, 5))
+        leftSubTestBSTreeRoot.setRightNode(BSNode(-1, 6))
 
-        val rightSubTestBSTree = BSTree(BSNode(2, 3))
-        rightSubTestBSTree.setLeftTree(BSTree(BSNode(1, 7)))
-        rightSubTestBSTree.setRightTree(BSTree(BSNode(3, 8)))
+        val rightSubTestBSTree: BSTree<Int, Int> = BSTree()
+        rightSubTestBSTree.root = BSNode(2, 3)
+        val rightSubTestBSTreeRoot = rightSubTestBSTree.root!!
+        rightSubTestBSTreeRoot.setLeftNode(BSNode(1, 7))
+        rightSubTestBSTreeRoot.setRightNode(BSNode(3, 8))
 
-        testBSTree.setLeftTree(leftSubTestBSTree)
-        testBSTree.setRightTree(rightSubTestBSTree)
+
+        testBSTreeRoot.setLeftNode(leftSubTestBSTreeRoot)
+        testBSTreeRoot.setRightNode(rightSubTestBSTreeRoot)
 
         return testBSTree
     }
 
     fun createLeftRotatedBSTree(): BSTree<Int, Int> {
-        val leftRotatedTestBSTree: BSTree<Int, Int> = BSTree(BSNode(-2, 2))
+        val leftRotatedTestBSTree: BSTree<Int, Int> = BSTree()
+        leftRotatedTestBSTree.root = BSNode(2, 3)
+        val leftRotatedTestBSTreeRoot = leftRotatedTestBSTree.root!!
 
-        leftRotatedTestBSTree.setLeftTree(BSTree(BSNode(-3, 5)))
-        leftRotatedTestBSTree.setRightTree(BSTree(BSNode(0, 0)))
+        leftRotatedTestBSTreeRoot.setRightNode(BSNode(3, 8))
+        leftRotatedTestBSTreeRoot.setLeftNode(BSNode(0, 0))
 
-        val rightRotatedSubTestBSTree = BSTree(BSNode(2, 3))
-        rightRotatedSubTestBSTree.setLeftTree(BSTree(BSNode(1, 7)))
-        rightRotatedSubTestBSTree.setRightTree(BSTree(BSNode(3, 8)))
+        val leftRotatedSubTestBSTree: BSTree<Int, Int> = BSTree()
+        leftRotatedSubTestBSTree.root = BSNode(-2, 2)
+        val leftRotatedSubTestBSTreeRoot = leftRotatedSubTestBSTree.root!!
+        leftRotatedSubTestBSTreeRoot.setLeftNode(BSNode(-3, 5))
+        leftRotatedSubTestBSTreeRoot.setRightNode(BSNode(-1, 6))
 
-        leftRotatedTestBSTree.getRightTree()?.setLeftTree(BSTree(BSNode(-1, 6)))
-        leftRotatedTestBSTree.getRightTree()?.setRightTree(rightRotatedSubTestBSTree)
+        leftRotatedTestBSTreeRoot.getLeftNode()?.setRightNode(BSNode(1, 7))
+        leftRotatedTestBSTreeRoot.getLeftNode()?.setLeftNode(leftRotatedSubTestBSTreeRoot)
 
         return leftRotatedTestBSTree
     }
 
     fun createRightRotatedBSTree(): BSTree<Int, Int> {
-        val rightRotatedTestBSTree: BSTree<Int, Int> = BSTree(BSNode(2, 3))
+        val rightRotatedTestBSTree: BSTree<Int, Int> = BSTree()
+        rightRotatedTestBSTree.root = BSNode(-2, 2)
+        val rightRotatedTestBSTreeRoot = rightRotatedTestBSTree.root!!
 
-        rightRotatedTestBSTree.setRightTree(BSTree(BSNode(3, 8)))
-        rightRotatedTestBSTree.setLeftTree(BSTree(BSNode(0, 0)))
+        rightRotatedTestBSTreeRoot.setLeftNode(BSNode(-3, 5))
+        rightRotatedTestBSTreeRoot.setRightNode(BSNode(0, 0))
 
-        val leftRotatedSubTestBSTree = BSTree(BSNode(-2, 2))
-        leftRotatedSubTestBSTree.setLeftTree(BSTree(BSNode(-3, 5)))
-        leftRotatedSubTestBSTree.setRightTree(BSTree(BSNode(-1, 6)))
+        val rightRotatedSubTestBSTree: BSTree<Int, Int> = BSTree()
+        rightRotatedSubTestBSTree.root = BSNode(2, 3)
+        val rightRotatedSubTestBSTreeRoot = rightRotatedSubTestBSTree.root!!
+        rightRotatedSubTestBSTreeRoot.setLeftNode(BSNode(1, 7))
+        rightRotatedSubTestBSTreeRoot.setRightNode(BSNode(3, 8))
 
-        rightRotatedTestBSTree.getLeftTree()?.setRightTree(BSTree(BSNode(1, 7)))
-        rightRotatedTestBSTree.getLeftTree()?.setLeftTree(leftRotatedSubTestBSTree)
+        rightRotatedTestBSTreeRoot.getRightNode()?.setLeftNode(BSNode(-1, 6))
+        rightRotatedTestBSTreeRoot.getRightNode()?.setRightNode(rightRotatedSubTestBSTreeRoot)
 
         return rightRotatedTestBSTree
     }
