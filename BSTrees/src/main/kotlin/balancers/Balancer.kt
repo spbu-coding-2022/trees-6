@@ -43,7 +43,7 @@ abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>
         return temp ?: node
     }
 
-    fun balanceFactory(node: NODE_TYPE): Int {
+    fun balanceFactor(node: NODE_TYPE): Int {
         return (node.getRightNode()?.getHeight() ?: 0) - (node.getLeftNode()?.getHeight() ?: 0)
     }
 
