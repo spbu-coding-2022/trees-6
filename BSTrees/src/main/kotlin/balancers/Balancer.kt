@@ -3,7 +3,7 @@ package balancers
 import Node
 
 abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>{
-    protected fun leftRotate(node: NODE_TYPE): NODE_TYPE {
+    fun leftRotate(node: NODE_TYPE): NODE_TYPE {
         val nodeParent = node.getParent()
         val temp = node.getRightNode()
         temp?.setParent(nodeParent)
@@ -16,12 +16,14 @@ abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>
         node.setParent(temp)
 
         node.updateHeight()
+        node.updateSize()
         temp?.updateHeight()
+        temp?.updateSize()
 
         return temp ?: node
     }
 
-    protected fun rightRotate(node: NODE_TYPE): NODE_TYPE{
+    fun rightRotate(node: NODE_TYPE): NODE_TYPE{
         val nodeParent = node.getParent()
         val temp = node.getLeftNode()
         temp?.setParent(nodeParent)
@@ -34,12 +36,14 @@ abstract class Balancer<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>
         node.setParent(temp)
 
         node.updateHeight()
+        node.updateSize()
         temp?.updateHeight()
+        temp?.updateSize()
 
         return temp ?: node
     }
 
-    protected fun balanceFactory(node: NODE_TYPE): Int {
+    fun balanceFactory(node: NODE_TYPE): Int {
         return (node.getRightNode()?.getHeight() ?: 0) - (node.getLeftNode()?.getHeight() ?: 0)
     }
 
