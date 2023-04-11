@@ -10,7 +10,7 @@ import utils.BSTreeUtil
 class BalancerTest {
 
     @Test
-    fun testLeftRotate() {
+    fun `left rotate`() {
         val balancer = BSBalancer<Int, Int>()
 
         val privateLeftRotateField = Balancer::class.java.getDeclaredMethod("leftRotate", Node::class.java)
@@ -21,7 +21,7 @@ class BalancerTest {
     }
 
     @Test
-    fun testRightRotate() {
+    fun `right rotate`() {
         val balancer = BSBalancer<Int, Int>()
 
         val privateRightRotateField = Balancer::class.java.getDeclaredMethod("rightRotate", Node::class.java)
