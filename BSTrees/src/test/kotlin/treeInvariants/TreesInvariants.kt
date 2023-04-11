@@ -7,8 +7,8 @@ import redBlackTree.RBNode.Color
 @Suppress("UNCHECKED_CAST")
 class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
 
-    fun checkRBTreeInvariants(root: RBNode<K, V>): Boolean {
-        return checkNodeInvariants(root as NODE_TYPE) && root.color == Color.BLACK  &&
+    fun checkRBTreeInvariants(root: RBNode<K, V>?): Boolean {
+        return root == null || root.getParent() == null && checkNodeInvariants(root as NODE_TYPE) && root.color == Color.BLACK  &&
                 checkRBNodeBlackHeightInvariant(root, 0, getSomeBlackHeight(root)) &&
                 checkRBNodeBlackParentForRedInvariant(root)
     }
