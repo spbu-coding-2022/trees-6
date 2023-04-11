@@ -22,7 +22,7 @@ class RBTreeTest {
     }
 
     @Test
-    fun addNodeTest() {
+    fun `invariants after addition`() {
         val tree = RBTree<Int, Int>()
         for (i in 0 until 10000) {
             tree.insert(keyValue[i].first, keyValue[i].second)
@@ -31,7 +31,7 @@ class RBTreeTest {
     }
 
     @Test
-    fun deleteNodeTest(){
+    fun `invariants after deletion`(){
         keyValue.forEach { tree.insert(it.first, it.second) }
         keyValue.shuffle()
         for(i in 0 until 10000){

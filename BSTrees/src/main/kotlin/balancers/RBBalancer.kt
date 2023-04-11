@@ -4,15 +4,16 @@ import redBlackTree.RBNode
 import redBlackTree.RBNode.Color
 import redBlackTree.RBTree
 
-open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
+open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
 
-    fun balanceForDelete(tree: RBTree<K, V>, node: RBNode<K, V>){
+    fun balanceAfterDeletion(tree: RBTree<K, V>, node: RBNode<K, V>) {
         var curNode = node
         var nodeParent = node.getParent()
-        while(nodeParent != null && curNode.color != Color.RED){
-            if(nodeParent.getLeftNode() == curNode){
+        while (nodeParent != null && curNode.color != Color.RED) {
 
-                if(nodeParent.getLeftNode() == null){
+            if (nodeParent.getLeftNode() == curNode) {
+
+                if (nodeParent.getLeftNode() == null) {
                     curNode = nodeParent
                     nodeParent = curNode.getParent()
                     continue
@@ -20,17 +21,18 @@ open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
 
                 // brother MUST exist, because we have a 2xBLACK curNode in leftTree
                 var nodeBrother = nodeParent.getRightNode()!!
-                if(nodeBrother.color == Color.RED){
+
+                // Consideration of the case 1.
+                // nodeBrother is red
+                if (nodeBrother.color == Color.RED) {
                     nodeBrother.color = Color.BLACK
                     nodeParent.color = Color.RED
-                    if(nodeParent.getParent() == null){
+                    if (nodeParent.getParent() == null) {
                         nodeParent = leftRotate(nodeParent)
                         tree.root = nodeParent
-                    }
-                    else{
+                    } else {
                         nodeParent = leftRotate(nodeParent)
                     }
-
 
 
                     // these nodes MUST exist because we did leftRotate with theirs nodes
@@ -39,39 +41,39 @@ open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
                     nodeBrother = nodeParent.getRightNode()!!
                 }
 
-                // left and right sons of nodeBrother MUST exist, because of comment, which is located a little higher
-                if((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) &&
+                // Consideration of the case 2.
+                // nodeBrother's sons are black
+                if ((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) &&
                     (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)
-                ){
+                ) {
                     nodeBrother.color = Color.RED
-                    val flag = nodeParent.color == Color.RED
-                    nodeParent.color = Color.BLACK
                     curNode = nodeParent
                     nodeParent = curNode.getParent()
-                    if(flag)break
-                }
-                else{
-                    if(nodeBrother.getLeftNode() != null && nodeBrother.getLeftNode()!!.color == Color.RED && (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)){
+                } else {
+
+                    // Consideration of the case 3.
+                    // nodeBrother's left son is red, right son is black
+                    if (nodeBrother.getLeftNode() != null && nodeBrother.getLeftNode()!!.color == Color.RED && (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)) {
                         nodeBrother.color = Color.RED
                         nodeBrother.getLeftNode()!!.color = Color.BLACK
                         nodeBrother = rightRotate(nodeBrother)
-
                     }
+
+                    // Consideration of the case 4.
+                    // nodeBrother's right son is red
                     nodeBrother.color = nodeParent.color
                     nodeParent.color = Color.BLACK
                     nodeBrother.getRightNode()!!.color = Color.BLACK
-                    if(nodeParent.getParent() == null){
+                    if (nodeParent.getParent() == null) {
                         tree.root = leftRotate(nodeParent)
-                    }
-                    else {
+                    } else {
                         leftRotate(nodeParent)
                     }
                     break
                 }
-            }
-            else{
+            } else {
 
-                if(nodeParent.getLeftNode() == null){
+                if (nodeParent.getLeftNode() == null) {
                     curNode = nodeParent
                     nodeParent = curNode.getParent()
                     continue
@@ -79,15 +81,17 @@ open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
 
                 // brother MUST exist, because we have a 2xBLACK curNode in rightTree
                 var nodeBrother = nodeParent.getLeftNode()!!
-                if(nodeBrother.color == Color.RED){
+
+                // Consideration of the case 1.
+                // nodeBrother is red
+                if (nodeBrother.color == Color.RED) {
                     nodeBrother.color = Color.BLACK
                     nodeParent.color = Color.RED
 
-                    if(nodeParent.getParent() == null){
+                    if (nodeParent.getParent() == null) {
                         nodeParent = rightRotate(nodeParent)
                         tree.root = nodeParent
-                    }
-                    else{
+                    } else {
                         nodeParent = rightRotate(nodeParent)
                     }
 
@@ -97,30 +101,32 @@ open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
                     nodeBrother = nodeParent.getLeftNode()!!
                 }
 
-                // left and right sons of nodeBrother MUST exist, because of comment, which is located a little higher
-                if((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) &&
-                        (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)
-                ){
+                // Consideration of the case 2.
+                // nodeBrother's sons are black
+                if ((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) &&
+                    (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)
+                ) {
                     nodeBrother.color = Color.RED
-                    val flag = nodeParent.color == Color.RED
-                    nodeParent.color = Color.BLACK
                     curNode = nodeParent
                     nodeParent = curNode.getParent()
-                    if(flag)break
-                }
-                else{
-                    if((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) && nodeBrother.getRightNode() != null && nodeBrother.getRightNode()!!.color == Color.RED){
+                } else {
+
+                    // Consideration of the case 3.
+                    // nodeBrother's left son is black, right son is red
+                    if ((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) && nodeBrother.getRightNode() != null && nodeBrother.getRightNode()!!.color == Color.RED) {
                         nodeBrother.color = Color.RED
                         nodeBrother.getRightNode()!!.color = Color.BLACK
                         nodeBrother = leftRotate(nodeBrother)
                     }
+
+                    // Consideration of the case 4.
+                    // nodeBrother's right son is red
                     nodeBrother.color = nodeParent.color
                     nodeParent.color = Color.BLACK
                     nodeBrother.getLeftNode()!!.color = Color.BLACK
-                    if(nodeParent.getParent() == null) {
+                    if (nodeParent.getParent() == null) {
                         tree.root = rightRotate(nodeParent)
-                    }
-                    else{
+                    } else {
                         rightRotate(nodeParent)
                     }
                     break
@@ -129,26 +135,27 @@ open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
         }
         curNode.color = Color.BLACK
     }
-    override fun balance(node: RBNode<K, V>): RBNode<K, V> {
+
+
+    fun balanceAfterAdding(node: RBNode<K, V>): RBNode<K, V> {
         var nodeParent = node.getParent()
         var curNode = node
-        while (nodeParent != null && nodeParent.color == Color.RED){
+        while (nodeParent != null && nodeParent.color == Color.RED) {
             // It must exist, since the root of the tree cannot be red
             val nodeGrandParent = nodeParent.getParent() ?: error("RTTree structure error")
 
-            if(nodeParent == nodeGrandParent.getLeftNode()){
+            if (nodeParent == nodeGrandParent.getLeftNode()) {
                 val nodeUncle = nodeGrandParent.getRightNode()
 
-                if(nodeUncle == null || nodeUncle.color == Color.BLACK){
-                    if(curNode == nodeParent.getRightNode()) {
+                if (nodeUncle == null || nodeUncle.color == Color.BLACK) {
+                    if (curNode == nodeParent.getRightNode()) {
                         nodeParent = leftRotate(nodeParent)
                         curNode = nodeParent.getLeftNode()!!
                     }
                     nodeParent.color = Color.BLACK
                     nodeGrandParent.color = Color.RED
                     rightRotate(nodeGrandParent)
-                }
-                else{
+                } else {
                     nodeParent.color = Color.BLACK
                     nodeUncle.color = Color.BLACK
                     nodeGrandParent.color = Color.RED
@@ -156,20 +163,18 @@ open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
                     curNode = nodeGrandParent
                     nodeParent = curNode.getParent()
                 }
-            }
-            else{
+            } else {
                 val nodeUncle = nodeGrandParent.getLeftNode()
 
-                if(nodeUncle == null || nodeUncle.color == Color.BLACK){
-                    if(curNode == nodeParent.getLeftNode()) {
+                if (nodeUncle == null || nodeUncle.color == Color.BLACK) {
+                    if (curNode == nodeParent.getLeftNode()) {
                         nodeParent = rightRotate(nodeParent)
                         curNode = nodeParent.getRightNode()!!
                     }
                     nodeParent.color = Color.BLACK
                     nodeGrandParent.color = Color.RED
                     leftRotate(nodeGrandParent)
-                }
-                else{
+                } else {
                     nodeParent.color = Color.BLACK
                     nodeUncle.color = Color.BLACK
                     nodeGrandParent.color = Color.RED
@@ -179,11 +184,15 @@ open class RBBalancer<K : Comparable<K>, V>: Balancer<K, V, RBNode<K, V>>(){
                 }
             }
         }
-        while(curNode.getParent() != null){
+        while (curNode.getParent() != null) {
             curNode = curNode.getParent()!!
         }
 
         curNode.color = Color.BLACK
         return curNode
+    }
+
+    override fun balance(node: RBNode<K, V>): RBNode<K, V> {
+        TODO("Not yet implemented")
     }
 }
