@@ -8,7 +8,7 @@ mergeable:
           message: "Description should not be empty."
 
       - do: approvals
-          min:
-            count: 1
-          required:
-            assignees: true
+        min:
+          count: 1
+        required:
+          assignees: true
