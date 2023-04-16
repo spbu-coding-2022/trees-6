@@ -1,6 +1,8 @@
 package treeInvariants
 
 import Node
+import avlTree.AvlNode
+import binarySearchTree.BSNode
 import redBlackTree.RBNode
 import redBlackTree.RBNode.Color
 
@@ -46,4 +48,13 @@ class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
                 (node.getRightNode() == null || node.getRightNode()!!.getParent() == node &&
                         node.getRightNode()!!.getKey() > node.getKey() && checkNodeInvariants(node.getRightNode()!!))
     }
+
+    fun checkAvlTreeInvariants(root: AvlNode<K,V>?): Boolean{
+        return root == null ||
+                ((root.getRightNode()?.getHeight() ?: 0) - (root.getLeftNode()?.getHeight() ?: 0) in -1..1) &&
+                checkAvlTreeInvariants(root.getLeftNode()) && checkAvlTreeInvariants(root.getRightNode()) &&
+                checkNodeInvariants(root as NODE_TYPE)
+    }
+
+    fun checkBsTreeInvariants(root: BSNode<K, V>?) = (root == null || checkNodeInvariants(root as NODE_TYPE))
 }
