@@ -31,7 +31,7 @@ class AvlBalancer<K : Comparable<K>, V> : Balancer<K, V, AvlNode<K, V>>() {
                 }
             }
 
-            return leftRotate(node)
+            return rightRotate(node)
         }
 
         return node
