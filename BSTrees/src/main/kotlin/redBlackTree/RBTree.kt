@@ -99,7 +99,7 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
 
         // If the color of the deleted node is black, then we have to balance the tree
         if (colorOfNodeForSwapping == Color.BLACK) {
-            balancer.balanceAfterDeletion(this, sonNodeForSwapping!!)
+            sonNodeForSwapping?.let { balancer.balanceAfterDeletion(this, sonNodeForSwapping) }
         }
 
         // If we used an imaginary(NILL) node, we have to remove unnecessary links
@@ -158,7 +158,8 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
             curNode
         } else {
             // If we got here, then curNode has both a left and a right son
-            nodeWithMinKey(curNode.getRightNode()!!)
+            val temp = curNode.getRightNode() ?: throw Exception("An attempt to take a non-existent son")
+            nodeWithMinKey(temp)
         }
     }
 
@@ -182,7 +183,7 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
     private fun <K : Comparable<K>, V> nodeWithMinKey(node: RBNode<K, V>): RBNode<K, V> {
         var curNode = node
         while (curNode.getLeftNode() != null) {
-            curNode = curNode.getLeftNode()!!
+            curNode = curNode.getLeftNode() ?: throw Exception("An attempt to take a non-existent son")
         }
         return curNode
     }
