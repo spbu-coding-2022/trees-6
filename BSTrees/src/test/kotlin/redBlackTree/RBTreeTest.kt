@@ -95,4 +95,50 @@ class RBTreeTest {
 
         assertEquals(null, bigTree.root) { "big deletion test error. The tree should be empty" }
     }
+
+
+    @Test
+    fun `find in an empty tree`(){
+        Assertions.assertNull(tree.find(bigKeyValue[0].first))
+        try {
+            tree.find(bigKeyValue[0].first)
+        } catch (e: Exception){
+            Assertions.assertTrue(false)
+        }
+    }
+
+    @Test
+    fun `delete a node which isn't in a tree`(){
+
+        try {
+            tree.delete(bigKeyValue[0].first)
+        } catch (e: Exception){
+            Assertions.assertTrue(false)
+        }
+
+        Assertions.assertNull(tree.root)
+    }
+
+    @Test
+    fun `delete a node which isn't in a tree(tree isn't empty)`(){
+
+        for (i in keyValue.indices){
+            if (i == 0) continue
+            tree.insert(keyValue[i].first, keyValue[i].second)
+        }
+
+        try {
+            tree.delete(bigKeyValue[0].first)
+        } catch (e: Exception){
+            Assertions.assertTrue(false)
+        }
+
+        Assertions.assertTrue(treeChecker.checkRBTreeInvariants(tree.root))
+
+        for (i in keyValue.indices){
+            if (i == 0) continue
+            assertEquals(keyValue[i].second, tree.find(keyValue[i].first))
+        }
+
+    }
 }
