@@ -21,11 +21,11 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
             if (node.getKey() < temp.getKey()) {
                 subTree.root = temp.getLeftNode()
                 this.root?.setLeftNode(subTree.addRoot(node))
-                balancer.rightRotate(temp)
+                balancer.bsRightRotate(temp)
             } else {
                 subTree.root = temp.getRightNode()
                 this.root?.setRightNode(subTree.addRoot(node))
-                balancer.leftRotate(temp)
+                balancer.bsLeftRotate(temp)
             }
         }
 
