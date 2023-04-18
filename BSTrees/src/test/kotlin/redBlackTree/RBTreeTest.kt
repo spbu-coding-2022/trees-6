@@ -19,13 +19,14 @@ class RBTreeTest {
 
 
     @BeforeAll
-    fun beforeAll() {
+    fun prepareNodes() {
         keyValue = List(1000) { Pair(randomizer.nextInt(5000), randomizer.nextInt(5000)) }.distinctBy { it.first }
-        bigKeyValue = List(100000) { Pair(randomizer.nextInt(500000), randomizer.nextInt(500000)) }.distinctBy { it.first }
+        bigKeyValue =
+            List(100000) { Pair(randomizer.nextInt(500000), randomizer.nextInt(500000)) }.distinctBy { it.first }
     }
 
     @BeforeEach
-    fun beforeEach() {
+    fun resetTree() {
         tree.root = null
     }
 
@@ -37,10 +38,16 @@ class RBTreeTest {
 
     @Test
     fun `adding a node`() {
+        tree.insert(keyValue[0].first, keyValue[0].second)
+        Assertions.assertTrue(treeChecker.checkRBTreeInvariants(tree.root)) { "Error adding a node" }
+    }
+
+    @Test
+    fun `adding nodes`() {
         keyValue.forEach {
             tree.insert(it.first, it.second)
 
-            assert(treeChecker.checkRBTreeInvariants(tree.root)) { "Error adding a node. The invariants of the tree are violated" }
+            assert(treeChecker.checkRBTreeInvariants(tree.root)) { "Error adding nodes" }
         }
     }
 
@@ -50,16 +57,17 @@ class RBTreeTest {
 
         tree.insert(keyValue[0].first, keyValue[0].second + 1)
 
-        assertEquals(keyValue[0].second + 1, tree.find(keyValue[0].first)) { "Error when adding nodes with equal key" }
+        assertEquals(keyValue[0].second + 1, tree.find(keyValue[0].first))
+        { "Error adding nodes with equal keys" }
     }
 
     @Test
-    fun `big addition test`() {
+    fun `adding a lot of nodes`() {
         val bigTree = RBTree<Int, Int>()
 
         bigKeyValue.forEach { bigTree.insert(it.first, it.second) }
 
-        assert(treeChecker.checkRBTreeInvariants(bigTree.root)) { "big adding test error" }
+        assert(treeChecker.checkRBTreeInvariants(bigTree.root)) { "Error adding a lot of nodes" }
     }
 
     @Test
@@ -67,18 +75,28 @@ class RBTreeTest {
         keyValue.forEach { tree.insert(it.first, it.second) }
 
         keyValue.forEach {
-            assertEquals(it.second, tree.find(it.first))
+            assertEquals(it.second, tree.find(it.first)) { "Error finding nodes" }
         }
     }
 
     @Test
     fun `deleting a node`() {
+        tree.insert(keyValue[0].first, keyValue[0].second)
+        tree.delete(keyValue[0].first)
+        assertAll("Error deleting a node. The tree must be balanced and must not contain a node after deletion",
+            { Assertions.assertNull(tree.find(keyValue[0].first)) },
+            { Assertions.assertTrue(treeChecker.checkRBTreeInvariants(tree.root)) }
+        )
+    }
+
+    @Test
+    fun `deleting nodes`() {
         keyValue.forEach { tree.insert(it.first, it.second) }
 
         keyValue.forEach {
             tree.delete(it.first)
 
-            assertAll( "The tree must be balanced and must not contain a node after deletion",
+            assertAll("Error deleting nodes. The tree must be balanced and must not contain a node after deletion",
                 { assertEquals(null, tree.find(it.first)) },
                 { assert(treeChecker.checkRBTreeInvariants(tree.root)) }
             )
@@ -86,58 +104,77 @@ class RBTreeTest {
     }
 
     @Test
-    fun `big deletion test`() {
+    fun `deleting a lot of nodes`() {
         val bigTree = RBTree<Int, Int>()
         bigKeyValue.forEach { bigTree.insert(it.first, it.second) }
 
         bigKeyValue = bigKeyValue.shuffled()
         bigKeyValue.forEach { bigTree.delete(it.first) }
 
-        assertEquals(null, bigTree.root) { "big deletion test error. The tree should be empty" }
+        assertEquals(null, bigTree.root) { "Error deleting nodes. The tree must be empty after deleting nodes" }
     }
 
 
     @Test
-    fun `find in an empty tree`(){
-        Assertions.assertNull(tree.find(bigKeyValue[0].first))
+    fun `find in an empty tree`() {
+        Assertions.assertNull(tree.find(bigKeyValue[0].first)) {
+            "Error finding a node which doesn't exist. " +
+                    "It must return null."
+        }
         try {
             tree.find(bigKeyValue[0].first)
-        } catch (e: Exception){
-            Assertions.assertTrue(false)
+        } catch (e: Exception) {
+            Assertions.assertTrue(false) {
+                "Error finding a node which doesn't exist. " +
+                        "Exception is caught"
+            }
         }
     }
 
     @Test
-    fun `delete a node which isn't in a tree`(){
+    fun `delete a node which isn't in a tree`() {
 
         try {
             tree.delete(bigKeyValue[0].first)
-        } catch (e: Exception){
-            Assertions.assertTrue(false)
+        } catch (e: Exception) {
+            Assertions.assertTrue(false) {
+                "Error deleting a node which doesn't exist. " +
+                        "Exception is caught"
+            }
         }
 
-        Assertions.assertNull(tree.root)
+        Assertions.assertNull(tree.root) {
+            "Error deleting a node which doesn't exist. " +
+                    "Tree must stay null"
+        }
     }
 
     @Test
-    fun `delete a node which isn't in a tree(tree isn't empty)`(){
+    fun `delete a node which isn't in a tree(tree isn't empty)`() {
 
-        for (i in keyValue.indices){
+        for (i in keyValue.indices) {
             if (i == 0) continue
             tree.insert(keyValue[i].first, keyValue[i].second)
         }
 
         try {
             tree.delete(bigKeyValue[0].first)
-        } catch (e: Exception){
-            Assertions.assertTrue(false)
+        } catch (e: Exception) {
+            Assertions.assertTrue(false) {
+                "Error deleting nodes which doesn't exist. " +
+                        "Exception is caught"
+            }
         }
 
-        Assertions.assertTrue(treeChecker.checkRBTreeInvariants(tree.root))
+        Assertions.assertTrue(treeChecker.checkRBTreeInvariants(tree.root)) {
+            "Error deleting nodes which doesn't exist. " +
+                    "Tree invariants aren't executed"
+        }
 
-        for (i in keyValue.indices){
+        for (i in keyValue.indices) {
             if (i == 0) continue
             assertEquals(keyValue[i].second, tree.find(keyValue[i].first))
+            { "Error deleting nodes which doesn't exist. Some of nodes are lost" }
         }
 
     }
