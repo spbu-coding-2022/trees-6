@@ -96,8 +96,10 @@ class BSTreeTest {
     @Test
     fun `deleting a lot of nodes`() {
         bigKeyValue.forEach { tree.insert(it.first, it.second) }
+
         bigKeyValue = bigKeyValue.shuffled()
-        bigKeyValue.forEach{ tree.delete(it.first) }
+        bigKeyValue.forEach { tree.delete(it.first) }
+
         Assertions.assertNull(tree.root)
     }
 }

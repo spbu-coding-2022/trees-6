@@ -103,6 +103,8 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
                 this.root?.setRightNode(subTree.root)
             }
 
+            this.root?.updateSize()
+
         }
 
     }

@@ -10,7 +10,7 @@ abstract class Node<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pri
 
     fun getSize() = size
 
-    fun setSize(newSize: Int){
+    fun setSize(newSize: Int) {
         this.size = newSize
     }
 
@@ -24,19 +24,19 @@ abstract class Node<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pri
 
     fun getParent() = parent
 
-    fun setParent(newNode: NODE_TYPE?){
+    fun setParent(newNode: NODE_TYPE?) {
         parent = newNode
     }
 
     fun getLeftNode() = leftNode
 
-    fun setLeftNode(newNode: NODE_TYPE?){
+    fun setLeftNode(newNode: NODE_TYPE?) {
         leftNode = newNode
     }
 
     fun getRightNode() = rightNode
 
-    fun setRightNode(newNode: NODE_TYPE?){
+    fun setRightNode(newNode: NODE_TYPE?) {
         rightNode = newNode
     }
 
@@ -52,10 +52,10 @@ abstract class Node<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>>(pri
         setHeight(max(leftHeight, rightHeight) + 1)
     }
 
-    fun updateSize(){
-        val leftSize = getLeftNode()?.getHeight() ?: 0
-        val rightSize = getRightNode()?.getHeight() ?: 0
-        setHeight(leftSize + rightSize + 1)
+    fun updateSize() {
+        val leftSize = getLeftNode()?.getSize() ?: 0
+        val rightSize = getRightNode()?.getSize() ?: 0
+        setSize(leftSize + rightSize + 1)
     }
 
 }

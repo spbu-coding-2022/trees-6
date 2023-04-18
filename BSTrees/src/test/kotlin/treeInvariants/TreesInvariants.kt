@@ -66,5 +66,14 @@ class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
                 && (node.getRightNode() == null || checkAvlHeightInvariants(node.getRightNode()!!))
 
 
-    fun checkBsTreeInvariants(root: BSNode<K, V>?) = (root == null || checkNodeInvariants(root as NODE_TYPE))
+    private fun checkBSSizeInvariant(node: BSNode<K, V>?): Boolean {
+        return node == null ||
+                node.getSize() == (node.getLeftNode()?.getSize() ?: 0) + (node.getRightNode()?.getSize() ?: 0) + 1
+                && checkBSSizeInvariant(node.getLeftNode()) && checkBSSizeInvariant(node.getRightNode())
+    }
+
+    fun checkBsTreeInvariants(root: BSNode<K, V>?): Boolean {
+        return (root == null || checkNodeInvariants(root as NODE_TYPE)) && checkBSSizeInvariant(root)
+    }
+
 }
