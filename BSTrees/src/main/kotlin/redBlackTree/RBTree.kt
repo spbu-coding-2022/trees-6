@@ -16,7 +16,7 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
 
         // if a node with such a key already exists, then we update Value
         val nodeWithEqualKey = findNodeByKey(node.getKey())
-        if (nodeWithEqualKey != null){
+        if (nodeWithEqualKey != null) {
             nodeWithEqualKey.setValue(node.getValue())
             return
         }
