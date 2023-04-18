@@ -12,19 +12,19 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
         add(BSNode(key, value))
     }
 
-    private fun addRoot(root: BSNode<K, V>): BSNode<K, V> {
+    private fun addRoot(node: BSNode<K, V>): BSNode<K, V> {
 
         val temp = this.root
-        return if (temp == null) root
+        return if (temp == null) node
         else {
             val subTree = BSTree<K, V>()
-            if (root.getKey() < temp.getKey()) {
+            if (node.getKey() < temp.getKey()) {
                 subTree.root = temp.getLeftNode()
-                this.root?.setLeftNode(subTree.addRoot(root))
+                this.root?.setLeftNode(subTree.addRoot(node))
                 balancer.rightRotate(temp)
             } else {
                 subTree.root = temp.getRightNode()
-                this.root?.setRightNode(subTree.addRoot(root))
+                this.root?.setRightNode(subTree.addRoot(node))
                 balancer.leftRotate(temp)
             }
         }
@@ -34,7 +34,7 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
     override fun add(node: BSNode<K, V>) {
 
         val temp = this.root
-        if (temp == null || temp.getKey() == node.getKey()) this.root = root
+        if (temp == null || temp.getKey() == node.getKey()) this.root = node
         else {
 
             if (Random.nextInt() % (node.getSize() + 1) == 0) this.root = this.addRoot(node)
@@ -48,10 +48,12 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
                 if (temp.getKey() > node.getKey()) {
                     subTree.root = temp.getLeftNode()
                     subTree.add(node)
+                    subTree.root?.setParent(this.root)
                     this.root?.setLeftNode(subTree.root)
                 } else {
                     subTree.root = temp.getRightNode()
                     subTree.add(node)
+                    subTree.root?.setParent(this.root)
                     this.root?.setRightNode(subTree.root)
                 }
             }
@@ -68,10 +70,12 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
 
         return if (Random.nextInt() % (left.getSize() + right.getSize()) < left.getSize()) {
             left.setRightNode(join(left.getRightNode(), right))
+            left.getRightNode()?.setParent(left)
             left.updateSize()
             left
         } else {
-            right.setLeftNode(join(right.getLeftNode(), left))
+            right.setLeftNode(join(left, right.getLeftNode()))
+            right.getLeftNode()?.setParent(right)
             right.updateSize()
             right
         }
@@ -89,13 +93,17 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
                 val subTree = BSTree<K, V>()
                 subTree.root = temp.getLeftNode()
                 subTree.delete(key)
+                subTree.root?.setParent(this.root)
                 this.root?.setLeftNode(subTree.root)
             } else {
                 val subTree = BSTree<K, V>()
                 subTree.root = temp.getRightNode()
                 subTree.delete(key)
+                subTree.root?.setParent(this.root)
                 this.root?.setRightNode(subTree.root)
             }
+
+            this.root?.updateSize()
 
         }
 
