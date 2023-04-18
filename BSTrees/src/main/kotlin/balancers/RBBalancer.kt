@@ -20,7 +20,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
                 }
 
                 // brother MUST exist, because we have a 2xBLACK curNode in leftTree
-                var nodeBrother = nodeParent.getRightNode()!!
+                var nodeBrother = nodeParent.getRightNode() ?: throw Exception("An attempt to take a non-existent son")
 
                 // Consideration of the case 1.
                 // nodeBrother is red
@@ -36,15 +36,17 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
 
 
                     // these nodes MUST exist because we did leftRotate with theirs nodes
-                    nodeParent = nodeParent.getLeftNode()!!
-                    curNode = nodeParent.getLeftNode()!!
-                    nodeBrother = nodeParent.getRightNode()!!
+                    nodeParent = nodeParent.getLeftNode() ?: throw Exception("An attempt to take a non-existent son")
+                    curNode = nodeParent.getLeftNode() ?: throw Exception("An attempt to take a non-existent son")
+                    nodeBrother = nodeParent.getRightNode() ?: throw Exception("An attempt to take a non-existent son")
                 }
 
                 // Consideration of the case 2.
                 // nodeBrother's sons are black
-                if ((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) &&
-                    (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)
+                val leftSonOfBrother = nodeBrother.getLeftNode()
+                val rightSonOfBrother = nodeBrother.getRightNode()
+                if ((leftSonOfBrother == null || leftSonOfBrother.color == Color.BLACK) &&
+                    (rightSonOfBrother == null || rightSonOfBrother.color == Color.BLACK)
                 ) {
                     nodeBrother.color = Color.RED
                     curNode = nodeParent
@@ -53,9 +55,9 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
 
                     // Consideration of the case 3.
                     // nodeBrother's left son is red, right son is black
-                    if (nodeBrother.getLeftNode() != null && nodeBrother.getLeftNode()!!.color == Color.RED && (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)) {
+                    if (leftSonOfBrother != null && leftSonOfBrother.color == Color.RED && (rightSonOfBrother == null || rightSonOfBrother.color == Color.BLACK)) {
                         nodeBrother.color = Color.RED
-                        nodeBrother.getLeftNode()!!.color = Color.BLACK
+                        leftSonOfBrother.color = Color.BLACK
                         nodeBrother = rightRotate(nodeBrother)
                     }
 
@@ -63,7 +65,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
                     // nodeBrother's right son is red
                     nodeBrother.color = nodeParent.color
                     nodeParent.color = Color.BLACK
-                    nodeBrother.getRightNode()!!.color = Color.BLACK
+                    nodeBrother.getRightNode()?.color = Color.BLACK
                     if (nodeParent.getParent() == null) {
                         tree.root = leftRotate(nodeParent)
                     } else {
@@ -80,7 +82,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
                 }
 
                 // brother MUST exist, because we have a 2xBLACK curNode in rightTree
-                var nodeBrother = nodeParent.getLeftNode()!!
+                var nodeBrother = nodeParent.getLeftNode() ?: throw Exception("An attempt to take a non-existent son")
 
                 // Consideration of the case 1.
                 // nodeBrother is red
@@ -96,15 +98,17 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
                     }
 
                     // these nodes MUST exist because we did rightRotate with theirs nodes
-                    nodeParent = nodeParent.getRightNode()!!
-                    curNode = nodeParent.getRightNode()!!
-                    nodeBrother = nodeParent.getLeftNode()!!
+                    nodeParent = nodeParent.getRightNode() ?: throw Exception("An attempt to take a non-existent son")
+                    curNode = nodeParent.getRightNode() ?: throw Exception("An attempt to take a non-existent son")
+                    nodeBrother = nodeParent.getLeftNode() ?: throw Exception("An attempt to take a non-existent son")
                 }
 
                 // Consideration of the case 2.
                 // nodeBrother's sons are black
-                if ((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) &&
-                    (nodeBrother.getRightNode() == null || nodeBrother.getRightNode()!!.color == Color.BLACK)
+                val leftSonOfBrother = nodeBrother.getLeftNode()
+                val rightSonOfBrother = nodeBrother.getRightNode()
+                if ((leftSonOfBrother == null || leftSonOfBrother.color == Color.BLACK) &&
+                    (rightSonOfBrother == null || rightSonOfBrother.color == Color.BLACK)
                 ) {
                     nodeBrother.color = Color.RED
                     curNode = nodeParent
@@ -113,9 +117,9 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
 
                     // Consideration of the case 3.
                     // nodeBrother's left son is black, right son is red
-                    if ((nodeBrother.getLeftNode() == null || nodeBrother.getLeftNode()!!.color == Color.BLACK) && nodeBrother.getRightNode() != null && nodeBrother.getRightNode()!!.color == Color.RED) {
+                    if ((leftSonOfBrother == null || leftSonOfBrother.color == Color.BLACK) && rightSonOfBrother != null && rightSonOfBrother.color == Color.RED) {
                         nodeBrother.color = Color.RED
-                        nodeBrother.getRightNode()!!.color = Color.BLACK
+                        rightSonOfBrother.color = Color.BLACK
                         nodeBrother = leftRotate(nodeBrother)
                     }
 
@@ -123,7 +127,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
                     // nodeBrother's right son is red
                     nodeBrother.color = nodeParent.color
                     nodeParent.color = Color.BLACK
-                    nodeBrother.getLeftNode()!!.color = Color.BLACK
+                    nodeBrother.getLeftNode()?.color = Color.BLACK
                     if (nodeParent.getParent() == null) {
                         tree.root = rightRotate(nodeParent)
                     } else {
@@ -142,7 +146,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
         var curNode = node
         while (nodeParent != null && nodeParent.color == Color.RED) {
             // It must exist, since the root of the tree cannot be red
-            val nodeGrandParent = nodeParent.getParent() ?: error("RTTree structure error")
+            val nodeGrandParent = nodeParent.getParent() ?: throw Exception("An attempt to take a non-existent parent")
 
             if (nodeParent == nodeGrandParent.getLeftNode()) {
                 val nodeUncle = nodeGrandParent.getRightNode()
@@ -150,7 +154,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
                 if (nodeUncle == null || nodeUncle.color == Color.BLACK) {
                     if (curNode == nodeParent.getRightNode()) {
                         nodeParent = leftRotate(nodeParent)
-                        curNode = nodeParent.getLeftNode()!!
+                        curNode = nodeParent.getLeftNode() ?: throw Exception("An attempt to take a non-existent son")
                     }
                     nodeParent.color = Color.BLACK
                     nodeGrandParent.color = Color.RED
@@ -169,7 +173,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
                 if (nodeUncle == null || nodeUncle.color == Color.BLACK) {
                     if (curNode == nodeParent.getLeftNode()) {
                         nodeParent = rightRotate(nodeParent)
-                        curNode = nodeParent.getRightNode()!!
+                        curNode = nodeParent.getRightNode() ?: throw Exception("An attempt to take a non-existent son")
                     }
                     nodeParent.color = Color.BLACK
                     nodeGrandParent.color = Color.RED
@@ -185,7 +189,7 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
             }
         }
         while (curNode.getParent() != null) {
-            curNode = curNode.getParent()!!
+            curNode = curNode.getParent() ?: throw Exception("An attempt to take a non-existent parent")
         }
 
         curNode.color = Color.BLACK
