@@ -1,4 +1,4 @@
-package serialize.postgreSQLRep
+package serialize.sqliteRep
 
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

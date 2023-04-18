@@ -1,4 +1,4 @@
-package serialize.postgreSQLRep
+package serialize.sqliteRep
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
