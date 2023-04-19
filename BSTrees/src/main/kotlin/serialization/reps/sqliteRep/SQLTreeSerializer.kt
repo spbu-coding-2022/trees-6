@@ -62,6 +62,7 @@ object SQLTreeSerializer {
 
     fun getTree(file: File, treeName: String): SerializableTree? {
         connectBD(file)
+        createTables()
 
         val treeEntity = TreeEntity.find { TreesTable.nameTree eq treeName }.firstOrNull() ?: return null
 
