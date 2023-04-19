@@ -83,23 +83,3 @@ object SQLTreeSerializer {
         )
     }
 }
-
-
-
-fun main(){
-    val a = SerializableNode("1", "1", "1", null, null, null)
-    val b = SerializableNode("1", "1", "1", null, null, null)
-    val c = SerializableNode("1", "1", "1", a, b, null)
-    val tree = SerializableTree(
-        "azaza",
-        "BSTree",
-        c
-    )
-    val tree2 = SerializableTree(
-        "azaza2",
-        "RBTRee",
-        c
-    )
-    SQLTreeSerializer.setTree(File("KEK"), tree)
-    SQLTreeSerializer.setTree(File("KEK"), tree2)
-}
