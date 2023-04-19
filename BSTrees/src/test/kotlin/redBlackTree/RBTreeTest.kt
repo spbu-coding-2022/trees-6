@@ -2,6 +2,8 @@ package redBlackTree
 
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import treeInvariants.TreesInvariants
 import kotlin.random.Random
 
@@ -78,6 +80,18 @@ class RBTreeTest {
         keyValue.forEach {
             assertEquals(it.second, tree.find(it.first)) { "Error finding nodes" }
         }
+    }
+
+    @ParameterizedTest(name = "Function get returns correct value for key {0}")
+    @ValueSource(ints = [12, -121, 56, 1, 23728, 6464, 112])
+    fun `find return a correct value`(key: Int) {
+        keyValue.forEach { tree.insert(it.first, it.second) }
+
+        assertEquals(keyValue.find { it.first == key }?.second, tree.find(key))
+
+        tree.delete(key)
+
+        assertEquals(null, tree.find(key))
     }
 
     @Test
