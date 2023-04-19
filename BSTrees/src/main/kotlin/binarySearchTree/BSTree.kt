@@ -16,7 +16,10 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
 
         val temp = this.root
         return if (temp == null) node
-        else {
+        else if (temp.getKey() == node.getKey()) {
+            temp.setValue(node.getValue())
+            temp
+        } else {
             val subTree = BSTree<K, V>()
             if (node.getKey() < temp.getKey()) {
                 subTree.root = temp.getLeftNode()
@@ -34,7 +37,8 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
     override fun add(node: BSNode<K, V>) {
 
         val temp = this.root
-        if (temp == null || temp.getKey() == node.getKey()) this.root = node
+        if (temp == null) this.root = node
+        else if (temp.getKey() == node.getKey()) this.root?.setValue(node.getValue())
         else {
 
             if (Random.nextInt() % (node.getSize() + 1) == 0) this.root = this.addRoot(node)
