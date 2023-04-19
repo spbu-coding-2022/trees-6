@@ -13,7 +13,8 @@ class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
 
     override fun add(node: AvlNode<K, V>) {
         val temp = this.root
-        if (temp?.getKey() == node.getKey() || temp == null) this.root = node
+        if (temp == null) this.root = node
+        else if (temp.getKey() == node.getKey()) this.root?.setValue(node.getValue())
         else {
 
             val subTree = AvlTree<K, V>()

@@ -60,13 +60,14 @@ class AVLTreeTest {
     }
 
     @Test
-    fun `adding nodes with equal keys`() {
+    fun `adding nodes with equal key`() {
         keyValue.forEach { tree.insert(it.first, it.second) }
+        keyValue.forEach {
+            tree.insert(it.first, it.second + 1)
+            Assertions.assertEquals(it.second + 1, tree.find(it.first))
+        }
 
-        tree.insert(keyValue[0].first, keyValue[0].second + 1)
-
-        Assertions.assertEquals(keyValue[0].second + 1, tree.find(keyValue[0].first))
-        { "Error adding nodes with equal keys" }
+        Assertions.assertTrue(treeChecker.checkAvlTreeInvariants(tree.root)) { "Error adding nodes with equal keys" }
     }
 
     @Test
