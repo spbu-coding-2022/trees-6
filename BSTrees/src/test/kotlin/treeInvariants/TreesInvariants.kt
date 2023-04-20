@@ -26,16 +26,16 @@ class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
         if (node.getLeftNode() == null && node.getRightNode() == null) {
             return newCurHeight == rightHeight
         }
-        return (node.getLeftNode() == null || checkRBNodeBlackHeightInvariant(
+        return ((node.getLeftNode() == null || checkRBNodeBlackHeightInvariant(
             node.getLeftNode()!!,
             newCurHeight,
             rightHeight
-        ) &&
-                node.getRightNode() == null || checkRBNodeBlackHeightInvariant(
+        )) &&
+                (node.getRightNode() == null || checkRBNodeBlackHeightInvariant(
             node.getRightNode()!!,
             newCurHeight,
             rightHeight
-        ))
+        )))
     }
 
     private fun getSomeBlackHeight(root: RBNode<K, V>): Int {
