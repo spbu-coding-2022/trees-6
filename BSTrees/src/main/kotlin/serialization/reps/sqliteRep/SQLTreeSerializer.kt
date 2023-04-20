@@ -55,7 +55,6 @@ object SQLTreeSerializer {
             metadata = this@toNodeEntity.metadata
             leftNode = this@toNodeEntity.leftNode?.toNodeEntity(treeEntity)
             rightNode = this@toNodeEntity.rightNode?.toNodeEntity(treeEntity)
-            parentNode = this@toNodeEntity.parent?.toNodeEntity(treeEntity)
             tree = treeEntity
         }
     }
@@ -80,7 +79,6 @@ object SQLTreeSerializer {
             this@toSerializableEntity.metadata,
             this@toSerializableEntity.leftNode?.toSerializableEntity(treeEntity),
             this@toSerializableEntity.rightNode?.toSerializableEntity(treeEntity),
-            this@toSerializableEntity.parentNode?.toSerializableEntity(treeEntity)
         )
     }
 }
