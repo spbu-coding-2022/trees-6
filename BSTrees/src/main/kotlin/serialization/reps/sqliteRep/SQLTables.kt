@@ -27,7 +27,6 @@ object NodesTable : IntIdTable(){
     val metadata = varchar("metadata", 255)
     val leftNode = reference("leftNode", NodesTable).nullable()
     val rightNode = reference("rightNode", NodesTable).nullable()
-    val parentNode = reference("parentNode", NodesTable).nullable()
     val tree = reference("tree", TreesTable, onDelete = ReferenceOption.CASCADE)
 }
 
@@ -39,6 +38,5 @@ class NodeEntity(id: EntityID<Int>) : IntEntity(id){
     var metadata by NodesTable.metadata
     var leftNode by NodeEntity optionalReferencedOn NodesTable.leftNode
     var rightNode by NodeEntity optionalReferencedOn NodesTable.rightNode
-    var parentNode by NodeEntity optionalReferencedOn NodesTable.parentNode
     var tree by TreeEntity referencedOn NodesTable.tree
 }
