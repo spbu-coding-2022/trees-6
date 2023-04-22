@@ -3,6 +3,8 @@ plugins {
 
     kotlin("plugin.serialization") version "1.8.20"
 
+    jacoco
+
     application
 }
 
@@ -27,7 +29,10 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-application {
-    // Define the main class for the application.
-    mainClass.set("serialize/postgreSQLRep/SQLTreeSerializerKt")
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }

@@ -26,3 +26,14 @@ jobs:
         with:
           name: BSTrees lib
           path: BSTrees/build/libs/BSTrees.jar
+
+      - if: matrix.os == 'ubuntu-latest'
+        name: Run Test Coverage
+        run: ./gradlew jacocoTestReport
+
+      - if: matrix.os == 'ubuntu-latest'
+        name: Jacoco Code Coverage Report
+        uses: cicirello/jacoco-badge-generator@v2.8.0
+        with:
+          generate-branches-badge: true
+          jacoco-html-file: BSTrees/build/jacocoHtml/index.html
