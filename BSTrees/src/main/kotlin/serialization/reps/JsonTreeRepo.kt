@@ -60,10 +60,10 @@ object JsonTreeRepo : DBTreeRepo {
         }
     }
 
-    override fun deleteTree(serializableTree: SerializableTree) {
+    override fun deleteTree(typeTree: String, treeName: String) {
         createDirPaths()
 
-        val path = getPathToFile(serializableTree.typeOfTree, serializableTree.name)
+        val path = getPathToFile(typeTree, treeName)
 
         try {
             File(path).delete()

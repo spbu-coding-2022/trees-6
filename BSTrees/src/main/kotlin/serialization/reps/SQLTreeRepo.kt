@@ -22,10 +22,10 @@ object SQLTreeRepo: DBTreeRepo{
         }
     }
 
-    override fun deleteTree(serializableTree: SerializableTree) {
+    override fun deleteTree(typeTree: String, treeName: String) {
         transaction {
             val treeEntity =
-                TreeEntity.find { (TreesTable.nameTree eq serializableTree.name) and (TreesTable.typeTree eq serializableTree.typeOfTree) }
+                TreeEntity.find { (TreesTable.nameTree eq treeName) and (TreesTable.typeTree eq typeTree) }
                     .firstOrNull()
             treeEntity?.let{ NodeEntity.find(NodesTable.tree eq treeEntity.id).forEach { it.delete() } }
 
@@ -38,7 +38,7 @@ object SQLTreeRepo: DBTreeRepo{
         connectDB("SQLTreeDB")
         createTables()
 
-        deleteTree(serializableTree)
+        deleteTree(serializableTree.typeOfTree, serializableTree.name)
 
         transaction {
             val newTree = TreeEntity.new {

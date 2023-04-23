@@ -7,5 +7,5 @@ interface DBTreeRepo {
 
     fun setTree(serializableTree: SerializableTree)
 
-    fun deleteTree(serializableTree: SerializableTree)
+    fun deleteTree(typeTree: String, treeName: String)
 }
