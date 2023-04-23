@@ -1,4 +1,4 @@
-package serialization.reps.sqliteRep
+package serialization.reps
 
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -8,10 +8,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import serialization.*
 import java.io.File
 
-object SQLTreeSerializer {
+object SQLTreeRepo: DBTreeRepo{
 
-    private fun connectBD(file: File) {
-        Database.connect("jdbc:sqlite:${file}", "org.sqlite.JDBC")
+
+    private fun connectDB(dbName: String) {
+        Database.connect("jdbc:sqlite:${File(dbName)}", "org.sqlite.JDBC")
     }
 
     private fun createTables(){
@@ -21,19 +22,20 @@ object SQLTreeSerializer {
         }
     }
 
-    private fun deleteTree(serializableTree: SerializableTree) {
+    override fun deleteTree(serializableTree: SerializableTree) {
         transaction {
             val treeEntity =
                 TreeEntity.find { (TreesTable.nameTree eq serializableTree.name) and (TreesTable.typeTree eq serializableTree.typeOfTree) }
                     .firstOrNull()
-            treeEntity?.let{NodeEntity.find(NodesTable.tree eq treeEntity.id).forEach { it.delete() } }
+            treeEntity?.let{ NodeEntity.find(NodesTable.tree eq treeEntity.id).forEach { it.delete() } }
 
             treeEntity?.delete()
         }
     }
 
-    fun setTree(file: File, serializableTree: SerializableTree) {
-        connectBD(file)
+    override fun setTree(serializableTree: SerializableTree) {
+        //TODO: Create a config file in which dbName will be written
+        connectDB("SQLTreeDB")
         createTables()
 
         deleteTree(serializableTree)
@@ -59,11 +61,12 @@ object SQLTreeSerializer {
         }
     }
 
-    fun getTree(file: File, treeName: String): SerializableTree? {
-        connectBD(file)
+    override fun getTree(typeTree: String, treeName: String): SerializableTree? {
+        //TODO: Create a config file in which dbName will be written
+        connectDB("SQLTreeDB")
         createTables()
 
-        val treeEntity = TreeEntity.find { TreesTable.nameTree eq treeName }.firstOrNull() ?: return null
+        val treeEntity = TreeEntity.find { (TreesTable.nameTree eq treeName) and (TreesTable.typeTree eq typeTree) }.firstOrNull() ?: return null
 
         return SerializableTree(
             treeName,
