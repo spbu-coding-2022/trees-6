@@ -1,10 +1,13 @@
-plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.8.10"
+val jetbrainsExposedVersion:  String? by rootProject
+val junit5Version: String? by rootProject
+val gsonVersion: String? by rootProject
+val kotlinxSerializationVersion: String? by rootProject
 
+plugins {
+    id("org.jetbrains.kotlin.jvm") version "1.8.20"
     kotlin("plugin.serialization") version "1.8.20"
 
     jacoco
-
     application
 }
 
@@ -13,16 +16,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-    implementation("com.google.code.gson:gson:2.8.5")
-    implementation("org.jetbrains.exposed:exposed-core:0.38.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.38.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.38.1")
-    implementation("org.xerial:sqlite-jdbc:3.34.0")
-    implementation("org.slf4j:slf4j-nop:1.7.25")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.1")
+    implementation("com.google.code.gson:gson:$gsonVersion")
+
+    implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$jetbrainsExposedVersion")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5Version")
 }
 
 tasks.getByName<Test>("test") {
