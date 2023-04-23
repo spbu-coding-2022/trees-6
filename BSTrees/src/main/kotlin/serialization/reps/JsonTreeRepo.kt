@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import serialization.SerializableTree
 import kotlinx.serialization.encodeToString
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
 import kotlin.io.path.Path
@@ -27,18 +28,22 @@ object JsonTreeRepo : DBTreeRepo {
 
         val filePath = getPathToFile(typeTree, treeName)
         lateinit var file: FileReader
+        var fileFound = true
 
         return try {
             file = FileReader(filePath)
             val jsonText = file.readText()
 
             Json.decodeFromString<SerializableTree>(jsonText)
-        } catch (e: NoSuchFileException) {
+        } catch (e: FileNotFoundException) {
+            fileFound = false
             null
         } catch (e: Exception) {
             throw e
         } finally {
-            file.close()
+            if (fileFound) {
+                file.close()
+            }
         }
     }
 
@@ -51,7 +56,6 @@ object JsonTreeRepo : DBTreeRepo {
         try {
             file = FileWriter(filePath)
             file.write(Json.encodeToString(serializableTree))
-
         } catch (e: Exception) {
             throw e
         } finally {
