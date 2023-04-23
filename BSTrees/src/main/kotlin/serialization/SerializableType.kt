@@ -16,5 +16,4 @@ class SerializableNode(
     val metadata: String,
     val leftNode: SerializableNode? = null,
     val rightNode: SerializableNode? = null,
-    val parent: SerializableNode? = null,
 )
