@@ -20,12 +20,12 @@ jobs:
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
 
-      - name: Upload BSTrees jar
+      - name: Upload lib jar
         uses: actions/upload-artifact@v3
         if: github.ref == 'refs/heads/main'
         with:
           name: BSTrees lib
-          path: BSTrees/build/libs/BSTrees.jar
+          path: lib/build/libs/lib.jar
 
       - if: matrix.os == 'ubuntu-latest'
         name: Run Test Coverage
@@ -36,4 +36,4 @@ jobs:
         uses: cicirello/jacoco-badge-generator@v2.8.0
         with:
           generate-branches-badge: true
-          jacoco-csv-file: BSTrees/build/jacoco/jacocoCsv
+          jacoco-csv-file: lib/build/jacoco/jacocoCsv
