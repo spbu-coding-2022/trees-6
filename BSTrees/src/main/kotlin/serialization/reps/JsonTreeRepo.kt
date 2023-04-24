@@ -5,32 +5,38 @@ import kotlinx.serialization.json.Json
 import serialization.SerializableTree
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileReader
-import java.io.FileWriter
+import java.io.*
+import java.util.*
 import kotlin.io.path.Path
+import utils.PathsUtil.PROPERTIES_FILE_PATH
 
 private val logger = KotlinLogging.logger { }
 
-object JsonTreeRepo : DBTreeRepo {
-    private fun createDirPaths() {
-        File("JSONTreeRep").mkdir()
-        File(Path("JSONTreeRep", "BSTree").toUri()).mkdir()
-        File(Path("JSONTreeRep", "RBTree").toUri()).mkdir()
-        File(Path("JSONTreeRep", "AvlTree").toUri()).mkdir()
+
+class JsonTreeRepo : DBTreeRepo {
+    private var dir : String
+
+    init {
+        val property = Properties()
+        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
+        property.load(propertiesFile)
+
+        dir = property.getProperty("json.dir")
+
+        File(dir).mkdir()
+        File(Path(dir, "BSTree").toUri()).mkdir()
+        File(Path(dir, "RBTree").toUri()).mkdir()
+        File(Path(dir, "AvlTree").toUri()).mkdir()
 
         logger.info { "[JSON] Dir paths was created" }
     }
 
-    private fun getPathToFile(typeTree: String, treeName: String): String {
-        return Path("JSONTreeRep", typeTree, "${treeName}.json").toString()
+    private fun getPathToFile(treeName: String, typeTree: String): String {
+        return Path(dir, typeTree, "${treeName}.json").toString()
     }
 
-    override fun getTree(treeType: String, treeName: String): SerializableTree? {
-        createDirPaths()
-
-        val filePath = getPathToFile(treeType, treeName)
+    override fun getTree(treeName: String, treeType: String): SerializableTree? {
+        val filePath = getPathToFile(treeName, treeType)
         lateinit var file: FileReader
         var fileFound = true
 
@@ -55,9 +61,7 @@ object JsonTreeRepo : DBTreeRepo {
     }
 
     override fun setTree(serializableTree: SerializableTree) {
-        createDirPaths()
-
-        val filePath = getPathToFile(serializableTree.treeType, serializableTree.name)
+        val filePath = getPathToFile(serializableTree.name, serializableTree.treeType)
         lateinit var file: FileWriter
 
         try {
@@ -73,10 +77,8 @@ object JsonTreeRepo : DBTreeRepo {
         logger.info { "[JSON] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
     }
 
-    override fun deleteTree(treeType: String, treeName: String) {
-        createDirPaths()
-
-        val path = getPathToFile(treeType, treeName)
+    override fun deleteTree(treeName: String, treeType: String) {
+        val path = getPathToFile(treeName, treeType)
 
         try {
             File(path).delete()

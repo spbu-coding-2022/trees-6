@@ -6,12 +6,67 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ReferenceOption
 import serialization.*
 import java.io.File
+import java.io.FileInputStream
+import java.util.*
+import utils.PathsUtil.PROPERTIES_FILE_PATH
+
+
+object TreesTable : IntIdTable() {
+    val treeName = varchar("nameTree", 20)
+    val treeType = varchar("typeTree", 20)
+    val root = reference("root", NodesTable).nullable()
+}
+
+class TreeEntity(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<TreeEntity>(TreesTable)
+
+    var treeName by TreesTable.treeName
+    var treeType by TreesTable.treeType
+    var root by NodeEntity optionalReferencedOn TreesTable.root
+}
+
+object NodesTable : IntIdTable() {
+    val key = varchar("key", 255)
+    val value = varchar("value", 255)
+    val metadata = varchar("metadata", 255)
+    val leftNode = reference("leftNode", NodesTable).nullable()
+    val rightNode = reference("rightNode", NodesTable).nullable()
+    val tree = reference("tree", TreesTable, onDelete = ReferenceOption.CASCADE)
+}
+
+class NodeEntity(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<NodeEntity>(NodesTable)
+
+    var key by NodesTable.key
+    var value by NodesTable.value
+    var metadata by NodesTable.metadata
+    var leftNode by NodeEntity optionalReferencedOn NodesTable.leftNode
+    var rightNode by NodeEntity optionalReferencedOn NodesTable.rightNode
+    var tree by TreeEntity referencedOn NodesTable.tree
+}
 
 private val logger = KotlinLogging.logger { }
 
-object SQLTreeRepo : DBTreeRepo {
+class SQLTreeRepo : DBTreeRepo {
+    private var dbName: String
+
+    init {
+        val property = Properties()
+        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
+        property.load(propertiesFile)
+
+        dbName = property.getProperty("sql.dbName")
+
+        connectDB(dbName)
+        createTables()
+    }
 
     private fun connectDB(dbName: String) {
         Database.connect("jdbc:sqlite:${File(dbName)}", "org.sqlite.JDBC")
@@ -28,11 +83,7 @@ object SQLTreeRepo : DBTreeRepo {
         logger.info { "[SQLite] Database tables have been created successfully" }
     }
 
-    override fun getTree(treeType: String, treeName: String): SerializableTree? {
-        //TODO: Create a config file in which dbName will be written
-        connectDB("SQLTreeDB")
-        createTables()
-
+    override fun getTree(treeName: String, treeType: String): SerializableTree? {
         var treeEntity: TreeEntity? = null
         transaction {
             treeEntity = TreeEntity.find { (TreesTable.treeName eq treeName) and (TreesTable.treeType eq treeType) }
@@ -71,11 +122,7 @@ object SQLTreeRepo : DBTreeRepo {
     }
 
     override fun setTree(serializableTree: SerializableTree) {
-        //TODO: Create a config file in which dbName will be written
-        connectDB("SQLTreeDB")
-        createTables()
-
-        deleteTree(serializableTree.treeType, serializableTree.name)
+        deleteTree(serializableTree.name, serializableTree.treeType)
 
         transaction {
             val newTree = TreeEntity.new {
@@ -100,7 +147,7 @@ object SQLTreeRepo : DBTreeRepo {
         }
     }
 
-    override fun deleteTree(treeType: String, treeName: String) {
+    override fun deleteTree(treeName: String, treeType: String) {
         transaction {
             val treeEntity =
                 TreeEntity.find { (TreesTable.treeName eq treeName) and (TreesTable.treeType eq treeType) }

@@ -28,4 +28,4 @@ build/
 
 # db files
 *.json
-*/SQLTreeDB
+*/SQLTrees

@@ -7,14 +7,32 @@ import org.neo4j.driver.TransactionContext
 import serialization.SerializableNode
 import serialization.SerializableTree
 import java.io.Closeable
+import java.io.FileInputStream
+import java.util.*
+import utils.PathsUtil.PROPERTIES_FILE_PATH
 
 private val logger = KotlinLogging.logger { }
 
-object Neo4jTreeRepo : Closeable, DBTreeRepo {
-    private val driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "qwertyui"))
+class Neo4jTreeRepo : Closeable, DBTreeRepo {
+    private var host: String
+    private var username: String
+    private var password: String
+
+    init {
+        val property = Properties()
+
+        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
+        property.load(propertiesFile)
+
+        host = property.getProperty("neo4j.host")
+        username = property.getProperty("neo4j.username")
+        password = property.getProperty("neo4j.password")
+    }
+
+    private val driver = GraphDatabase.driver(host, AuthTokens.basic(username, password))
     private val session = driver.session()
 
-    override fun getTree(treeType: String, treeName: String): SerializableTree? {
+    override fun getTree(treeName: String, treeType: String): SerializableTree? {
         var serializableTree: SerializableTree? = null
 
         session.executeRead { tx ->
@@ -79,7 +97,7 @@ object Neo4jTreeRepo : Closeable, DBTreeRepo {
 
     override fun setTree(serializableTree: SerializableTree) {
 
-        deleteTree(serializableTree.treeType, serializableTree.name)
+        deleteTree(serializableTree.name, serializableTree.treeType)
 
         session.executeWrite { tx ->
             tx.run(
@@ -132,7 +150,7 @@ object Neo4jTreeRepo : Closeable, DBTreeRepo {
         }
     }
 
-    override fun deleteTree(treeType: String, treeName: String) {
+    override fun deleteTree(treeName: String, treeType: String) {
         session.executeWrite { tx ->
             tx.run(
                 "MATCH (tree: Tree {name: \$name, type: \$type})" +
