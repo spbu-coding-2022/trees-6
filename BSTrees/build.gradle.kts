@@ -26,6 +26,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$jetbrainsExposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$jetbrainsExposedVersion")
+    implementation("org.xerial:sqlite-jdbc:3.34.0")
+
+    implementation("io.github.microutils", "kotlin-logging-jvm", "2.0.6")
+    implementation("org.slf4j", "slf4j-simple", "1.7.29")
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5Version")

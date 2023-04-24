@@ -4,12 +4,14 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import serialization.SerializableTree
 import kotlinx.serialization.encodeToString
+import mu.KotlinLogging
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.FileWriter
 import kotlin.io.path.Path
 
+private val logger = KotlinLogging.logger { }
 
 object JsonTreeRepo : DBTreeRepo {
     private fun createDirPaths() {
@@ -17,6 +19,8 @@ object JsonTreeRepo : DBTreeRepo {
         File(Path("JSONTreeRep", "BSTree").toUri()).mkdir()
         File(Path("JSONTreeRep", "RBTree").toUri()).mkdir()
         File(Path("JSONTreeRep", "AvlTree").toUri()).mkdir()
+
+        logger.info { "[JSON] Dir paths was created" }
     }
 
     private fun getPathToFile(typeTree: String, treeName: String): String {
@@ -36,13 +40,16 @@ object JsonTreeRepo : DBTreeRepo {
 
             Json.decodeFromString<SerializableTree>(jsonText)
         } catch (e: FileNotFoundException) {
+            logger.warn { "[JSON] Tree file not found"}
             fileFound = false
             null
         } catch (e: Exception) {
+            logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         } finally {
             if (fileFound) {
                 file.close()
+                logger.info { "[JSON] Got tree - treeName: $treeName, treeType: $treeType" }
             }
         }
     }
@@ -57,11 +64,13 @@ object JsonTreeRepo : DBTreeRepo {
             file = FileWriter(filePath)
             file.write(Json.encodeToString(serializableTree))
         } catch (e: Exception) {
+            logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         } finally {
             file.flush()
             file.close()
         }
+        logger.info { "[JSON] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
     }
 
     override fun deleteTree(treeType: String, treeName: String) {
@@ -72,7 +81,9 @@ object JsonTreeRepo : DBTreeRepo {
         try {
             File(path).delete()
         } catch (e: Exception) {
+            logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         }
+        logger.info { "[JSON] Deleted tree - treeName: $treeName, treeType: $treeType" }
     }
 }

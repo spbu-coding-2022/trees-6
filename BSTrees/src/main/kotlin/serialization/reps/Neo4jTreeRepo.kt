@@ -1,11 +1,14 @@
 package serialization.reps
 
+import mu.KotlinLogging
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
 import org.neo4j.driver.TransactionContext
 import serialization.SerializableNode
 import serialization.SerializableTree
 import java.io.Closeable
+
+private val logger = KotlinLogging.logger { }
 
 object Neo4jTreeRepo : Closeable, DBTreeRepo {
     private val driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "qwertyui"))
@@ -32,6 +35,8 @@ object Neo4jTreeRepo : Closeable, DBTreeRepo {
                 )
             }
         }
+
+        logger.info { "[NEO4J] Got tree - treeName: $treeName, treeType: $treeType" }
 
         return serializableTree
     }
@@ -99,6 +104,8 @@ object Neo4jTreeRepo : Closeable, DBTreeRepo {
                 )
             }
         }
+
+        logger.info { "[NEO4J] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
     }
 
     private fun setNeo4jNodes(tx: TransactionContext, node: SerializableNode) {
@@ -137,10 +144,14 @@ object Neo4jTreeRepo : Closeable, DBTreeRepo {
                 ) as Map<String, Any>?
             )
         }
+
+        logger.info { "[NEO4J] Deleted tree - treeName: $treeName, treeType: $treeType" }
     }
 
     override fun close() {
         session.close()
         driver.close()
+
+        logger.info { "[NEO4J] The connection to the database is finished" }
     }
 }
