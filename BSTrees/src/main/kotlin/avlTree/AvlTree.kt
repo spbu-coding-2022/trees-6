@@ -1,7 +1,6 @@
 package avlTree
 
 import BTree
-import balancers.AvlBalancer
 
 class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
 
@@ -11,24 +10,24 @@ class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
         add(AvlNode(key, value))
     }
 
-    override fun add(node: AvlNode<K, V>) {
+    private fun add(node: AvlNode<K, V>) {
         val temp = this.root
         if (temp == null) this.root = node
-        else if (temp.getKey() == node.getKey()) this.root?.setValue(node.getValue())
+        else if (temp.key == node.key) this.root?.value = node.value
         else {
 
             val subTree = AvlTree<K, V>()
 
-            if (node.getKey() < temp.getKey()) {
-                subTree.root = temp.getLeftNode()
+            if (node.key < temp.key) {
+                subTree.root = temp.leftNode
                 subTree.add(node)
-                subTree.root?.setParent(this.root)
-                this.root?.setLeftNode(subTree.root)
-            } else if (node.getKey() > temp.getKey()) {
-                subTree.root = temp.getRightNode()
+                subTree.root?.parent = this.root
+                this.root?.leftNode = subTree.root
+            } else if (node.key > temp.key) {
+                subTree.root = temp.rightNode
                 subTree.add(node)
-                subTree.root?.setParent(this.root)
-                this.root?.setRightNode(subTree.root)
+                subTree.root?.parent = this.root 
+                this.root?.rightNode = subTree.root
             }
 
         }
@@ -37,16 +36,16 @@ class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
     }
 
     private fun findMin(node: AvlNode<K, V>): AvlNode<K, V> {
-        val temp = node.getLeftNode()
+        val temp = node.leftNode
         return if (temp != null) findMin(temp) else node
     }
 
     private fun removeMin(node: AvlNode<K, V>): AvlNode<K, V>? {
-        val temp = node.getLeftNode()
-        if (temp == null) return node.getRightNode()
+        val temp = node.leftNode
+        if (temp == null) return node.rightNode
         val tempRemovedMin = removeMin(temp)
-        node.setLeftNode(tempRemovedMin)
-        tempRemovedMin?.setParent(node)
+        node.leftNode = tempRemovedMin
+        tempRemovedMin?.parent = node
         return balancer.balance(node)
     }
 
@@ -58,37 +57,37 @@ class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
 
             val subTree = AvlTree<K, V>()
 
-            if (key < temp.getKey()) {
+            if (key < temp.key) {
 
-                subTree.root = temp.getLeftNode()
+                subTree.root = temp.leftNode
                 subTree.delete(key)
-                subTree.root?.setParent(this.root)
-                this.root?.setLeftNode(subTree.root)
+                subTree.root?.parent = this.root
+                this.root?.leftNode = subTree.root
 
-            } else if (key > temp.getKey()) {
+            } else if (key > temp.key) {
 
-                subTree.root = temp.getRightNode()
+                subTree.root = temp.rightNode
                 subTree.delete(key)
-                subTree.root?.setParent(this.root)
-                this.root?.setRightNode(subTree.root)
+                subTree.root?.parent = this.root
+                this.root?.rightNode = subTree.root
 
             } else {
 
-                val leftNode = this.root?.getLeftNode()
-                val rightNode = this.root?.getRightNode()
+                val leftNode = this.root?.leftNode
+                val rightNode = this.root?.rightNode
 
                 if (rightNode == null) {
-                    leftNode?.setParent(this.root?.getParent())
+                    leftNode?.parent = this.root?.parent
                     this.root = leftNode
                 } else {
                     val tempMin: AvlNode<K, V> = findMin(rightNode)
-                    tempMin.setRightNode(removeMin(rightNode))
-                    tempMin.getRightNode()?.setParent(tempMin)
-                    tempMin.setLeftNode(leftNode)
-                    tempMin.getLeftNode()?.setParent(tempMin)
-                    if (this.root?.getParent()?.getLeftNode() == this.root) this.root?.getParent()?.setLeftNode(tempMin)
-                    else this.root?.getParent()?.setRightNode(tempMin)
-                    tempMin.setParent(this.root?.getParent())
+                    tempMin.rightNode = removeMin(rightNode)
+                    tempMin.rightNode?.parent = tempMin
+                    tempMin.leftNode = leftNode
+                    tempMin.leftNode?.parent = tempMin
+                    if (this.root?.parent?.leftNode == this.root) this.root?.parent?.leftNode = tempMin
+                    else this.root?.parent?.rightNode = tempMin
+                    tempMin.parent = this.root?.parent
                     this.root = balancer.balance(tempMin)
                 }
 

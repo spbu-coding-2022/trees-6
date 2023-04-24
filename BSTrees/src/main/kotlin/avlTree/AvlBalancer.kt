@@ -1,41 +1,41 @@
-package balancers
+package avlTree
 
-import avlTree.AvlNode
+import Balancer
 
 
-class AvlBalancer<K : Comparable<K>, V> : Balancer<K, V, AvlNode<K, V>>() {
+internal class AvlBalancer<K : Comparable<K>, V> : Balancer<K, V, AvlNode<K, V>>() {
 
     private fun balanceFactor(node: AvlNode<K, V>): Int {
-        return (node.getRightNode()?.getHeight() ?: 0) - (node.getLeftNode()?.getHeight() ?: 0)
+        return (node.rightNode?.height ?: 0) - (node.leftNode?.height ?: 0)
     }
 
     private fun avlRightRotate(node: AvlNode<K, V>): AvlNode<K, V> {
         val temp = rightRotate(node)
-        temp.getLeftNode()?.updateHeight()
-        temp.getRightNode()?.updateHeight()
+        temp.leftNode?.updateHeight()
+        temp.rightNode?.updateHeight()
         temp.updateHeight()
         return temp
     }
 
     private fun avlLeftRotate(node: AvlNode<K, V>): AvlNode<K, V> {
         val temp = leftRotate(node)
-        temp.getLeftNode()?.updateHeight()
-        temp.getRightNode()?.updateHeight()
+        temp.leftNode?.updateHeight()
+        temp.rightNode?.updateHeight()
         temp.updateHeight()
         return temp
     }
 
-    override fun balance(node: AvlNode<K, V>): AvlNode<K, V> {
+    internal fun balance(node: AvlNode<K, V>): AvlNode<K, V> {
 
         node.updateHeight()
         val bf = balanceFactor(node)
 
         if (bf == 2) {
 
-            val temp = node.getRightNode()
+            val temp = node.rightNode
             if (temp != null) {
                 if (balanceFactor(temp) < 0) {
-                    node.setRightNode(avlRightRotate(temp))
+                    node.rightNode = avlRightRotate(temp)
                 }
             }
 
@@ -44,10 +44,10 @@ class AvlBalancer<K : Comparable<K>, V> : Balancer<K, V, AvlNode<K, V>>() {
 
         if (bf == -2) {
 
-            val temp = node.getLeftNode()
+            val temp = node.leftNode
             if (temp != null) {
                 if (balanceFactor(temp) > 0) {
-                    node.setLeftNode(avlLeftRotate(temp))
+                    node.leftNode = avlLeftRotate(temp)
                 }
             }
 

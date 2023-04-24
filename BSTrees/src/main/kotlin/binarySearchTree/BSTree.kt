@@ -1,7 +1,6 @@
 package binarySearchTree
 
 import BTree
-import balancers.BSBalancer
 import kotlin.random.Random
 
 class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
@@ -16,32 +15,32 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
 
         val temp = this.root
         return if (temp == null) node
-        else if (temp.getKey() == node.getKey()) {
-            temp.setValue(node.getValue())
+        else if (temp.key == node.key) {
+            temp.value = node.value
             temp
         } else {
             val subTree = BSTree<K, V>()
-            if (node.getKey() < temp.getKey()) {
-                subTree.root = temp.getLeftNode()
-                this.root?.setLeftNode(subTree.addRoot(node))
+            if (node.key < temp.key) {
+                subTree.root = temp.leftNode
+                this.root?.leftNode = subTree.addRoot(node)
                 balancer.bsRightRotate(temp)
             } else {
-                subTree.root = temp.getRightNode()
-                this.root?.setRightNode(subTree.addRoot(node))
+                subTree.root = temp.rightNode
+                this.root?.rightNode = subTree.addRoot(node)
                 balancer.bsLeftRotate(temp)
             }
         }
 
     }
 
-    override fun add(node: BSNode<K, V>) {
+    private fun add(node: BSNode<K, V>) {
 
         val temp = this.root
         if (temp == null) this.root = node
-        else if (temp.getKey() == node.getKey()) this.root?.setValue(node.getValue())
+        else if (temp.key == node.key) this.root?.value = node.value
         else {
 
-            if (Random.nextInt() % (node.getSize() + 1) == 0) this.root = this.addRoot(node)
+            if (Random.nextInt() % (node.size + 1) == 0) this.root = this.addRoot(node)
             /*
             Randomized insertion into the root of the tree allows you
             to artificially balance it with a fairly small height.
@@ -49,16 +48,16 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
             */
             else {
                 val subTree = BSTree<K, V>()
-                if (temp.getKey() > node.getKey()) {
-                    subTree.root = temp.getLeftNode()
+                if (temp.key > node.key) {
+                    subTree.root = temp.leftNode
                     subTree.add(node)
-                    subTree.root?.setParent(this.root)
-                    this.root?.setLeftNode(subTree.root)
+                    subTree.root?.parent = this.root
+                    this.root?.leftNode = subTree.root
                 } else {
-                    subTree.root = temp.getRightNode()
+                    subTree.root = temp.rightNode
                     subTree.add(node)
-                    subTree.root?.setParent(this.root)
-                    this.root?.setRightNode(subTree.root)
+                    subTree.root?.parent = this.root
+                    this.root?.rightNode = subTree.root
                 }
             }
 
@@ -72,14 +71,14 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
         if (left == null) return right
         if (right == null) return left
 
-        return if (Random.nextInt() % (left.getSize() + right.getSize()) < left.getSize()) {
-            left.setRightNode(join(left.getRightNode(), right))
-            left.getRightNode()?.setParent(left)
+        return if (Random.nextInt() % (left.size + right.size) < left.size) {
+            left.rightNode = join(left.rightNode, right)
+            left.rightNode?.parent = left
             left.updateSize()
             left
         } else {
-            right.setLeftNode(join(left, right.getLeftNode()))
-            right.getLeftNode()?.setParent(right)
+            right.leftNode = join(left, right.leftNode)
+            right.leftNode?.parent = right
             right.updateSize()
             right
         }
@@ -92,19 +91,19 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
 
         if (temp != null) {
 
-            if (temp.getKey() == key) this.root = join(temp.getLeftNode(), temp.getRightNode())
-            else if (key < temp.getKey()) {
+            if (temp.key == key) this.root = join(temp.leftNode, temp.rightNode)
+            else if (key < temp.key) {
                 val subTree = BSTree<K, V>()
-                subTree.root = temp.getLeftNode()
+                subTree.root = temp.leftNode
                 subTree.delete(key)
-                subTree.root?.setParent(this.root)
-                this.root?.setLeftNode(subTree.root)
+                subTree.root?.parent = this.root
+                this.root?.leftNode = subTree.root
             } else {
                 val subTree = BSTree<K, V>()
-                subTree.root = temp.getRightNode()
+                subTree.root = temp.rightNode
                 subTree.delete(key)
-                subTree.root?.setParent(this.root)
-                this.root?.setRightNode(subTree.root)
+                subTree.root?.parent = this.root
+                this.root?.rightNode = subTree.root
             }
 
             this.root?.updateSize()

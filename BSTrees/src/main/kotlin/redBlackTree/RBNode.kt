@@ -9,5 +9,5 @@ class RBNode<K : Comparable<K>, V>(key: K, value: V) : Node<K, V, RBNode<K, V>>(
         RED
     }
 
-    var color = Color.BLACK
+    internal var color = Color.BLACK
 }

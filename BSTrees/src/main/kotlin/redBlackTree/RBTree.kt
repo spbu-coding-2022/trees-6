@@ -1,7 +1,6 @@
 package redBlackTree
 
 import BTree
-import balancers.RBBalancer
 import redBlackTree.RBNode.Color
 
 class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
@@ -12,12 +11,12 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         add(RBNode(key, value))
     }
 
-    override fun add(node: RBNode<K, V>) {
+    private fun add(node: RBNode<K, V>) {
 
         // if a node with such a key already exists, then we update Value
-        val nodeWithEqualKey = findNodeByKey(node.getKey())
+        val nodeWithEqualKey = findNodeByKey(node.key)
         if (nodeWithEqualKey != null) {
-            nodeWithEqualKey.setValue(node.getValue())
+            nodeWithEqualKey.value = node.value
             return
         }
 
@@ -28,23 +27,23 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         }
         while (true) {
             root ?: error("adding error")
-            if (root.getKey() > node.getKey()) {
-                val leftNode = root.getLeftNode()
+            if (root.key > node.key) {
+                val leftNode = root.leftNode
                 if (leftNode == null) {
                     node.color = Color.RED
-                    root.setLeftNode(node)
-                    node.setParent(root)
+                    root.leftNode = node
+                    node.parent = root
                     this.root = balancer.balanceAfterAdding(node)
                     break
                 } else {
                     root = leftNode
                 }
             } else {
-                val rightNode = root.getRightNode()
+                val rightNode = root.rightNode
                 if (rightNode == null) {
                     node.color = Color.RED
-                    root.setRightNode(node)
-                    node.setParent(root)
+                    root.rightNode = node
+                    node.parent = root
                     this.root = balancer.balanceAfterAdding(node)
                     break
                 } else {
@@ -57,11 +56,11 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
     private fun findNodeByKey(key: K): RBNode<K, V>? {
         var temp: RBNode<K, V>? = root ?: return null
         while (temp != null) {
-            if (temp.getKey() == key) return temp
-            temp = if (temp.getKey() > key) {
-                temp.getLeftNode()
+            if (temp.key == key) return temp
+            temp = if (temp.key > key) {
+                temp.leftNode
             } else {
-                temp.getRightNode()
+                temp.rightNode
             }
         }
         return null
@@ -74,20 +73,20 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         // This is the node that we will put in place of curNode
         val nodeForSwapping = getNodeForSwapping(curNode)
 
-        var sonIsNillNode = false
+        var sonIsNilNode = false
 
         // This is the node that will take the place of nodeForSwapping
-        // If nodeForSwapping has no sons, then we create an imaginary(NILL) sonNode
+        // If nodeForSwapping has no sons, then we create an imaginary(Nil) sonNode
         val sonNodeForSwapping =
-            if (nodeForSwapping.getLeftNode() == null && nodeForSwapping.getRightNode() == null) {
-                sonIsNillNode = true
-                getNillNode(curNode)
+            if (nodeForSwapping.leftNode == null && nodeForSwapping.rightNode == null) {
+                sonIsNilNode = true
+                getNilNode(curNode)
             } else {
                 getSonNodeForSwapping(nodeForSwapping)
             }
 
         // We put the sonOfNodeForSwapping in the place of nodeForSwapping and establish the necessary links
-        setLinksWithSonOfNodeForSwapping(nodeForSwapping, sonNodeForSwapping, sonIsNillNode)
+        setLinksWithSonOfNodeForSwapping(nodeForSwapping, sonNodeForSwapping, sonIsNilNode)
 
         val colorOfNodeForSwapping = nodeForSwapping.color
 
@@ -102,32 +101,32 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
             sonNodeForSwapping?.let { balancer.balanceAfterDeletion(this, sonNodeForSwapping) }
         }
 
-        // If we used an imaginary(NILL) node, we have to remove unnecessary links
-        if (sonIsNillNode) {
-            if (sonNodeForSwapping?.getParent()?.getLeftNode() == sonNodeForSwapping) {
-                sonNodeForSwapping?.getParent()?.setLeftNode(null)
+        // If we used an imaginary(Nil) node, we have to remove unnecessary links
+        if (sonIsNilNode) {
+            if (sonNodeForSwapping?.parent?.leftNode == sonNodeForSwapping) {
+                sonNodeForSwapping?.parent?.leftNode = null
             } else {
-                sonNodeForSwapping?.getParent()?.setRightNode(null)
+                sonNodeForSwapping?.parent?.rightNode = null
             }
         }
     }
 
     private fun setLinksWithNodeForSwapping(curNode: RBNode<K, V>, nodeForSwapping: RBNode<K, V>) {
-        nodeForSwapping.setLeftNode(curNode.getLeftNode())
-        nodeForSwapping.getLeftNode()?.setParent(nodeForSwapping)
-        nodeForSwapping.setRightNode(curNode.getRightNode())
-        nodeForSwapping.getRightNode()?.setParent(nodeForSwapping)
+        nodeForSwapping.leftNode = curNode.leftNode
+        nodeForSwapping.leftNode?.parent = nodeForSwapping
+        nodeForSwapping.rightNode = curNode.rightNode
+        nodeForSwapping.rightNode?.parent = nodeForSwapping
 
-        val parentCurNode = curNode.getParent()
+        val parentCurNode = curNode.parent
         if (parentCurNode == null) {
-            nodeForSwapping.setParent(null)
+            nodeForSwapping.parent = null
             this.root = nodeForSwapping
         } else {
-            nodeForSwapping.setParent(parentCurNode)
-            if (curNode == parentCurNode.getLeftNode()) {
-                parentCurNode.setLeftNode(nodeForSwapping)
+            nodeForSwapping.parent = parentCurNode
+            if (curNode == parentCurNode.leftNode) {
+                parentCurNode.leftNode = nodeForSwapping
             } else {
-                parentCurNode.setRightNode(nodeForSwapping)
+                parentCurNode.rightNode = nodeForSwapping
             }
         }
     }
@@ -135,55 +134,55 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
     private fun setLinksWithSonOfNodeForSwapping(
         nodeForSwapping: RBNode<K, V>,
         sonOfNodeForSwapping: RBNode<K, V>?,
-        sonIsNillNode: Boolean
+        sonIsNilNode: Boolean
     ) {
-        sonOfNodeForSwapping?.setParent(nodeForSwapping.getParent())
+        sonOfNodeForSwapping?.parent = nodeForSwapping.parent
 
-        val parentNodeForSwapping = nodeForSwapping.getParent()
+        val parentNodeForSwapping = nodeForSwapping.parent
         if (parentNodeForSwapping == null) {
-            sonOfNodeForSwapping?.setParent(null)
-            this.root = if (!sonIsNillNode) sonOfNodeForSwapping else null
+            sonOfNodeForSwapping?.parent = null
+            this.root = if (!sonIsNilNode) sonOfNodeForSwapping else null
         } else {
-            if (nodeForSwapping == parentNodeForSwapping.getLeftNode()) {
-                parentNodeForSwapping.setLeftNode(sonOfNodeForSwapping)
+            if (nodeForSwapping == parentNodeForSwapping.leftNode) {
+                parentNodeForSwapping.leftNode = sonOfNodeForSwapping
             } else {
-                parentNodeForSwapping.setRightNode(sonOfNodeForSwapping)
+                parentNodeForSwapping.rightNode = sonOfNodeForSwapping
             }
         }
     }
 
-    // nodeForSwapping is the node with the next largest key or the node itself if it has a NILL son
+    // nodeForSwapping is the node with the next largest key or the node itself if it has a Nil son
     private fun <K : Comparable<K>, V> getNodeForSwapping(curNode: RBNode<K, V>): RBNode<K, V> {
-        return if (curNode.getLeftNode() == null || curNode.getRightNode() == null) {
+        return if (curNode.leftNode == null || curNode.rightNode == null) {
             curNode
         } else {
             // If we got here, then curNode has both a left and a right son
-            val temp = curNode.getRightNode() ?: throw Exception("An attempt to take a non-existent son")
+            val temp = curNode.rightNode ?: throw Exception("An attempt to take a non-existent son")
             nodeWithMinKey(temp)
         }
     }
 
     private fun <K : Comparable<K>, V> getSonNodeForSwapping(nodeForSwapping: RBNode<K, V>): RBNode<K, V>? {
-        return if (nodeForSwapping.getLeftNode() != null) {
-            nodeForSwapping.getLeftNode()
+        return if (nodeForSwapping.leftNode != null) {
+            nodeForSwapping.leftNode
         } else {
-            nodeForSwapping.getRightNode()
+            nodeForSwapping.rightNode
         }
     }
 
-    // We get an imaginary(NILL) node filled with some unnecessary data
-    private fun <K : Comparable<K>, V> getNillNode(nodeExample: RBNode<K, V>): RBNode<K, V> {
-        val nillSonNodeOfSwapping = RBNode(nodeExample.getKey(), nodeExample.getValue())
-        nillSonNodeOfSwapping.color = Color.BLACK
+    // We get an imaginary(Nil) node filled with some unnecessary data
+    private fun <K : Comparable<K>, V> getNilNode(nodeExample: RBNode<K, V>): RBNode<K, V> {
+        val nilSonNodeOfSwapping = RBNode(nodeExample.key, nodeExample.value)
+        nilSonNodeOfSwapping.color = Color.BLACK
 
-        return nillSonNodeOfSwapping
+        return nilSonNodeOfSwapping
     }
 
     // We are looking for a node with the minimum key available from this node
     private fun <K : Comparable<K>, V> nodeWithMinKey(node: RBNode<K, V>): RBNode<K, V> {
         var curNode = node
-        while (curNode.getLeftNode() != null) {
-            curNode = curNode.getLeftNode() ?: throw Exception("An attempt to take a non-existent son")
+        while (curNode.leftNode != null) {
+            curNode = curNode.leftNode ?: throw Exception("An attempt to take a non-existent son")
         }
         return curNode
     }

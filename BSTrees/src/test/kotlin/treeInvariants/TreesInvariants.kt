@@ -10,29 +10,29 @@ import redBlackTree.RBNode.Color
 class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
 
     fun checkRBTreeInvariants(root: RBNode<K, V>?): Boolean {
-        return root == null || root.getParent() == null && checkNodeInvariants(root as NODE_TYPE) && root.color == Color.BLACK &&
+        return root == null || root.parent == null && checkNodeInvariants(root as NODE_TYPE) && root.color == Color.BLACK &&
                 checkRBNodeBlackHeightInvariant(root, 0, getSomeBlackHeight(root)) &&
                 checkRBNodeBlackParentForRedInvariant(root)
     }
 
     private fun checkRBNodeBlackParentForRedInvariant(node: RBNode<K, V>): Boolean {
-        return (node.color == Color.BLACK || node.getParent()!!.color == Color.BLACK) &&
-                (node.getLeftNode() == null || checkRBNodeBlackParentForRedInvariant(node.getLeftNode()!!)) &&
-                (node.getRightNode() == null || checkRBNodeBlackParentForRedInvariant(node.getRightNode()!!))
+        return (node.color == Color.BLACK || node.parent!!.color == Color.BLACK) &&
+                (node.leftNode == null || checkRBNodeBlackParentForRedInvariant(node.leftNode!!)) &&
+                (node.rightNode == null || checkRBNodeBlackParentForRedInvariant(node.rightNode!!))
     }
 
     private fun checkRBNodeBlackHeightInvariant(node: RBNode<K, V>, curHeight: Int, rightHeight: Int): Boolean {
         val newCurHeight = curHeight + if (node.color == Color.BLACK) 1 else 0
-        if (node.getLeftNode() == null && node.getRightNode() == null) {
+        if (node.leftNode == null && node.rightNode == null) {
             return newCurHeight == rightHeight
         }
-        return ((node.getLeftNode() == null || checkRBNodeBlackHeightInvariant(
-            node.getLeftNode()!!,
+        return ((node.leftNode == null || checkRBNodeBlackHeightInvariant(
+            node.leftNode!!,
             newCurHeight,
             rightHeight
         )) &&
-                (node.getRightNode() == null || checkRBNodeBlackHeightInvariant(
-            node.getRightNode()!!,
+                (node.rightNode == null || checkRBNodeBlackHeightInvariant(
+            node.rightNode!!,
             newCurHeight,
             rightHeight
         )))
@@ -45,31 +45,31 @@ class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
             if (curNode.color == Color.BLACK) {
                 ++blackHeight
             }
-            curNode = curNode.getLeftNode()
+            curNode = curNode.leftNode
         }
         return blackHeight
     }
 
     private fun checkNodeInvariants(node: NODE_TYPE): Boolean {
-        return (node.getLeftNode() == null || node.getLeftNode()!!.getParent() == node &&
-                node.getLeftNode()!!.getKey() < node.getKey() && checkNodeInvariants(node.getLeftNode()!!)) &&
-                (node.getRightNode() == null || node.getRightNode()!!.getParent() == node &&
-                        node.getRightNode()!!.getKey() > node.getKey() && checkNodeInvariants(node.getRightNode()!!))
+        return (node.leftNode == null || node.leftNode!!.parent == node &&
+                node.leftNode!!.key < node.key && checkNodeInvariants(node.leftNode!!)) &&
+                (node.rightNode == null || node.rightNode!!.parent == node &&
+                        node.rightNode!!.key > node.key && checkNodeInvariants(node.rightNode!!))
     }
 
     fun checkAvlTreeInvariants(root: AvlNode<K, V>?): Boolean = root == null || checkAvlHeightInvariants(root)
             && checkNodeInvariants(root as NODE_TYPE)
 
     private fun checkAvlHeightInvariants(node: AvlNode<K, V>): Boolean =
-        ((node.getRightNode()?.getHeight() ?: 0) - (node.getLeftNode()?.getHeight() ?: 0) in -1..1)
-                && (node.getLeftNode() == null || checkAvlHeightInvariants(node.getLeftNode()!!))
-                && (node.getRightNode() == null || checkAvlHeightInvariants(node.getRightNode()!!))
+        ((node.rightNode?.height ?: 0) - (node.leftNode?.height ?: 0) in -1..1)
+                && (node.leftNode == null || checkAvlHeightInvariants(node.leftNode!!))
+                && (node.rightNode == null || checkAvlHeightInvariants(node.rightNode!!))
 
 
     private fun checkBSSizeInvariant(node: BSNode<K, V>?): Boolean {
         return node == null ||
-                node.getSize() == (node.getLeftNode()?.getSize() ?: 0) + (node.getRightNode()?.getSize() ?: 0) + 1
-                && checkBSSizeInvariant(node.getLeftNode()) && checkBSSizeInvariant(node.getRightNode())
+                node.size == (node.leftNode?.size ?: 0) + (node.rightNode?.size ?: 0) + 1
+                && checkBSSizeInvariant(node.leftNode) && checkBSSizeInvariant(node.rightNode)
     }
 
     fun checkBsTreeInvariants(root: BSNode<K, V>?): Boolean {
