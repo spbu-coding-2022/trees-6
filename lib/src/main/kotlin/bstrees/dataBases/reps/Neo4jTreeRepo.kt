@@ -1,10 +1,10 @@
-package serialization.reps
+package bstrees.dataBases.reps
 
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
 import org.neo4j.driver.TransactionContext
-import serialization.SerializableNode
-import serialization.SerializableTree
+import bstrees.dataBases.SerializableNode
+import bstrees.dataBases.SerializableTree
 import java.io.Closeable
 
 object Neo4jTreeRepo : Closeable, DBTreeRepo {
