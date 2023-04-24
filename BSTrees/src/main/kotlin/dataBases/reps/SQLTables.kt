@@ -1,4 +1,4 @@
-package serialization.reps
+package dataBases.reps
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass

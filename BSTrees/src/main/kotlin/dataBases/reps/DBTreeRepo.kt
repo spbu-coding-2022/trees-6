@@ -1,6 +1,6 @@
-package serialization.reps
+package dataBases.reps
 
-import serialization.SerializableTree
+import dataBases.SerializableTree
 
 interface DBTreeRepo {
     fun getTree(typeTree: String, treeName: String): SerializableTree?

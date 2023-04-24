@@ -1,3 +1,5 @@
+package trees
+
 /**
  * An abstract class representing a binary search tree node.
  * It's constructed with key and value and contains parent, left and right sons

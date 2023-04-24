@@ -1,6 +1,6 @@
-package avlTree
+package trees.avl
 
-import Balancer
+import trees.Balancer
 
 /**
  * A class representing an AVL binary search tree balancer.

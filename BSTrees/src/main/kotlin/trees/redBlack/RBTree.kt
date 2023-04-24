@@ -1,16 +1,38 @@
-package redBlackTree
+package trees.redBlack
 
-import BTree
-import redBlackTree.RBNode.Color
+import trees.BTree
+import trees.redBlack.RBNode.Color
 
+/**
+ * A class representing a red black binary search tree.
+ * It maintains balance through a strict hierarchy of red and black vertices,
+ * as well as some rules that they follow
+ *
+ * @generic <K> the type of key stored in the tree. It must be comparable
+ * @generic <V> the type of value stored in the tree
+ */
 class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
-
+    /**
+     * A balancer class providing balancing the tree when adding or deleting nodes
+     */
     private val balancer = RBBalancer<K, V>()
 
+    /**
+     * Insert a node to the tree.
+     * It is actually a wrapper for the add function.
+     *
+     * @param value the value to add
+     * @param key the key under which the value is stored
+     */
     override fun insert(key: K, value: V) {
         add(RBNode(key, value))
     }
 
+    /**
+     * Add a node to the root of the tree.
+     *
+     * @param node the node to add
+     */
     private fun add(node: RBNode<K, V>) {
 
         // if a node with such a key already exists, then we update Value
@@ -53,6 +75,11 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         }
     }
 
+    /**
+     * Looking for a node in the tree by its key.
+     *
+     * @param key the key by which the search is performed
+     */
     private fun findNodeByKey(key: K): RBNode<K, V>? {
         var temp: RBNode<K, V>? = root ?: return null
         while (temp != null) {
@@ -66,6 +93,11 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         return null
     }
 
+    /**
+     * Delete a value from the tree.
+     *
+     * @param key the key under which the value is stored
+     */
     override fun delete(key: K) {
         // This is the node that needs to be deleted
         val curNode = findNodeByKey(key) ?: return
@@ -82,7 +114,7 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
                 sonIsNilNode = true
                 getNilNode(curNode)
             } else {
-                getSonNodeForSwapping(nodeForSwapping)
+                if (nodeForSwapping.leftNode != null) nodeForSwapping.leftNode else nodeForSwapping.rightNode
             }
 
         // We put the sonOfNodeForSwapping in the place of nodeForSwapping and establish the necessary links
@@ -111,6 +143,9 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         }
     }
 
+    /**
+     * TODO ??
+     */
     private fun setLinksWithNodeForSwapping(curNode: RBNode<K, V>, nodeForSwapping: RBNode<K, V>) {
         nodeForSwapping.leftNode = curNode.leftNode
         nodeForSwapping.leftNode?.parent = nodeForSwapping
@@ -131,6 +166,9 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         }
     }
 
+    /**
+     * TODO ??
+     */
     private fun setLinksWithSonOfNodeForSwapping(
         nodeForSwapping: RBNode<K, V>,
         sonOfNodeForSwapping: RBNode<K, V>?,
@@ -151,26 +189,28 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         }
     }
 
-    // nodeForSwapping is the node with the next largest key or the node itself if it has a Nil son
+    /**
+     * Find the node with the next largest key or the node itself if it has a Nil son
+     * It is an auxiliary function for the delete function
+     *
+     * @param curNode the node that we are swapping
+     */
     private fun <K : Comparable<K>, V> getNodeForSwapping(curNode: RBNode<K, V>): RBNode<K, V> {
         return if (curNode.leftNode == null || curNode.rightNode == null) {
             curNode
         } else {
             // If we got here, then curNode has both a left and a right son
-            val temp = curNode.rightNode ?: throw Exception("An attempt to take a non-existent son")
+            val temp = requireNotNull(curNode.rightNode) { "An attempt to take a non-existent son" }
             nodeWithMinKey(temp)
         }
     }
 
-    private fun <K : Comparable<K>, V> getSonNodeForSwapping(nodeForSwapping: RBNode<K, V>): RBNode<K, V>? {
-        return if (nodeForSwapping.leftNode != null) {
-            nodeForSwapping.leftNode
-        } else {
-            nodeForSwapping.rightNode
-        }
-    }
-
-    // We get an imaginary(Nil) node filled with some unnecessary data
+    /**
+     * Create an imaginary(Nil) node
+     * It's filled with some unnecessary data
+     *
+     * @param nodeExample some kind of pattern for Nil son
+     */
     private fun <K : Comparable<K>, V> getNilNode(nodeExample: RBNode<K, V>): RBNode<K, V> {
         val nilSonNodeOfSwapping = RBNode(nodeExample.key, nodeExample.value)
         nilSonNodeOfSwapping.color = Color.BLACK
@@ -178,11 +218,16 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
         return nilSonNodeOfSwapping
     }
 
-    // We are looking for a node with the minimum key available from this node
+    /**
+     * Find a node with a minimum key in a tree
+     * It is an auxiliary function for the delete function
+     *
+     * @param node the root of the tree where to find the minimum node
+     */
     private fun <K : Comparable<K>, V> nodeWithMinKey(node: RBNode<K, V>): RBNode<K, V> {
         var curNode = node
         while (curNode.leftNode != null) {
-            curNode = curNode.leftNode ?: throw Exception("An attempt to take a non-existent son")
+            curNode = requireNotNull(curNode.leftNode) { "An attempt to take a non-existent son" }
         }
         return curNode
     }

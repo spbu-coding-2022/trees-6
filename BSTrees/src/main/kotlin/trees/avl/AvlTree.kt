@@ -1,6 +1,6 @@
-package avlTree
+package trees.avl
 
-import BTree
+import trees.BTree
 
 /**
  * A class representing an AVL binary search tree.
@@ -12,7 +12,7 @@ import BTree
 class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
 
     /**
-     * A balancer class providing balancing of the curr node of the tree
+     * A balancer class providing balancing of the current node of the tree
      */
     private val balancer = AvlBalancer<K, V>()
 
@@ -93,6 +93,11 @@ class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
         return balancer.balance(node)
     }
 
+    /**
+     * Delete a value from the tree.
+     *
+     * @param key the key under which the value is stored
+     */
     override fun delete(key: K) {
         //temp is needed to avoid possibility of changing the root
         val temp = this.root

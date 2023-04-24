@@ -1,9 +1,9 @@
 package balancers
 
-import Balancer
-import Node
-import binarySearchTree.BSBalancer
-import binarySearchTree.BSNode
+import trees.Balancer
+import trees.Node
+import trees.binarySearch.BSBalancer
+import trees.binarySearch.BSNode
 
 import org.junit.jupiter.api.Test
 import utils.BSTreeUtil

@@ -1,10 +1,24 @@
-package redBlackTree
+package trees.redBlack
 
-import Balancer
-import redBlackTree.RBNode.Color
+import trees.Balancer
+import trees.redBlack.RBNode.Color
 
+/**
+ * A class representing a red black binary search tree balancer.
+ * Provides all the necessary functions for balancing the tree
+ *
+ * @generic <K> the type of key stored in the tree. It must be comparable
+ * @generic <V> the type of value stored in the tree
+ */
 open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
 
+    /**
+     * Balance the tree after deletion a red node
+     * TODO write more about the situations in which it is used
+     *
+     * @param tree TODO
+     * @param node TODO
+     */
     internal fun balanceAfterDeletion(tree: RBTree<K, V>, node: RBNode<K, V>) {
         var curNode = node
         var nodeParent = node.parent
@@ -139,7 +153,12 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
         curNode.color = Color.BLACK
     }
 
-
+    /**
+     * Balance the tree after adding a red node
+     * TODO write more about the situations in which it is used
+     *
+     * @param node TODO
+     */
     internal fun balanceAfterAdding(node: RBNode<K, V>): RBNode<K, V> {
         var nodeParent = node.parent
         var curNode = node

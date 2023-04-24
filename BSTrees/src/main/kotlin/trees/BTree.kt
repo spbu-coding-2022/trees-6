@@ -1,3 +1,5 @@
+package trees
+
 /**
  * An abstract class representing a binary search tree.
  *
