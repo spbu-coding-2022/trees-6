@@ -18,6 +18,8 @@ import java.util.*
 import utils.PathsUtil.PROPERTIES_FILE_PATH
 
 
+private val logger = KotlinLogging.logger { }
+
 object TreesTable : IntIdTable() {
     val treeName = varchar("nameTree", 20)
     val treeType = varchar("typeTree", 20)
@@ -51,8 +53,6 @@ class NodeEntity(id: EntityID<Int>) : IntEntity(id) {
     var rightNode by NodeEntity optionalReferencedOn NodesTable.rightNode
     var tree by TreeEntity referencedOn NodesTable.tree
 }
-
-private val logger = KotlinLogging.logger { }
 
 class SQLTreeRepo : DBTreeRepo {
     private var dbName: String

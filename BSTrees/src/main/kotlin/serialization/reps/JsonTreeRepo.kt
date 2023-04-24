@@ -9,6 +9,7 @@ import java.io.*
 import java.util.*
 import kotlin.io.path.Path
 import utils.PathsUtil.PROPERTIES_FILE_PATH
+import java.nio.file.FileAlreadyExistsException
 
 private val logger = KotlinLogging.logger { }
 
@@ -22,13 +23,16 @@ class JsonTreeRepo : DBTreeRepo {
         property.load(propertiesFile)
 
         dir = property.getProperty("json.dir")
+        makeDir(dir)
 
+        logger.info { "[JSON] Dir paths was created" }
+    }
+
+    private fun makeDir(dir: String){
         File(dir).mkdir()
         File(Path(dir, "BSTree").toUri()).mkdir()
         File(Path(dir, "RBTree").toUri()).mkdir()
         File(Path(dir, "AvlTree").toUri()).mkdir()
-
-        logger.info { "[JSON] Dir paths was created" }
     }
 
     private fun getPathToFile(treeName: String, typeTree: String): String {
@@ -63,16 +67,26 @@ class JsonTreeRepo : DBTreeRepo {
     override fun setTree(serializableTree: SerializableTree) {
         val filePath = getPathToFile(serializableTree.name, serializableTree.treeType)
         lateinit var file: FileWriter
+        var fileAlreadyExists = false
 
         try {
+            if(File(filePath).exists()){
+                fileAlreadyExists = true
+                throw FileAlreadyExistsException("")
+            }
             file = FileWriter(filePath)
             file.write(Json.encodeToString(serializableTree))
-        } catch (e: Exception) {
+        }catch (e: FileAlreadyExistsException){
+            logger.warn { "[JSON] A tree with that name already exists" }
+        }
+        catch (e: Exception) {
             logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         } finally {
-            file.flush()
-            file.close()
+            if(!fileAlreadyExists) {
+                file.flush()
+                file.close()
+            }
         }
         logger.info { "[JSON] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
     }
