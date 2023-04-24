@@ -13,7 +13,7 @@ object BSTreeUtil {
         if (root1 == null || root2 == null) {
             return root1 == null && root2 == null
         }
-        return root1.getKey() == root2.getKey() && root1.getValue() == root1.getValue() &&
+        return root1.getKey() == root2.getKey() && root1.getValue() == root2.getValue() &&
                 checkNodeEquals(root1.getLeftNode(), root2.getLeftNode()) &&
                 checkNodeEquals(root1.getRightNode(), root2.getRightNode())
     }
