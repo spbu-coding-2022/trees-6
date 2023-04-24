@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class SerializableTree(
     val name: String,
-    val typeOfTree: String,
+    val treeType: String,
     val root: SerializableNode?
 )
 

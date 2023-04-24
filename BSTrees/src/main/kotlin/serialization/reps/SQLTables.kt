@@ -8,16 +8,16 @@ import org.jetbrains.exposed.sql.ReferenceOption
 
 
 object TreesTable : IntIdTable() {
-    val nameTree = varchar("nameTree", 20).uniqueIndex().default("")
-    val typeTree = varchar("typeTree", 20).default("")
+    val treeName = varchar("nameTree", 20).uniqueIndex().default("")
+    val treeType = varchar("typeTree", 20).default("")
     val root = reference("root", NodesTable).nullable()
 }
 
 class TreeEntity(id: EntityID<Int>): IntEntity(id) {
     companion object : IntEntityClass<TreeEntity>(TreesTable)
 
-    var nameTree by TreesTable.nameTree
-    var typeTree by TreesTable.typeTree
+    var treeName by TreesTable.treeName
+    var treeType by TreesTable.treeType
     var root by NodeEntity optionalReferencedOn TreesTable.root
 }
 

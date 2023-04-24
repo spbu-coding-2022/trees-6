@@ -23,10 +23,10 @@ object JsonTreeRepo : DBTreeRepo {
         return Path("JSONTreeRep", typeTree, "${treeName}.json").toString()
     }
 
-    override fun getTree(typeTree: String, treeName: String): SerializableTree? {
+    override fun getTree(treeType: String, treeName: String): SerializableTree? {
         createDirPaths()
 
-        val filePath = getPathToFile(typeTree, treeName)
+        val filePath = getPathToFile(treeType, treeName)
         lateinit var file: FileReader
         var fileFound = true
 
@@ -50,7 +50,7 @@ object JsonTreeRepo : DBTreeRepo {
     override fun setTree(serializableTree: SerializableTree) {
         createDirPaths()
 
-        val filePath = getPathToFile(serializableTree.typeOfTree, serializableTree.name)
+        val filePath = getPathToFile(serializableTree.treeType, serializableTree.name)
         lateinit var file: FileWriter
 
         try {
@@ -64,10 +64,10 @@ object JsonTreeRepo : DBTreeRepo {
         }
     }
 
-    override fun deleteTree(typeTree: String, treeName: String) {
+    override fun deleteTree(treeType: String, treeName: String) {
         createDirPaths()
 
-        val path = getPathToFile(typeTree, treeName)
+        val path = getPathToFile(treeType, treeName)
 
         try {
             File(path).delete()

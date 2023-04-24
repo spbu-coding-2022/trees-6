@@ -10,7 +10,6 @@ import java.io.File
 
 object SQLTreeRepo: DBTreeRepo{
 
-
     private fun connectDB(dbName: String) {
         Database.connect("jdbc:sqlite:${File(dbName)}", "org.sqlite.JDBC")
     }
@@ -22,10 +21,10 @@ object SQLTreeRepo: DBTreeRepo{
         }
     }
 
-    override fun deleteTree(typeTree: String, treeName: String) {
+    override fun deleteTree(treeType: String, treeName: String) {
         transaction {
             val treeEntity =
-                TreeEntity.find { (TreesTable.nameTree eq treeName) and (TreesTable.typeTree eq typeTree) }
+                TreeEntity.find { (TreesTable.treeName eq treeName) and (TreesTable.treeType eq treeType) }
                     .firstOrNull()
             treeEntity?.let{ NodeEntity.find(NodesTable.tree eq treeEntity.id).forEach { it.delete() } }
 
@@ -38,12 +37,12 @@ object SQLTreeRepo: DBTreeRepo{
         connectDB("SQLTreeDB")
         createTables()
 
-        deleteTree(serializableTree.typeOfTree, serializableTree.name)
+        deleteTree(serializableTree.treeType, serializableTree.name)
 
         transaction {
             val newTree = TreeEntity.new {
-                nameTree=serializableTree.name
-                typeTree=serializableTree.typeOfTree
+                treeName=serializableTree.name
+                treeType=serializableTree.treeType
             }
 
             newTree.root = serializableTree.root?.toNodeEntity(newTree)
@@ -61,16 +60,16 @@ object SQLTreeRepo: DBTreeRepo{
         }
     }
 
-    override fun getTree(typeTree: String, treeName: String): SerializableTree? {
+    override fun getTree(treeType: String, treeName: String): SerializableTree? {
         //TODO: Create a config file in which dbName will be written
         connectDB("SQLTreeDB")
         createTables()
 
-        val treeEntity = TreeEntity.find { (TreesTable.nameTree eq treeName) and (TreesTable.typeTree eq typeTree) }.firstOrNull() ?: return null
+        val treeEntity = TreeEntity.find { (TreesTable.treeName eq treeName) and (TreesTable.treeType eq treeType) }.firstOrNull() ?: return null
 
         return SerializableTree(
             treeName,
-            treeEntity.typeTree,
+            treeEntity.treeType,
             treeEntity.root?.toSerializableEntity(treeEntity)
         )
     }
