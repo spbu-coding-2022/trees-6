@@ -1,7 +1,7 @@
 package utils
 
-import bstrees.trees.binarySearch.BSNode
-import bstrees.trees.binarySearch.BSTree
+import bstrees.model.trees.binarySearch.BSNode
+import bstrees.model.trees.binarySearch.BSTree
 
 
 /**

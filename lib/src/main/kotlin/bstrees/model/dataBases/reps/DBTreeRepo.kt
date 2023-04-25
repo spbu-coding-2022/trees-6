@@ -1,6 +1,6 @@
-package bstrees.dataBases.reps
+package bstrees.model.dataBases.reps
 
-import bstrees.dataBases.SerializableTree
+import bstrees.model.dataBases.serialize.types.SerializableTree
 
 interface DBTreeRepo {
     fun getTree(treeName: String, treeType: String): SerializableTree?

@@ -1,7 +1,7 @@
-package bstrees.trees.redBlack
+package bstrees.model.trees.redBlack
 
-import bstrees.trees.BTree
-import bstrees.trees.redBlack.RBNode.Color
+import bstrees.model.trees.BTree
+import bstrees.model.trees.redBlack.RBNode.Color
 
 /**
  * A class representing a red black binary search tree.

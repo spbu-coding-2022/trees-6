@@ -1,15 +1,15 @@
-package bstrees.dataBases.reps
+package bstrees.model.dataBases.reps
 
 import mu.KotlinLogging
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
 import org.neo4j.driver.TransactionContext
-import bstrees.dataBases.SerializableNode
-import bstrees.dataBases.SerializableTree
+import bstrees.model.dataBases.serialize.types.SerializableNode
+import bstrees.model.dataBases.serialize.types.SerializableTree
 import java.io.Closeable
 import java.io.FileInputStream
 import java.util.*
-import bstrees.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
+import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 
 private val logger = KotlinLogging.logger { }
 

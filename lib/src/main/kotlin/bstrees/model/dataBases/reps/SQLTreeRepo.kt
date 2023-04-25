@@ -1,7 +1,7 @@
-package bstrees.dataBases.reps
+package bstrees.model.dataBases.reps
 
-import bstrees.dataBases.SerializableNode
-import bstrees.dataBases.SerializableTree
+import bstrees.model.dataBases.serialize.types.SerializableNode
+import bstrees.model.dataBases.serialize.types.SerializableTree
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
-import bstrees.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
+import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 
 
 private val logger = KotlinLogging.logger { }

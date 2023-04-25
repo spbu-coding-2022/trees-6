@@ -1,14 +1,14 @@
-package bstrees.dataBases.reps
+package bstrees.model.dataBases.reps
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import bstrees.dataBases.SerializableTree
+import bstrees.model.dataBases.serialize.types.SerializableTree
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import java.io.*
 import java.util.*
 import kotlin.io.path.Path
-import bstrees.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
+import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 import java.nio.file.FileAlreadyExistsException
 
 private val logger = KotlinLogging.logger { }

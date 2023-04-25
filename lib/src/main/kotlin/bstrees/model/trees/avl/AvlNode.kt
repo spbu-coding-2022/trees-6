@@ -1,6 +1,6 @@
-package bstrees.trees.avl
+package bstrees.model.trees.avl
 
-import bstrees.trees.Node
+import bstrees.model.trees.Node
 import kotlin.math.max
 
 /**

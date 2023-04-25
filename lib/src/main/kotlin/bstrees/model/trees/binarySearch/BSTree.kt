@@ -1,6 +1,6 @@
-package bstrees.trees.binarySearch
+package bstrees.model.trees.binarySearch
 
-import bstrees.trees.BTree
+import bstrees.model.trees.BTree
 import kotlin.random.Random
 
 /**

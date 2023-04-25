@@ -4,8 +4,8 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import treeInvariants.TreesInvariants
-import bstrees.trees.avl.AvlNode
-import bstrees.trees.avl.AvlTree
+import bstrees.model.trees.avl.AvlNode
+import bstrees.model.trees.avl.AvlTree
 import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

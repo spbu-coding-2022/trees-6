@@ -1,4 +1,4 @@
-package bstrees.trees
+package bstrees.model.trees
 
 /**
  * An abstract class representing a binary search tree.

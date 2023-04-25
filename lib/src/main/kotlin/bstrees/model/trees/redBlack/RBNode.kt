@@ -1,6 +1,6 @@
-package bstrees.trees.redBlack
+package bstrees.model.trees.redBlack
 
-import bstrees.trees.Node
+import bstrees.model.trees.Node
 
 /**
  * A class representing an AVL binary search tree node.
