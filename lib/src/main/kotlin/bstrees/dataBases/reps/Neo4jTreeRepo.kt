@@ -9,7 +9,7 @@ import bstrees.dataBases.SerializableTree
 import java.io.Closeable
 import java.io.FileInputStream
 import java.util.*
-import utils.PathsUtil.PROPERTIES_FILE_PATH
+import bstrees.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 
 private val logger = KotlinLogging.logger { }
 

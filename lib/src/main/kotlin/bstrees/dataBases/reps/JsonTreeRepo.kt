@@ -8,7 +8,7 @@ import mu.KotlinLogging
 import java.io.*
 import java.util.*
 import kotlin.io.path.Path
-import utils.PathsUtil.PROPERTIES_FILE_PATH
+import bstrees.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 import java.nio.file.FileAlreadyExistsException
 
 private val logger = KotlinLogging.logger { }
