@@ -13,7 +13,7 @@ object BSTreeUtil {
         if (root1 == null || root2 == null) {
             return root1 == null && root2 == null
         }
-        return root1.key == root2.key && root1.value == root1.value &&
+        return root1.key == root2.key && root1.value == root2.value &&
                 checkNodeEquals(root1.leftNode, root2.leftNode) &&
                 checkNodeEquals(root1.rightNode, root2.rightNode)
     }

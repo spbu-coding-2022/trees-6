@@ -4,29 +4,43 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import bstrees.dataBases.SerializableTree
 import kotlinx.serialization.encodeToString
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileReader
-import java.io.FileWriter
+import mu.KotlinLogging
+import java.io.*
+import java.util.*
 import kotlin.io.path.Path
+import bstrees.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
+import java.nio.file.FileAlreadyExistsException
+
+private val logger = KotlinLogging.logger { }
 
 
-object JsonTreeRepo : DBTreeRepo {
-    private fun createDirPaths() {
-        File("JSONTreeRep").mkdir()
-        File(Path("JSONTreeRep", "BSTree").toUri()).mkdir()
-        File(Path("JSONTreeRep", "RBTree").toUri()).mkdir()
-        File(Path("JSONTreeRep", "AvlTree").toUri()).mkdir()
+class JsonTreeRepo : DBTreeRepo {
+    private var dir : String
+
+    init {
+        val property = Properties()
+        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
+        property.load(propertiesFile)
+
+        dir = property.getProperty("json.dir")
+        makeDir(dir)
+
+        logger.info { "[JSON] Dir paths was created" }
     }
 
-    private fun getPathToFile(typeTree: String, treeName: String): String {
-        return Path("JSONTreeRep", typeTree, "${treeName}.json").toString()
+    private fun makeDir(dir: String){
+        File(dir).mkdir()
+        File(Path(dir, "BSTree").toUri()).mkdir()
+        File(Path(dir, "RBTree").toUri()).mkdir()
+        File(Path(dir, "AvlTree").toUri()).mkdir()
     }
 
-    override fun getTree(treeType: String, treeName: String): SerializableTree? {
-        createDirPaths()
+    private fun getPathToFile(treeName: String, typeTree: String): String {
+        return Path(dir, typeTree, "${treeName}.json").toString()
+    }
 
-        val filePath = getPathToFile(treeType, treeName)
+    override fun getTree(treeName: String, treeType: String): SerializableTree? {
+        val filePath = getPathToFile(treeName, treeType)
         lateinit var file: FileReader
         var fileFound = true
 
@@ -36,43 +50,56 @@ object JsonTreeRepo : DBTreeRepo {
 
             Json.decodeFromString<SerializableTree>(jsonText)
         } catch (e: FileNotFoundException) {
+            logger.warn { "[JSON] Tree file not found"}
             fileFound = false
             null
         } catch (e: Exception) {
+            logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         } finally {
             if (fileFound) {
                 file.close()
+                logger.info { "[JSON] Got tree - treeName: $treeName, treeType: $treeType" }
             }
         }
     }
 
     override fun setTree(serializableTree: SerializableTree) {
-        createDirPaths()
-
-        val filePath = getPathToFile(serializableTree.treeType, serializableTree.name)
+        val filePath = getPathToFile(serializableTree.name, serializableTree.treeType)
         lateinit var file: FileWriter
+        var fileAlreadyExists = false
 
         try {
+            if(File(filePath).exists()){
+                fileAlreadyExists = true
+                throw FileAlreadyExistsException("")
+            }
             file = FileWriter(filePath)
             file.write(Json.encodeToString(serializableTree))
-        } catch (e: Exception) {
+        }catch (e: FileAlreadyExistsException){
+            logger.warn { "[JSON] A tree with that name already exists" }
+        }
+        catch (e: Exception) {
+            logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         } finally {
-            file.flush()
-            file.close()
+            if(!fileAlreadyExists) {
+                file.flush()
+                file.close()
+            }
         }
+        logger.info { "[JSON] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
     }
 
-    override fun deleteTree(treeType: String, treeName: String) {
-        createDirPaths()
-
-        val path = getPathToFile(treeType, treeName)
+    override fun deleteTree(treeName: String, treeType: String) {
+        val path = getPathToFile(treeName, treeType)
 
         try {
             File(path).delete()
         } catch (e: Exception) {
+            logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         }
+        logger.info { "[JSON] Deleted tree - treeName: $treeName, treeType: $treeType" }
     }
 }

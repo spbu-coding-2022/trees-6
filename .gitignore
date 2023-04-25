@@ -26,5 +26,6 @@ build/
 *.DS_Store
 .AppleDouble
 
-# Ignore Gradle build output directory
-build
+# db files
+*.json
+*/SQLTrees
