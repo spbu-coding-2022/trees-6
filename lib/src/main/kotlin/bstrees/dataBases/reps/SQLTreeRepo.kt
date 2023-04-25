@@ -14,9 +14,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import java.io.File
-import java.io.FileInputStream
-import java.util.*
-import bstrees.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 
 
 private val logger = KotlinLogging.logger { }
@@ -55,16 +52,9 @@ class NodeEntity(id: EntityID<Int>) : IntEntity(id) {
     var tree by TreeEntity referencedOn NodesTable.tree
 }
 
-class SQLTreeRepo : DBTreeRepo {
-    private var dbName: String
+class SQLTreeRepo(dbName: String) : DBTreeRepo {
 
     init {
-        val property = Properties()
-        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
-        property.load(propertiesFile)
-
-        dbName = property.getProperty("sql.dbName")
-
         connectDB(dbName)
         createTables()
     }
