@@ -6,7 +6,6 @@ import bstrees.model.dataBases.serialize.types.SerializableTree
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import java.io.*
-import java.util.*
 import kotlin.io.path.Path
 import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 import java.nio.file.FileAlreadyExistsException
@@ -14,21 +13,14 @@ import java.nio.file.FileAlreadyExistsException
 private val logger = KotlinLogging.logger { }
 
 
-class JsonTreeRepo : DBTreeRepo {
-    private var dir : String
+class JsonTreeRepo(private val dir: String) : DBTreeRepo {
 
     init {
-        val property = Properties()
-        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
-        property.load(propertiesFile)
-
-        dir = property.getProperty("json.dir")
         makeDir(dir)
-
         logger.info { "[JSON] Dir paths was created" }
     }
 
-    private fun makeDir(dir: String){
+    private fun makeDir(dir: String) {
         File(dir).mkdir()
         File(Path(dir, "BSTree").toUri()).mkdir()
         File(Path(dir, "RBTree").toUri()).mkdir()
@@ -50,7 +42,7 @@ class JsonTreeRepo : DBTreeRepo {
 
             Json.decodeFromString<SerializableTree>(jsonText)
         } catch (e: FileNotFoundException) {
-            logger.warn { "[JSON] Tree file not found"}
+            logger.warn { "[JSON] Tree file not found" }
             fileFound = false
             null
         } catch (e: Exception) {
@@ -70,20 +62,19 @@ class JsonTreeRepo : DBTreeRepo {
         var fileAlreadyExists = false
 
         try {
-            if(File(filePath).exists()){
+            if (File(filePath).exists()) {
                 fileAlreadyExists = true
                 throw FileAlreadyExistsException("")
             }
             file = FileWriter(filePath)
             file.write(Json.encodeToString(serializableTree))
-        }catch (e: FileAlreadyExistsException){
+        } catch (e: FileAlreadyExistsException) {
             logger.warn { "[JSON] A tree with that name already exists" }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         } finally {
-            if(!fileAlreadyExists) {
+            if (!fileAlreadyExists) {
                 file.flush()
                 file.close()
             }

@@ -13,22 +13,7 @@ import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 
 private val logger = KotlinLogging.logger { }
 
-class Neo4jTreeRepo : Closeable, DBTreeRepo {
-    private var host: String
-    private var username: String
-    private var password: String
-
-    init {
-        val property = Properties()
-
-        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
-        property.load(propertiesFile)
-
-        host = property.getProperty("neo4j.host")
-        username = property.getProperty("neo4j.username")
-        password = property.getProperty("neo4j.password")
-    }
-
+class Neo4jTreeRepo(host: String, username: String, password: String) : Closeable, DBTreeRepo {
     private val driver = GraphDatabase.driver(host, AuthTokens.basic(username, password))
     private val session = driver.session()
 

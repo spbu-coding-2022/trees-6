@@ -55,16 +55,9 @@ class NodeEntity(id: EntityID<Int>) : IntEntity(id) {
     var tree by TreeEntity referencedOn NodesTable.tree
 }
 
-class SQLTreeRepo : DBTreeRepo {
-    private var dbName: String
+class SQLTreeRepo(dbName: String) : DBTreeRepo {
 
     init {
-        val property = Properties()
-        val propertiesFile = FileInputStream(PROPERTIES_FILE_PATH)
-        property.load(propertiesFile)
-
-        dbName = property.getProperty("sql.dbName")
-
         connectDB(dbName)
         createTables()
     }
