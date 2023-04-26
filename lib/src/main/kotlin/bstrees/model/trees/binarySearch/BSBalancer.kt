@@ -1,6 +1,6 @@
-package bstrees.trees.binarySearch
+package bstrees.model.trees.binarySearch
 
-import bstrees.trees.Balancer
+import bstrees.model.trees.Balancer
 
 /**
  * A class representing a randomized binary search tree balancer.

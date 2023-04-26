@@ -1,11 +1,11 @@
-package bstrees.dataBases.reps
+package bstrees.model.dataBases.reps
 
 import mu.KotlinLogging
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
 import org.neo4j.driver.TransactionContext
-import bstrees.dataBases.SerializableNode
-import bstrees.dataBases.SerializableTree
+import bstrees.model.dataBases.serialize.types.SerializableNode
+import bstrees.model.dataBases.serialize.types.SerializableTree
 import java.io.Closeable
 
 private val logger = KotlinLogging.logger { }

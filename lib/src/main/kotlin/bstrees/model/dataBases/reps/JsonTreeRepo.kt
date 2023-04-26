@@ -1,8 +1,8 @@
-package bstrees.dataBases.reps
+package bstrees.model.dataBases.reps
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import bstrees.dataBases.SerializableTree
+import bstrees.model.dataBases.serialize.types.SerializableTree
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import java.io.*

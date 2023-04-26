@@ -4,8 +4,8 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import treeInvariants.TreesInvariants
-import bstrees.trees.binarySearch.BSNode
-import bstrees.trees.binarySearch.BSTree
+import bstrees.model.trees.binarySearch.BSNode
+import bstrees.model.trees.binarySearch.BSTree
 import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -1,6 +1,6 @@
-package bstrees.trees.avl
+package bstrees.model.trees.avl
 
-import bstrees.trees.BTree
+import bstrees.model.trees.BTree
 
 /**
  * A class representing an AVL binary search tree.

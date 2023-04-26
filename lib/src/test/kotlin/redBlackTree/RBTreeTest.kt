@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import treeInvariants.TreesInvariants
-import bstrees.trees.redBlack.RBNode
-import bstrees.trees.redBlack.RBTree
+import bstrees.model.trees.redBlack.RBNode
+import bstrees.model.trees.redBlack.RBTree
 import kotlin.random.Random
 
 const val seed = 10

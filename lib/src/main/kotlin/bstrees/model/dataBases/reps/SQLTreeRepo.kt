@@ -1,7 +1,7 @@
-package bstrees.dataBases.reps
+package bstrees.model.dataBases.reps
 
-import bstrees.dataBases.SerializableNode
-import bstrees.dataBases.SerializableTree
+import bstrees.model.dataBases.serialize.types.SerializableNode
+import bstrees.model.dataBases.serialize.types.SerializableTree
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

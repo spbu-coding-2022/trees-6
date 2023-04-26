@@ -1,10 +1,10 @@
 package treeInvariants
 
-import bstrees.trees.Node
-import bstrees.trees.avl.AvlNode
-import bstrees.trees.binarySearch.BSNode
-import bstrees.trees.redBlack.RBNode
-import bstrees.trees.redBlack.RBNode.Color
+import bstrees.model.trees.Node
+import bstrees.model.trees.avl.AvlNode
+import bstrees.model.trees.binarySearch.BSNode
+import bstrees.model.trees.redBlack.RBNode
+import bstrees.model.trees.redBlack.RBNode.Color
 
 @Suppress("UNCHECKED_CAST")
 class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {

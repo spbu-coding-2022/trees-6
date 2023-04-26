@@ -1,6 +1,6 @@
-package bstrees.trees.binarySearch
+package bstrees.model.trees.binarySearch
 
-import bstrees.trees.Node
+import bstrees.model.trees.Node
 
 /**
  * A class representing a randomized binary search tree node.

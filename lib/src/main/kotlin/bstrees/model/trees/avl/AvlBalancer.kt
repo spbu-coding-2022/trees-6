@@ -1,6 +1,6 @@
-package bstrees.trees.avl
+package bstrees.model.trees.avl
 
-import bstrees.trees.Balancer
+import bstrees.model.trees.Balancer
 
 /**
  * A class representing an AVL binary search tree balancer.
