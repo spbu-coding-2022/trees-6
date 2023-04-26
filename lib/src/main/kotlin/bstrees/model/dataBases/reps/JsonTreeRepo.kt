@@ -7,7 +7,6 @@ import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import java.io.*
 import kotlin.io.path.Path
-import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 import java.nio.file.FileAlreadyExistsException
 
 private val logger = KotlinLogging.logger { }

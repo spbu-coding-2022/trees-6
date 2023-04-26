@@ -14,9 +14,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import java.io.File
-import java.io.FileInputStream
-import java.util.*
-import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 
 
 private val logger = KotlinLogging.logger { }

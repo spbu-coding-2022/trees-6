@@ -7,9 +7,6 @@ import org.neo4j.driver.TransactionContext
 import bstrees.model.dataBases.serialize.types.SerializableNode
 import bstrees.model.dataBases.serialize.types.SerializableTree
 import java.io.Closeable
-import java.io.FileInputStream
-import java.util.*
-import bstrees.model.dataBases.utils.PathsUtil.PROPERTIES_FILE_PATH
 
 private val logger = KotlinLogging.logger { }
 
