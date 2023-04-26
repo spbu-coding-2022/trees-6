@@ -9,4 +9,8 @@ class SerializableNode(
     val metadata: String,
     val leftNode: SerializableNode? = null,
     val rightNode: SerializableNode? = null,
+
+    //layout
+    var posX: Double = 0.0,
+    var posY: Double = 0.0,
 )

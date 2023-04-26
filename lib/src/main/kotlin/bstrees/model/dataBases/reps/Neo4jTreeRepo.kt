@@ -48,7 +48,7 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         var rightSonKey = mapOf<String, Any>()
 
         val resultNodeData = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) RETURN node.key AS key, node.value AS value, node.metadata AS metadata "
+            "MATCH (node:Node {key: $nodeKey}) RETURN node.key AS key, node.value AS value, node.metadata AS metadata, node.posX AS posX, node.posY AS posY"
         )
         val resultLeftSonKey = tx.run(
             "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:leftSon]->(leftSon) RETURN leftSon.key as key "
@@ -74,6 +74,8 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
             nodeData["metadata"].toString(),
             getSerializedNodes(tx, leftSonKey["key"].toString()),
             getSerializedNodes(tx, rightSonKey["key"].toString()),
+            nodeData["posX"].toString().toDouble(),
+            nodeData["posY"].toString().toDouble(),
         )
     }
 
@@ -110,7 +112,7 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
 
     private fun setNeo4jNodes(tx: TransactionContext, node: SerializableNode) {
         tx.run(
-            "CREATE (:Node:NewNode {key: ${node.key}, value: ${node.value}, metadata: ${node.metadata} })"
+            "CREATE (:Node:NewNode {key: ${node.key}, value: ${node.value}, metadata: ${node.metadata}, posX: ${node.posX}, posY: ${node.posY} })"
         )
         node.leftNode?.let { leftNode ->
             setNeo4jNodes(tx, leftNode)

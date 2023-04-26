@@ -38,6 +38,8 @@ object NodesTable : IntIdTable() {
     val metadata = varchar("metadata", 255)
     val leftNode = reference("leftNode", NodesTable).nullable()
     val rightNode = reference("rightNode", NodesTable).nullable()
+    val posX = double("posX")
+    val posY = double("posY")
     val tree = reference("tree", TreesTable, onDelete = ReferenceOption.CASCADE)
 }
 
@@ -49,6 +51,8 @@ class NodeEntity(id: EntityID<Int>) : IntEntity(id) {
     var metadata by NodesTable.metadata
     var leftNode by NodeEntity optionalReferencedOn NodesTable.leftNode
     var rightNode by NodeEntity optionalReferencedOn NodesTable.rightNode
+    var posX by NodesTable.posX
+    var posY by NodesTable.posY
     var tree by TreeEntity referencedOn NodesTable.tree
 }
 
@@ -109,6 +113,8 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
             this@toSerializableEntity.metadata,
             this@toSerializableEntity.leftNode?.toSerializableEntity(treeEntity),
             this@toSerializableEntity.rightNode?.toSerializableEntity(treeEntity),
+            this@toSerializableEntity.posX,
+            this@toSerializableEntity.posY,
         )
     }
 
@@ -134,6 +140,8 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
             metadata = this@toNodeEntity.metadata
             leftNode = this@toNodeEntity.leftNode?.toNodeEntity(treeEntity)
             rightNode = this@toNodeEntity.rightNode?.toNodeEntity(treeEntity)
+            posX = this@toNodeEntity.posX
+            posY = this@toNodeEntity.posY
             tree = treeEntity
         }
     }
