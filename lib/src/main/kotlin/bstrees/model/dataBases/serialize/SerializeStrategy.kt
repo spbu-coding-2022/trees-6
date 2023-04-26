@@ -2,9 +2,13 @@ package bstrees.model.dataBases.serialize
 
 import bstrees.model.dataBases.serialize.types.SerializableNode
 import bstrees.model.dataBases.serialize.types.SerializableTree
+import bstrees.model.trees.BTree
 import bstrees.model.trees.Node
 
-abstract class SerializeStrategy<K : Comparable<K>, V, NODE_TYPE: Node<K, V, NODE_TYPE>, TREE_TYPE>(
+abstract class SerializeStrategy<
+        K : Comparable<K>, V, M,
+        NODE_TYPE : Node<K, V, NODE_TYPE>,
+        TREE_TYPE : BTree<K, V, NODE_TYPE>>(
     val serializeKey: (K) -> String,
     val serializeValue: (V) -> String,
     val deserializeKey: (String) -> K,
@@ -19,11 +23,15 @@ abstract class SerializeStrategy<K : Comparable<K>, V, NODE_TYPE: Node<K, V, NOD
 
     abstract fun deserializeTree(tree: SerializableTree): TREE_TYPE
 
-    protected fun linkParents(node: NODE_TYPE){
+    protected fun linkParents(node: NODE_TYPE) {
         node.leftNode?.parent = node
         node.rightNode?.parent = node
         node.leftNode?.let { linkParents(it) }
         node.rightNode?.let { linkParents(it) }
     }
+
+    abstract fun serializeMetadata(meta: M): String
+
+    abstract fun deserializeMetadata(meta: String): M
 
 }

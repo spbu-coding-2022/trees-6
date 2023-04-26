@@ -11,7 +11,7 @@ class BsStrategy<K : Comparable<K>, V>(
     serializeValue: (V) -> String,
     deserializeKey: (String) -> K,
     deserializeValue: (String) -> V
-) : SerializeStrategy<K, V, BSNode<K, V>, BSTree<K, V>>(
+) : SerializeStrategy<K, V, Int, BSNode<K, V>, BSTree<K, V>>(
     serializeKey,
     serializeValue,
     deserializeKey,
@@ -21,7 +21,7 @@ class BsStrategy<K : Comparable<K>, V>(
     override fun serializeNode(node: BSNode<K, V>): SerializableNode = SerializableNode(
         serializeKey(node.key),
         serializeValue(node.value),
-        "S${node.size}",
+        serializeMetadata(node.size),
         node.leftNode?.let { serializeNode(it) },
         node.rightNode?.let { serializeNode(it) }
     )
@@ -36,19 +36,20 @@ class BsStrategy<K : Comparable<K>, V>(
         return bsnode
     }
 
-    override fun deserializeTree(tree: SerializableTree): BSTree<K, V>{
-        if (tree.treeType != "BS") throw Exception("Wrong tree type. Impossible to deserialize")
-        val bstree = BSTree<K, V>()
-        bstree.root = tree.root?.let { deserializeNode(it) }
-        return bstree
-    }
-
     override fun serializeTree(tree: BSTree<K, V>, treeName: String) = SerializableTree(
         name = treeName,
         treeType = "BS",
         root = tree.root?.let { serializeNode(it) }
     )
 
-    private fun deserializeMetadata(meta: String) = meta.substring(1).toInt()
+    override fun deserializeTree(tree: SerializableTree): BSTree<K, V> {
+        if (tree.treeType != "BS") throw Exception("Wrong tree type. Impossible to deserialize")
+        val bstree = BSTree<K, V>()
+        bstree.root = tree.root?.let { deserializeNode(it) }
+        return bstree
+    }
 
+    override fun serializeMetadata(meta: Int) = "S$meta"
+
+    override fun deserializeMetadata(meta: String) = meta.substring(1).toInt()
 }
