@@ -83,7 +83,6 @@ fun HomeScreen(
     approve: State<Boolean>,
     approveChange: (Boolean) -> Unit
 ) {
-    println("I'm at HomeScreen")
     Column(modifier = Modifier) {
         DatabaseSelector(header, onClickChanges)
         if (header.value == "Neo4j") {
