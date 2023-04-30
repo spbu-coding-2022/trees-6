@@ -54,7 +54,10 @@ fun main() {
                     treePresenter = DataBasePresenter.connectNeo4j(host.value, username.value, password.value)
                     homeScreenFlag.value = false
                 }
-                // Similarly for other DB
+                if (header.value == "Json"){
+                    treePresenter = DataBasePresenter.connectJson(host.value)
+                    homeScreenFlag.value = false
+                }
             }
 
             val treeType = remember { mutableStateOf("Choose your tree") }

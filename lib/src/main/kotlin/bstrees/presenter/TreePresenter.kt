@@ -15,4 +15,12 @@ class TreePresenter(private val db: DBTreeRepo) {
         tree = SerializableTree(treeName, treeType, null)
         tree?.let { db.setTree(it) }
     }
+
+    fun addNode() {
+        TODO()
+    }
+
+    fun deleteNode() {
+        TODO()
+    }
 }

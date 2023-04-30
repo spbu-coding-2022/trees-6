@@ -17,25 +17,26 @@ import bstrees.presenter.TreePresenter
 
 @Composable
 fun Tree(root: State<SerializableNode>) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-        Column {
-            Node(root)
-            Row {
 
-                val checkLeftSon = root.value.leftNode
-                checkLeftSon?.let{ leftSon ->
-                    val temp = remember { mutableStateOf(leftSon) }
-                    Tree(temp)
-                }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Node(root)
+        Row {
 
-                val checkRightSon = root.value.rightNode
-                checkRightSon?.let { rightSon ->
-                    val temp = remember { mutableStateOf(rightSon) }
-                    Tree(temp)
-                }
+            val checkLeftSon = root.value.leftNode
+            checkLeftSon?.let { leftSon ->
+                val temp = remember { mutableStateOf(leftSon) }
+                Tree(temp)
             }
+
+            val checkRightSon = root.value.rightNode
+            checkRightSon?.let { rightSon ->
+                val temp = remember { mutableStateOf(rightSon) }
+                Tree(temp)
+            }
+
         }
     }
+
 }
 
 @Composable
@@ -72,17 +73,16 @@ fun Node(node: State<SerializableNode>) {
 }
 
 @Composable
-fun ActionButtons(
-    add: () -> Unit,
-    delete: () -> Unit
-) {
+fun TreeActionButtons(treePresenter: TreePresenter) {
 
-    Button(onClick = add) {
-        Text("Add Node")
-    }
+    Column {
+        Button(onClick = { treePresenter.addNode() }) {
+            Text("Add Node")
+        }
 
-    Button(onClick = delete) {
-        Text(text = "Delete Node")
+        Button(onClick = { treePresenter.deleteNode() }) {
+            Text(text = "Delete Node")
+        }
     }
 
 }
@@ -91,6 +91,7 @@ fun ActionButtons(
 fun TreeView(treePresenter: TreePresenter) {
     val tree = treePresenter.tree ?: return
     Row {
-        tree.root?.let { Tree(mutableStateOf(tree.root)) }
+        TreeActionButtons(treePresenter)
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { tree.root?.let { Tree(mutableStateOf(tree.root)) } }
     }
 }

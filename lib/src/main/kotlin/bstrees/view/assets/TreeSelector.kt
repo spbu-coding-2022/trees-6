@@ -77,6 +77,7 @@ fun TreeActions(
             TreeView(treePresenter)
             //isClickedAdd.value = false
         }
+
         if(isClickedLoad.value){
             treePresenter.loadTree(treeName.value, treeType.value)
             TreeView(treePresenter)

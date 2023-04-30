@@ -50,6 +50,19 @@ fun DatabaseSelector(header: State<String>, onClickChanges: (String) -> Unit) {
 }
 
 @Composable
+fun dataBaseConnectionJson(
+    host: State<String>,
+    hostChange: (String) -> Unit,
+    approve: State<Boolean>,
+    approveChange: (Boolean) -> Unit
+) {
+    Row {
+        OutlinedTextField(value = host.value, onValueChange = hostChange)
+        Checkbox(checked = approve.value, onCheckedChange = approveChange)
+    }
+}
+
+@Composable
 fun dataBaseConnectionNeo4j(
     host: State<String>,
     username: State<String>,
@@ -85,8 +98,8 @@ fun HomeScreen(
 ) {
     Column(modifier = Modifier) {
         DatabaseSelector(header, onClickChanges)
-        if (header.value == "Neo4j") {
-            dataBaseConnectionNeo4j(
+        when (header.value) {
+            "Neo4j" -> dataBaseConnectionNeo4j(
                 host,
                 username,
                 password,
@@ -96,6 +109,14 @@ fun HomeScreen(
                 approve,
                 approveChange
             )
+            "Json" -> dataBaseConnectionJson(
+                host,
+                hostChange,
+                approve,
+                approveChange
+            )
         }
     }
 }
+
+
