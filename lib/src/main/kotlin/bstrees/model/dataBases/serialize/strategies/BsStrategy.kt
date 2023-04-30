@@ -10,18 +10,24 @@ class BsStrategy<K : Comparable<K>, V>(
     serializeKey: (K) -> String,
     serializeValue: (V) -> String,
     deserializeKey: (String) -> K,
-    deserializeValue: (String) -> V
+    deserializeValue: (String) -> V,
+    keyType: String,
+    valueType: String,
 ) : SerializeStrategy<K, V, Int, BSNode<K, V>, BSTree<K, V>>(
     serializeKey,
     serializeValue,
     deserializeKey,
-    deserializeValue
+    deserializeValue,
+    keyType,
+    valueType
 ) {
 
     override fun serializeNode(node: BSNode<K, V>): SerializableNode = SerializableNode(
         serializeKey(node.key),
         serializeValue(node.value),
         serializeMetadata(node.size),
+        0,
+        0,
         node.leftNode?.let { serializeNode(it) },
         node.rightNode?.let { serializeNode(it) }
     )
@@ -39,6 +45,8 @@ class BsStrategy<K : Comparable<K>, V>(
     override fun serializeTree(tree: BSTree<K, V>, treeName: String) = SerializableTree(
         name = treeName,
         treeType = "BS",
+        keyType = keyType,
+        valueType = valueType,
         root = tree.root?.let { serializeNode(it) }
     )
 

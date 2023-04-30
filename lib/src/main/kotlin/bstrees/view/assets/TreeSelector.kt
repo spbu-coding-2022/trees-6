@@ -73,7 +73,8 @@ fun TreeActions(
         }
 
         if(isClickedAdd.value){
-            treePresenter.createTree(treeName.value, treeType.value)
+            //TODO(when a user wants to create a tree, he has to choose the keyType and the valueType)
+            treePresenter.createTree(treeName.value, treeType.value, "", "")
             TreeView(treePresenter)
             //isClickedAdd.value = false
         }

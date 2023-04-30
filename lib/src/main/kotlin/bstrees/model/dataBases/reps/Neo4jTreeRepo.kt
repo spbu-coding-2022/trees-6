@@ -20,7 +20,7 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         session.executeRead { tx ->
             val resultRootKey = tx.run(
                 "MATCH (tree:Tree {name: \$name, type: \$type})" +
-                        "WITH tree MATCH (tree)-[:root]->(root) RETURN root.key AS key",
+                        "WITH tree MATCH (tree)-[:root]->(root) RETURN tree.keyType as keyType, tree.valueType as valueType, root.key AS rootKey",
                 mutableMapOf(
                     "name" to treeName,
                     "type" to treeType,
@@ -31,7 +31,9 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
                 serializableTree = SerializableTree(
                     treeName,
                     treeType,
-                    getSerializedNodes(tx, info["key"].toString())
+                    info["keyType"].toString(),
+                    info["valueType"].toString(),
+                    getSerializedNodes(tx, info["rootKey"].toString())
                 )
             }
         }
@@ -72,10 +74,10 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
             nodeData["key"].toString(),
             nodeData["value"].toString(),
             nodeData["metadata"].toString(),
+            nodeData["posX"].toString().toInt(),
+            nodeData["posY"].toString().toInt(),
             getSerializedNodes(tx, leftSonKey["key"].toString()),
             getSerializedNodes(tx, rightSonKey["key"].toString()),
-            nodeData["posX"].toString().toDouble(),
-            nodeData["posY"].toString().toDouble(),
         )
     }
 
@@ -85,10 +87,12 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
 
         session.executeWrite { tx ->
             tx.run(
-                "CREATE (:Tree {name: \$name, type: \$type})",
+                "CREATE (:Tree {name: \$name, type: \$type, keyType: \$keyType, valueType: \$valueType})",
                 mutableMapOf(
                     "name" to serializableTree.name,
                     "type" to serializableTree.treeType,
+                    "keyType" to serializableTree.keyType,
+                    "valueType" to serializableTree.valueType,
                 ) as Map<String, Any>?
             )
 
@@ -112,7 +116,8 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
 
     private fun setNeo4jNodes(tx: TransactionContext, node: SerializableNode) {
         tx.run(
-            "CREATE (:Node:NewNode {key: ${node.key}, value: ${node.value}, metadata: ${node.metadata}, posX: ${node.posX}, posY: ${node.posY} })"
+            "CREATE (:Node:NewNode {key: ${node.key}, value: ${node.value}, " +
+                    "metadata: ${node.metadata}, posX: ${node.posX}, posY: ${node.posY} })"
         )
         node.leftNode?.let { leftNode ->
             setNeo4jNodes(tx, leftNode)

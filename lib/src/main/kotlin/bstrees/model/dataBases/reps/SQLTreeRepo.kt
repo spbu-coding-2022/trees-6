@@ -21,6 +21,8 @@ private val logger = KotlinLogging.logger { }
 object TreesTable : IntIdTable() {
     val treeName = varchar("nameTree", 20)
     val treeType = varchar("typeTree", 20)
+    val keyType = varchar("keyType", 20)
+    val valueType = varchar("valueType", 20)
     val root = reference("root", NodesTable).nullable()
 }
 
@@ -29,6 +31,8 @@ class TreeEntity(id: EntityID<Int>) : IntEntity(id) {
 
     var treeName by TreesTable.treeName
     var treeType by TreesTable.treeType
+    var keyType by TreesTable.keyType
+    var valueType by TreesTable.valueType
     var root by NodeEntity optionalReferencedOn TreesTable.root
 }
 
@@ -38,8 +42,8 @@ object NodesTable : IntIdTable() {
     val metadata = varchar("metadata", 255)
     val leftNode = reference("leftNode", NodesTable).nullable()
     val rightNode = reference("rightNode", NodesTable).nullable()
-    val posX = double("posX")
-    val posY = double("posY")
+    val posX = integer("posX")
+    val posY = integer("posY")
     val tree = reference("tree", TreesTable, onDelete = ReferenceOption.CASCADE)
 }
 
@@ -96,6 +100,8 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
                 serializableTree = SerializableTree(
                     treeName,
                     tree.treeType,
+                    tree.keyType,
+                    tree.valueType,
                     tree.root?.toSerializableEntity(tree)
                 )
             }
@@ -111,10 +117,10 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
             this@toSerializableEntity.key,
             this@toSerializableEntity.value,
             this@toSerializableEntity.metadata,
-            this@toSerializableEntity.leftNode?.toSerializableEntity(treeEntity),
-            this@toSerializableEntity.rightNode?.toSerializableEntity(treeEntity),
             this@toSerializableEntity.posX,
             this@toSerializableEntity.posY,
+            this@toSerializableEntity.leftNode?.toSerializableEntity(treeEntity),
+            this@toSerializableEntity.rightNode?.toSerializableEntity(treeEntity),
         )
     }
 
@@ -125,6 +131,8 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
             val newTree = TreeEntity.new {
                 treeName = serializableTree.name
                 treeType = serializableTree.treeType
+                keyType = serializableTree.keyType
+                valueType = serializableTree.valueType
             }
 
             newTree.root = serializableTree.root?.toNodeEntity(newTree)
