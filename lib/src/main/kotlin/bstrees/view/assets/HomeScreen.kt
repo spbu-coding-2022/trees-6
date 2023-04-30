@@ -1,25 +1,22 @@
-package bstrees.view.Assets
+package bstrees.view.assets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DropdownTree(header: State<String>, onClickChanges: (String) -> Unit) {
+fun DatabaseSelector(header: State<String>, onClickChanges: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val items = listOf("Randomized binary search", "AVL", "Red black")
+    val items = listOf("Neo4j", "Json", "SQLite")
     var selectedIndex by remember { mutableStateOf(0) }
     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
 
@@ -53,36 +50,52 @@ fun DropdownTree(header: State<String>, onClickChanges: (String) -> Unit) {
 }
 
 @Composable
-fun TreeActions(
-    add: () -> Unit,
-    load: () -> Unit
-){
-    Column {
-
-        Button(onClick = add) {
-            Text("Create Tree")
+fun dataBaseConnectionNeo4j(
+    host: State<String>,
+    username: State<String>,
+    password: State<String>,
+    hostChange: (String) -> Unit,
+    usernameChange: (String) -> Unit,
+    passwordChange: (String) -> Unit,
+    approve: State<Boolean>,
+    approveChange: (Boolean) -> Unit
+) {
+    Row {
+        Column {
+            OutlinedTextField(value = host.value, onValueChange = hostChange)
+            OutlinedTextField(value = username.value, onValueChange = usernameChange)
+            OutlinedTextField(value = password.value, onValueChange = passwordChange)
         }
-
-        Button(onClick = load){
-            Text(text = "Load Tree")
-        }
+        Checkbox(checked = approve.value, onCheckedChange = approveChange)
     }
 }
 
 @Composable
-fun TreeSelector(
+fun HomeScreen(
     header: State<String>,
     onClickChanges: (String) -> Unit,
-    add: () -> Unit,
-    load: () -> Unit,
-    treeName: State<String>,
-    treeNameChange: (String) -> Unit
-){
-    Column{
-        DropdownTree(header, onClickChanges)
-        if (header.value != "Choose your tree") {
-            OutlinedTextField(value = treeName.value, onValueChange = treeNameChange)
-            TreeActions(add, load)
+    host: State<String>,
+    username: State<String>,
+    password: State<String>,
+    hostChange: (String) -> Unit,
+    usernameChange: (String) -> Unit,
+    passwordChange: (String) -> Unit,
+    approve: State<Boolean>,
+    approveChange: (Boolean) -> Unit
+) {
+    Column(modifier = Modifier) {
+        DatabaseSelector(header, onClickChanges)
+        if (header.value == "Neo4j") {
+            dataBaseConnectionNeo4j(
+                host,
+                username,
+                password,
+                hostChange,
+                usernameChange,
+                passwordChange,
+                approve,
+                approveChange
+            )
         }
     }
 }

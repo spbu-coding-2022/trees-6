@@ -1,4 +1,4 @@
-package bstrees.view.Assets
+package bstrees.view.assets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import bstrees.model.dataBases.serialize.types.SerializableNode
+import bstrees.presenter.TreePresenter
 
 @Composable
 fun Tree(root: State<SerializableNode>) {
@@ -22,17 +23,16 @@ fun Tree(root: State<SerializableNode>) {
             Row {
 
                 val checkLeftSon = root.value.leftNode
-                if (checkLeftSon != null) {
-                    val temp = remember { mutableStateOf(checkLeftSon) }
+                checkLeftSon?.let{ leftSon ->
+                    val temp = remember { mutableStateOf(leftSon) }
                     Tree(temp)
                 }
 
                 val checkRightSon = root.value.rightNode
-                if (checkRightSon != null) {
-                    val temp = remember { mutableStateOf(checkRightSon) }
+                checkRightSon?.let { rightSon ->
+                    val temp = remember { mutableStateOf(rightSon) }
                     Tree(temp)
                 }
-
             }
         }
     }
@@ -88,9 +88,9 @@ fun ActionButtons(
 }
 
 @Composable
-fun TreeView() {
+fun TreeView(treePresenter: TreePresenter) {
+    val tree = treePresenter.tree ?: return
     Row {
-        //OptionTools()
-        //Tree()
+        tree.root?.let { Tree(mutableStateOf(tree.root)) }
     }
 }

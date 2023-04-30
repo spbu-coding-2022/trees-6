@@ -52,3 +52,8 @@ tasks.jacocoTestReport {
         csv.outputLocation.set(layout.buildDirectory.file("jacoco/jacocoCsv"))
     }
 }
+
+application {
+    // Define the main class for the application.
+    mainClass.set("bstrees/view/AppKt")
+}

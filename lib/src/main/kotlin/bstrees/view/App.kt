@@ -5,8 +5,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.window.*
-import bstrees.view.Assets.HomeScreen
-import bstrees.view.Assets.TreeSelector
+import bstrees.view.assets.HomeScreen
+import bstrees.view.assets.TreeSelector
+import bstrees.presenter.DataBasePresenter
+import bstrees.presenter.TreePresenter
 
 fun main() {
     application {
@@ -45,22 +47,24 @@ fun main() {
              * Json - название папки, в которой хранится база данных
              */
 
+            var treePresenter: TreePresenter? = null
+
             if (approve.value == true) {
                 if (header.value == "Neo4j") {
-                    //checkAccess(host.value, username.value, password.value)
+                    treePresenter = DataBasePresenter.connectNeo4j(host.value, username.value, password.value)
                     homeScreenFlag.value = false
                 }
+                // Similarly for other DB
             }
 
             val treeType = remember { mutableStateOf("Choose your tree") }
             val treeName = remember { mutableStateOf("Enter tree name") }
 
-            if (!homeScreenFlag.value) {
+            if (!homeScreenFlag.value && treePresenter != null) {
                 TreeSelector(
                     treeType,
                     { newHeader -> treeType.value = newHeader },
-                    { println("CreateTest") },
-                    { println("LoadTest") },
+                    treePresenter,
                     treeName = treeName,
                     { newName -> treeName.value = newName }
                 )

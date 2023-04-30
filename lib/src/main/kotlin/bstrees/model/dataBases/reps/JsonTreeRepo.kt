@@ -21,9 +21,9 @@ class JsonTreeRepo(private val dir: String) : DBTreeRepo {
 
     private fun makeDir(dir: String) {
         File(dir).mkdir()
-        File(Path(dir, "BSTree").toUri()).mkdir()
-        File(Path(dir, "RBTree").toUri()).mkdir()
-        File(Path(dir, "AvlTree").toUri()).mkdir()
+        File(Path(dir, "BS").toUri()).mkdir()
+        File(Path(dir, "RB").toUri()).mkdir()
+        File(Path(dir, "AVL").toUri()).mkdir()
     }
 
     private fun getPathToFile(treeName: String, typeTree: String): String {
