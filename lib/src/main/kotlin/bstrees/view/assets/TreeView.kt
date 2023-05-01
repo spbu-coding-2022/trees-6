@@ -11,36 +11,54 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import bstrees.model.dataBases.serialize.types.SerializableNode
 import bstrees.presenter.TreePresenter
 
 @Composable
-fun Tree(root: State<SerializableNode>) {
+fun Tree(
+    root: State<SerializableNode>,
+    nodeSize: Double,
+    xOffset: Double,
+    yOffset: Double,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        Node(root, nodeSize)
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Node(root)
-        Row {
+        val checkLeftSon = root.value.leftNode
+        checkLeftSon?.let { leftSon ->
+            val temp = remember { mutableStateOf(leftSon) }
+            Tree(
+                temp,
+                nodeSize,
+                xOffset - nodeSize / 2,
+                yOffset + nodeSize,
+                modifier = Modifier.absoluteOffset(x = (xOffset - nodeSize / 1.5).dp, y = (yOffset + nodeSize).dp)
+            )
+        }
 
-            val checkLeftSon = root.value.leftNode
-            checkLeftSon?.let { leftSon ->
-                val temp = remember { mutableStateOf(leftSon) }
-                Tree(temp)
-            }
-
-            val checkRightSon = root.value.rightNode
-            checkRightSon?.let { rightSon ->
-                val temp = remember { mutableStateOf(rightSon) }
-                Tree(temp)
-            }
-
+        val checkRightSon = root.value.rightNode
+        checkRightSon?.let { rightSon ->
+            val temp = remember { mutableStateOf(rightSon) }
+            Tree(
+                temp,
+                nodeSize,
+                xOffset + nodeSize / 2,
+                yOffset + nodeSize,
+                modifier = Modifier.absoluteOffset(x = (xOffset + nodeSize / 1.5).dp, y = (yOffset + nodeSize).dp)
+            )
         }
     }
-
 }
 
 @Composable
-fun Node(node: State<SerializableNode>) {
+fun Node(
+    node: State<SerializableNode>,
+    nodeSize: Double,
+) {
 
     Box(
         contentAlignment = Alignment.Center,
@@ -51,8 +69,8 @@ fun Node(node: State<SerializableNode>) {
                 else Color.Magenta,
                 shape = CircleShape
             )
-            .width(100.dp)
-            .height(100.dp)
+            .width(nodeSize.dp)
+            .height(nodeSize.dp)
             .border(
                 width = 1.dp,
                 color = Color.Blue,
@@ -65,12 +83,14 @@ fun Node(node: State<SerializableNode>) {
             Text(
                 text = "Key: ${node.value.key}",
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = Color.White,
+                fontSize = if (((nodeSize / 4).toInt()) > 20) 20.sp else (nodeSize / 4).toInt().sp
             )
             Text(
                 text = "Value: ${node.value.value}",
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = Color.White,
+                fontSize = if (((nodeSize / 4).toInt()) > 20) 20.sp else (nodeSize / 4).toInt().sp
             )
         }
     }
@@ -93,14 +113,27 @@ fun TreeActionButtons(treePresenter: TreePresenter) {
 }
 
 @Composable
-fun TreeView(treePresenter: TreePresenter) {
+fun TreeView(
+    treePresenter: TreePresenter,
+    treeWidth: Double,
+    treeHeight: Double,
+    nodeSize: Double,
+    xOffset: Double = 0.0,
+    yOffset: Double = 0.0
+) {
     val tree = treePresenter.tree ?: return
     Row {
         TreeActionButtons(treePresenter)
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.height(treeHeight.dp).width(treeWidth.dp),
+            contentAlignment = Alignment.Center
+        ) {
             tree.root?.let {
                 Tree(
-                    mutableStateOf(tree.root)
+                    mutableStateOf(tree.root),
+                    nodeSize,
+                    xOffset,
+                    yOffset
                 )
             }
         }
