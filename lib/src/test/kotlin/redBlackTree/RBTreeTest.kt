@@ -3,14 +3,16 @@ package redBlackTree
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import bstrees.model.trees.redBlack.RBNode
 import bstrees.model.trees.redBlack.RBTree
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import kotlin.random.Random
 
 const val seed = 10
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 class RBTreeTest {
 
     private val randomizer = Random(seed)
@@ -84,7 +86,7 @@ class RBTreeTest {
     }
 
     @ParameterizedTest(name = "Function get returns correct value for key {0}")
-    @ValueSource(ints = [12, -121, 56, 1, 23728, 6464, 112])
+    @MethodSource("keyProvider")
     fun `find return a correct value`(key: Int) {
         keyValue.forEach { tree.insert(it.first, it.second) }
 
@@ -93,6 +95,15 @@ class RBTreeTest {
         tree.delete(key)
 
         assertEquals(null, tree.find(key))
+    }
+
+    companion object {
+        @JvmStatic
+        fun keyProvider(): List<Arguments> {
+            return (0..1000).map {
+                Arguments.of(Random.nextInt(5000))
+            }
+        }
     }
 
     @Test

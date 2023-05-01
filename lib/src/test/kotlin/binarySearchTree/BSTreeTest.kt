@@ -2,9 +2,10 @@ package binarySearchTree
 
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
 import bstrees.model.trees.binarySearch.BSNode
 import bstrees.model.trees.binarySearch.BSTree
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -63,7 +64,7 @@ class BSTreeTest {
     }
 
     @ParameterizedTest(name = "Function get returns correct value for key {0}")
-    @ValueSource(ints = [12, -121, 56, 1, 23728, 6464, 112])
+    @MethodSource("keyProvider")
     fun `find return a correct value`(key: Int) {
         keyValue.forEach { tree.insert(it.first, it.second) }
 
@@ -72,6 +73,15 @@ class BSTreeTest {
         tree.delete(key)
 
         Assertions.assertEquals(null, tree.find(key))
+    }
+
+    companion object {
+        @JvmStatic
+        fun keyProvider(): List<Arguments> {
+            return (0..1000).map {
+                Arguments.of(Random.nextInt(5000))
+            }
+        }
     }
 
     @Test
