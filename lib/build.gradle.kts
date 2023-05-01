@@ -54,6 +54,13 @@ tasks.jacocoTestReport {
         csv.required.set(true)
         csv.outputLocation.set(layout.buildDirectory.file("jacoco/jacocoCsv"))
     }
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                include("**/model/trees/**")
+            }
+        })
+    )
 }
 
 application {
