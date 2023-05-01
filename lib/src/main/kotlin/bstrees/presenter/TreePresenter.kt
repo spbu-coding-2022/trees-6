@@ -12,9 +12,7 @@ class TreePresenter(private val db: DBTreeRepo) {
         private set
 
     fun loadTree(treeName: String, treeType: String) {
-        val dbTreeResult: SerializableTree =
-            db.getTree(treeName, treeType) ?: throw Exception("There is no tree with that name")
-        tree = dbTreeResult
+        tree = db.getTree(treeName, treeType) ?: throw Exception("There is no tree with that name: $treeName")
     }
 
     fun createTree(treeName: String, treeType: String, keyType: String, valueType: String) {

@@ -101,11 +101,11 @@ fun Node(
 fun TreeActionButtons(treePresenter: TreePresenter) {
 
     Column {
-        Button(onClick = { treePresenter.addNode() }) {
+        Button(onClick = { treePresenter.addNode("0", "0") }) {
             Text("Add Node")
         }
 
-        Button(onClick = { treePresenter.deleteNode() }) {
+        Button(onClick = { treePresenter.deleteNode("0") }) {
             Text(text = "Delete Node")
         }
     }
@@ -121,7 +121,7 @@ fun TreeView(
     xOffset: Double = 0.0,
     yOffset: Double = 0.0
 ) {
-    val tree = treePresenter.tree ?: return
+    val tree = treePresenter.tree
     Row {
         TreeActionButtons(treePresenter)
         Box(
