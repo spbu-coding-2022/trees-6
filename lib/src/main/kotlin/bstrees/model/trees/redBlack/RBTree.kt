@@ -144,7 +144,11 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
     }
 
     /**
-     * TODO ??
+     * After we have selected a node that will take the place of the deleted one,
+     * we must specify all the links for the selected node.
+     *
+     * @param curNode the node that we are deleting
+     * @param nodeForSwapping the node that will stand in place of the deleted one
      */
     private fun setLinksWithNodeForSwapping(curNode: RBNode<K, V>, nodeForSwapping: RBNode<K, V>) {
         nodeForSwapping.leftNode = curNode.leftNode
@@ -167,7 +171,13 @@ class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
     }
 
     /**
-     * TODO ??
+     * The node that we are moving to the place of the deleted one.
+     * Therefore, it is necessary to put one of the sons of this peak in its place
+     * and establish the necessary links.
+     *
+     * @param nodeForSwapping the node that we are deleting
+     * @param sonOfNodeForSwapping the node that will stand in place of the deleted one
+     * @param sonIsNilNode checking that the son of this vertex is imaginary
      */
     private fun setLinksWithSonOfNodeForSwapping(
         nodeForSwapping: RBNode<K, V>,
