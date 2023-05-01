@@ -10,6 +10,7 @@ val slf4jVersion: String? by project
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.20"
     kotlin("plugin.serialization") version "1.8.20"
+    id("org.jetbrains.compose") version "1.4.0"
 
     jacoco
     application
@@ -36,6 +37,12 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5Version")
+
+    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.0.0-alpha-02")
+    implementation("com.arkivanov.decompose:decompose:2.0.0-alpha-02")
+
+    implementation(compose.desktop.currentOs)
+    implementation(compose.material3)
 }
 
 tasks.getByName<Test>("test") {
@@ -47,4 +54,9 @@ tasks.jacocoTestReport {
         csv.required.set(true)
         csv.outputLocation.set(layout.buildDirectory.file("jacoco/jacocoCsv"))
     }
+}
+
+application {
+    // Define the main class for the application.
+    mainClass.set("bstrees/view/AppKt")
 }
