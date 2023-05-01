@@ -18,22 +18,36 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         var serializableTree: SerializableTree? = null
 
         session.executeRead { tx ->
-            val resultRootKey = tx.run(
-                "MATCH (tree:Tree {name: \$name, type: \$type})" +
-                        "WITH tree MATCH (tree)-[:root]->(root) RETURN tree.keyType as keyType, tree.valueType as valueType, root.key AS rootKey",
+            val resultTreeInfo = tx.run(
+                "MATCH (tree: Tree {name: \$name, type: \$type}) RETURN tree.keyType as keyType, tree.valueType as valueType",
                 mutableMapOf(
                     "name" to treeName,
                     "type" to treeType,
                 ) as Map<String, Any>?
             )
+            val resultRootKey = tx.run(
+                "MATCH (tree: Tree {name: \$name, type: \$type}) " +
+                        "WITH tree MATCH (tree)-[:root]->(root) RETURN root.key AS rootKey",
+                mutableMapOf(
+                    "name" to treeName,
+                    "type" to treeType,
+                ) as Map<String, Any>?
+            )
+
+            var rootKey = ""
             if (resultRootKey.hasNext()) {
                 val info: Map<String, Any> = resultRootKey.next().asMap()
+                rootKey = info["rootKey"].toString()
+            }
+
+            if (resultTreeInfo.hasNext()) {
+                val info: Map<String, Any> = resultTreeInfo.next().asMap()
                 serializableTree = SerializableTree(
                     treeName,
                     treeType,
                     info["keyType"].toString(),
                     info["valueType"].toString(),
-                    getSerializedNodes(tx, info["rootKey"].toString())
+                    if (rootKey != "") getSerializedNodes(tx, rootKey) else null
                 )
             }
         }
@@ -53,10 +67,10 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
             "MATCH (node:Node {key: $nodeKey}) RETURN node.key AS key, node.value AS value, node.metadata AS metadata, node.posX AS posX, node.posY AS posY"
         )
         val resultLeftSonKey = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:leftSon]->(leftSon) RETURN leftSon.key as key "
+            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:leftSon]->(leftSon) RETURN leftSon.key as key"
         )
         val resultRightSonKey = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:rightSon]->(rightSon) RETURN rightSon.key as key "
+            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:rightSon]->(rightSon) RETURN rightSon.key as key"
         )
 
         if (resultNodeData.hasNext()) {
@@ -99,9 +113,9 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
             serializableTree.root?.let { root ->
                 setNeo4jNodes(tx, root)
                 tx.run(
-                    "MATCH (tree: Tree {name: \$name, type: \$type})" +
-                            "MATCH (node: NewNode {key: ${root.key} })" +
-                            "CREATE (tree)-[:root]->(node)" +
+                    "MATCH (tree: Tree {name: \$name, type: \$type}) " +
+                            "MATCH (node: NewNode {key: ${root.key} }) " +
+                            "CREATE (tree)-[:root]->(node) " +
                             "REMOVE node:NewNode",
                     mutableMapOf(
                         "name" to serializableTree.name,
@@ -122,18 +136,18 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         node.leftNode?.let { leftNode ->
             setNeo4jNodes(tx, leftNode)
             tx.run(
-                "MATCH (node: NewNode {key: ${node.key}})" +
-                        "MATCH (leftSon: NewNode {key: ${leftNode.key}})" +
-                        "CREATE (node)-[:leftSon]->(leftSon)" +
+                "MATCH (node: NewNode {key: ${node.key}}) " +
+                        "MATCH (leftSon: NewNode {key: ${leftNode.key}}) " +
+                        "CREATE (node)-[:leftSon]->(leftSon) " +
                         "REMOVE leftSon:NewNode"
             )
         }
         node.rightNode?.let { rightNode ->
             setNeo4jNodes(tx, rightNode)
             tx.run(
-                "MATCH (node: NewNode {key: ${node.key}})" +
-                        "MATCH (rightSon: NewNode {key: ${rightNode.key}})" +
-                        "CREATE (node)-[:rightSon]->(rightSon)" +
+                "MATCH (node: NewNode {key: ${node.key}}) " +
+                        "MATCH (rightSon: NewNode {key: ${rightNode.key}}) " +
+                        "CREATE (node)-[:rightSon]->(rightSon) " +
                         "REMOVE rightSon:NewNode"
             )
         }
@@ -142,7 +156,7 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
     override fun deleteTree(treeName: String, treeType: String) {
         session.executeWrite { tx ->
             tx.run(
-                "MATCH (tree: Tree {name: \$name, type: \$type})" +
+                "MATCH (tree: Tree {name: \$name, type: \$type}) " +
                         "MATCH (tree)-[*]->(node:Node) " +
                         "DETACH DELETE tree, node",
                 mutableMapOf(
