@@ -11,8 +11,8 @@ class TreePresenter(private val db: DBTreeRepo) {
         tree = db.getTree(treeName, treeType)
     }
 
-    fun createTree(treeName: String, treeType: String) {
-        tree = SerializableTree(treeName, treeType, null)
+    fun createTree(treeName: String, treeType: String, keyType: String, valueType: String) {
+        tree = SerializableTree(treeName, treeType, keyType, valueType, null)
         tree?.let { db.setTree(it) }
     }
 

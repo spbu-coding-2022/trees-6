@@ -12,7 +12,9 @@ abstract class SerializeStrategy<
     val serializeKey: (K) -> String,
     val serializeValue: (V) -> String,
     val deserializeKey: (String) -> K,
-    val deserializeValue: (String) -> V
+    val deserializeValue: (String) -> V,
+    val keyType: String,
+    val valueType: String,
 ) {
 
     abstract fun serializeNode(node: NODE_TYPE): SerializableNode

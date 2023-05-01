@@ -32,7 +32,7 @@ fun TreeActions(
         }
 
         if(isClickedAdd.value){
-            treePresenter.createTree(treeName.value, treeType.value)
+            treePresenter.createTree(treeName.value, treeType.value, "", "")
             TreeView(treePresenter)
             //isClickedAdd.value = false
         }
