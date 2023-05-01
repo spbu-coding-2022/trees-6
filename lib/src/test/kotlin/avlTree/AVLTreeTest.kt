@@ -3,7 +3,6 @@ package avlTree
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import treeInvariants.TreesInvariants
 import bstrees.model.trees.avl.AvlNode
 import bstrees.model.trees.avl.AvlTree
 import kotlin.random.Random
@@ -15,7 +14,7 @@ class AVLTreeTest {
     private lateinit var keyValue: List<Pair<Int, Int>>
     private lateinit var bigKeyValue: List<Pair<Int, Int>>
     private val tree = AvlTree<Int, Int>()
-    private val treeChecker = TreesInvariants<Int, Int, AvlNode<Int, Int>>()
+    private val treeChecker = AVLTreeInvariants<Int, Int, AvlNode<Int, Int>>()
 
     @BeforeAll
     fun prepareNodes() {

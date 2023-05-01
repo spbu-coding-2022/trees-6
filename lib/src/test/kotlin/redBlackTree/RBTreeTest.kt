@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import treeInvariants.TreesInvariants
 import bstrees.model.trees.redBlack.RBNode
 import bstrees.model.trees.redBlack.RBTree
 import kotlin.random.Random
@@ -19,7 +18,7 @@ class RBTreeTest {
     private lateinit var keyValue: List<Pair<Int, Int>>
     private lateinit var bigKeyValue: List<Pair<Int, Int>>
     private val tree = RBTree<Int, Int>()
-    private val treeChecker = TreesInvariants<Int, Int, RBNode<Int, Int>>()
+    private val treeChecker = RBTreeInvariants<Int, Int, RBNode<Int, Int>>()
 
 
     @BeforeAll
