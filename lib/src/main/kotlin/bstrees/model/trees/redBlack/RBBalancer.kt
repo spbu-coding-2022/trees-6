@@ -13,11 +13,12 @@ import bstrees.model.trees.redBlack.RBNode.Color
 open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
 
     /**
-     * Balance the tree after deletion a red node
-     * TODO write more about the situations in which it is used
+     * Balance the tree after deletion a red node. Starting from some node,
+     * we perform balancing and recursively climb up until we meet a black node
+     * for balancing or reach the root of the tree
      *
-     * @param tree TODO
-     * @param node TODO
+     * @param tree the tree we are balancing
+     * @param node the node from which we start balancing
      */
     internal fun balanceAfterDeletion(tree: RBTree<K, V>, node: RBNode<K, V>) {
         var curNode = node
@@ -154,10 +155,11 @@ open class RBBalancer<K : Comparable<K>, V> : Balancer<K, V, RBNode<K, V>>() {
     }
 
     /**
-     * Balance the tree after adding a red node
-     * TODO write more about the situations in which it is used
+     * Balance the tree after adding a red node. Starting from some node,
+     * we perform balancing and recursively climb up until we meet a red parentNode
+     * for balancing or reach the root of the tree
      *
-     * @param node TODO
+     * @param node the node from which we start balancing
      */
     internal fun balanceAfterAdding(node: RBNode<K, V>): RBNode<K, V> {
         var nodeParent = node.parent
