@@ -96,6 +96,23 @@ class BSTreeTest {
     }
 
     @Test
+    fun `deleting a part of nodes`(){
+        keyValue.forEach { tree.insert(it.first, it.second) }
+
+        keyValue = keyValue.shuffled()
+
+        for(i in 0 until keyValue.size){
+            tree.delete(keyValue[i].first)
+            for(j in i + 1 until keyValue.size){
+                assertAll("Error deleting a node. The tree must be balanced and must contain all nodes that are not deleted",
+                    { Assertions.assertNotNull(tree.find(keyValue[j].first)) },
+                    { Assertions.assertTrue(treeChecker.checkBsTreeInvariants(tree.root)) }
+                )
+            }
+        }
+    }
+
+    @Test
     fun `deleting a node`() {
         tree.insert(keyValue[0].first, keyValue[0].second)
         tree.delete(keyValue[0].first)

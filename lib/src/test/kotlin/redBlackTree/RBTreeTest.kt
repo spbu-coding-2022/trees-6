@@ -68,6 +68,23 @@ class RBTreeTest {
     }
 
     @Test
+    fun `deleting a part of nodes`(){
+        keyValue.forEach { tree.insert(it.first, it.second) }
+
+        keyValue = keyValue.shuffled()
+
+        for(i in 0 until keyValue.size){
+            tree.delete(keyValue[i].first)
+            for(j in i + 1 until keyValue.size){
+                assertAll("Error deleting a node. The tree must be balanced and must contain all nodes that are not deleted",
+                    { Assertions.assertNotNull(tree.find(keyValue[j].first)) },
+                    { Assertions.assertTrue(treeChecker.checkRBTreeInvariants(tree.root)) }
+                )
+            }
+        }
+    }
+
+    @Test
     fun `adding a lot of nodes`() {
         val bigTree = RBTree<Int, Int>()
 
