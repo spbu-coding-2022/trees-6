@@ -1,4 +1,4 @@
-package bstrees.view.screens
+package app.view.screens
 
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize

@@ -1,4 +1,4 @@
-package bstrees.view.screens
+package app.view.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,9 +8,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import bstrees.presenter.TreePresenter
-import bstrees.view.assets.Selector
-import bstrees.view.assets.TreeView
+import app.presenter.TreePresenter
+import app.view.assets.Selector
 
 @Composable
 fun TreeActions(
@@ -21,7 +20,7 @@ fun TreeActions(
     keyType: State<String>,
     valueType: State<String>,
 
-) {
+    ) {
 
     Column {
 

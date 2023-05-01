@@ -2,15 +2,14 @@ val jetbrainsExposedVersion:  String? by rootProject
 val junit5Version: String? by rootProject
 val gsonVersion: String? by rootProject
 val kotlinxSerializationVersion: String? by rootProject
-val neo4jDriverVersion: String? by project
-val sqliteJdbcVersion: String? by project
-val kotlinLoggingVersion: String? by project
-val slf4jVersion: String? by project
+val neo4jDriverVersion: String? by rootProject
+val sqliteJdbcVersion: String? by rootProject
+val kotlinLoggingVersion: String? by rootProject
+val slf4jVersion: String? by rootProject
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.20"
     kotlin("plugin.serialization") version "1.8.20"
-    id("org.jetbrains.compose") version "1.4.0"
 
     jacoco
     application
@@ -37,12 +36,6 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5Version")
-
-    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.0.0-alpha-02")
-    implementation("com.arkivanov.decompose:decompose:2.0.0-alpha-02")
-
-    implementation(compose.desktop.currentOs)
-    implementation(compose.material3)
 }
 
 tasks.getByName<Test>("test") {
@@ -63,7 +56,3 @@ tasks.jacocoTestReport {
     )
 }
 
-application {
-    // Define the main class for the application.
-    mainClass.set("bstrees/view/AppKt")
-}

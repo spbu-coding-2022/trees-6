@@ -1,4 +1,4 @@
-package bstrees.view.screens
+package app.view.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import bstrees.view.assets.Selector
+import app.view.assets.Selector
 
 @Composable
 fun ChosingTypesScreen(

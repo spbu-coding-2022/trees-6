@@ -1,4 +1,4 @@
-package bstrees.view.assets
+package app.view.assets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
