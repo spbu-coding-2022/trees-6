@@ -1,4 +1,4 @@
-package bstrees.view.assets
+package app.view.assets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,11 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bstrees.model.dataBases.serialize.types.SerializableNode
-import bstrees.presenter.TreePresenter
+import app.presenter.TreePresenter
 
 @Composable
 fun Tree(
@@ -130,7 +129,7 @@ fun TreeView(
         ) {
             tree.root?.let {
                 Tree(
-                    mutableStateOf(tree.root),
+                    mutableStateOf(it),
                     nodeSize,
                     xOffset,
                     yOffset

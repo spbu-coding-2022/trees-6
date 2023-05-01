@@ -1,10 +1,10 @@
-package bstrees.presenter
+package app.presenter
 
 import bstrees.model.dataBases.reps.DBTreeRepo
 import bstrees.model.dataBases.serialize.types.SerializableTree
-import bstrees.presenter.treesPresenters.AvlTreePresenter
-import bstrees.presenter.treesPresenters.BsTreePresenter
-import bstrees.presenter.treesPresenters.RbTreePresenter
+import app.presenter.treesPresenters.AvlTreePresenter
+import app.presenter.treesPresenters.BsTreePresenter
+import app.presenter.treesPresenters.RbTreePresenter
 
 
 class TreePresenter(private val db: DBTreeRepo) {

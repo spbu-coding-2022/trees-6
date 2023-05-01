@@ -1,4 +1,4 @@
-package bstrees.presenter
+package app.presenter
 
 import bstrees.model.dataBases.serialize.types.SerializableNode
 import bstrees.model.dataBases.serialize.types.SerializableTree

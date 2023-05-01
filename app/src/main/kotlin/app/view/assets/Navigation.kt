@@ -1,4 +1,4 @@
-package bstrees.view.assets
+package app.view.assets
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier

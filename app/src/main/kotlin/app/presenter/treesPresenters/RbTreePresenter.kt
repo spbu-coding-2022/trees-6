@@ -1,4 +1,4 @@
-package bstrees.presenter.treesPresenters
+package app.presenter.treesPresenters
 
 import bstrees.model.dataBases.serialize.strategies.RbStrategy
 import bstrees.model.dataBases.serialize.strategies.intToString

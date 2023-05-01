@@ -1,13 +1,13 @@
-package bstrees.view.screens
+package app.view.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import bstrees.view.assets.Selector
-import bstrees.view.assets.databaseConnectionJson
-import bstrees.view.assets.databaseConnectionNeo4j
-import bstrees.view.assets.databaseConnectionSQL
+import app.view.assets.Selector
+import app.view.assets.databaseConnectionJson
+import app.view.assets.databaseConnectionNeo4j
+import app.view.assets.databaseConnectionSQL
 
 @Composable
 fun HomeScreen(

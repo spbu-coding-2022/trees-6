@@ -1,5 +1,8 @@
+val composeVersion: String? by rootProject
+
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.8.10"
+    id("org.jetbrains.kotlin.jvm") version "1.8.20"
+    id("org.jetbrains.compose") version "1.4.0"
 
     application
 }
@@ -9,15 +12,17 @@ repositories {
 }
 
 dependencies {
-    // Use the Kotlin test library.
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    implementation(project(":lib"))
 
-    // Use the Kotlin JUnit integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:$composeVersion")
+    implementation("com.arkivanov.decompose:decompose:$composeVersion")
 
+    implementation(compose.desktop.currentOs)
+    implementation(compose.material3)
 }
+
 
 application {
     // Define the main class for the application.
-    mainClass.set("MainKt")
+    mainClass.set("app/view/AppKt")
 }
