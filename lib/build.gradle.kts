@@ -38,6 +38,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit5Version")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5Version")
 
+    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.0.0-alpha-02")
+    implementation("com.arkivanov.decompose:decompose:2.0.0-alpha-02")
+
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
 }

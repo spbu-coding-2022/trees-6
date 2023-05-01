@@ -45,12 +45,17 @@ fun Node(node: State<SerializableNode>) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .background(color = Color.Cyan, shape = CircleShape)
+            .background(
+                color = if (node.value.metadata == "RED") Color.Red
+                else if (node.value.metadata == "BLACK") Color.Black
+                else Color.Magenta,
+                shape = CircleShape
+            )
             .width(100.dp)
             .height(100.dp)
             .border(
                 width = 1.dp,
-                color = Color.Black,
+                color = Color.Blue,
                 shape = CircleShape
             )
     ) {
@@ -60,12 +65,12 @@ fun Node(node: State<SerializableNode>) {
             Text(
                 text = "Key: ${node.value.key}",
                 textAlign = TextAlign.Center,
-                color = Color.Black
+                color = Color.White
             )
             Text(
                 text = "Value: ${node.value.value}",
                 textAlign = TextAlign.Center,
-                color = Color.Black
+                color = Color.White
             )
         }
     }
@@ -92,6 +97,12 @@ fun TreeView(treePresenter: TreePresenter) {
     val tree = treePresenter.tree ?: return
     Row {
         TreeActionButtons(treePresenter)
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { tree.root?.let { Tree(mutableStateOf(tree.root)) } }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            tree.root?.let {
+                Tree(
+                    mutableStateOf(tree.root)
+                )
+            }
+        }
     }
 }
