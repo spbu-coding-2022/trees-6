@@ -16,45 +16,44 @@ import bstrees.view.assets.TreeView
 fun TreeActions(
     treePresenter: TreePresenter,
     treeName: State<String>,
-    treeType: State<String>
+    treeType: State<String>,
+    createTreeMenu: () -> Unit,
+    keyType: State<String>,
+    valueType: State<String>,
+
 ) {
 
     Column {
 
-        val isClickedAdd = remember { mutableStateOf(false) }
-        Button(onClick = { isClickedAdd.value = true }) {
+        Button(onClick = {
+            createTreeMenu()
+            treePresenter.createTree(treeName.value, treeType.value, keyType.value, valueType.value)
+        }
+        ) {
             Text("Create Tree")
         }
 
-        val isClickedLoad = remember { mutableStateOf(false) }
-        Button(onClick = { isClickedLoad.value = true }){
+        Button(onClick = {
+            treePresenter.loadTree(treeName.value, treeType.value)
+        }
+        ) {
             Text("Load Tree")
         }
-
-        if(isClickedAdd.value){
-            treePresenter.createTree(treeName.value, treeType.value, "", "")
-            TreeView(treePresenter)
-            //isClickedAdd.value = false
-        }
-
-        if(isClickedLoad.value){
-            treePresenter.loadTree(treeName.value, treeType.value)
-            TreeView(treePresenter)
-            //isClickedLoad.value = false
-        }
-
 
     }
 }
 
 @Composable
-fun TreeSelector(
+fun TreeSreen(
     treeType: State<String>,
     onClickChanges: (String) -> Unit,
     treePresenter: TreePresenter,
     treeName: State<String>,
     treeNameChange: (String) -> Unit,
-    back: () -> Unit
+    back: () -> Unit,
+    createTreeMenu: () -> Unit,
+    keyType: State<String>,
+    valueType: State<String>
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         Selector(treeType, onClickChanges, listOf("BS", "AVL", "RB"))
@@ -62,10 +61,10 @@ fun TreeSelector(
         if (treeType.value != "Choose your tree") {
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(value = treeName.value, onValueChange = treeNameChange)
-            TreeActions(treePresenter, treeName, treeType)
+            TreeActions(treePresenter, treeName, treeType, createTreeMenu, keyType, valueType)
         }
 
-        Button(onClick = back){
+        Button(onClick = back) {
             Text("Back")
         }
     }
