@@ -20,6 +20,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import java.awt.Dimension
 
 fun main() {
 
@@ -32,9 +33,11 @@ fun main() {
             title = "graph",
             state = rememberWindowState(
                 position = WindowPosition(alignment = Alignment.Center),
-                size = DpSize(800.dp, 800.dp)
             ),
+
         ) {
+            window.minimumSize = Dimension(800, 800)
+            window.maximumSize = Dimension(800, 800)
 
             ProvideComponentContext(rootComponentContext) {
 
