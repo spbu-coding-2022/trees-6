@@ -50,7 +50,10 @@ tasks.jacocoTestReport {
     classDirectories.setFrom(
         files(classDirectories.files.map {
             fileTree(it) {
-                include("**/model/trees/**")
+                include("**/model/**")
+                exclude("**/**/*Neo4jTreeRepo*.*")
+                exclude("**/**/*TreeData*.*")
+                exclude("**/**/*NodeData*.*")
             }
         })
     )

@@ -1,6 +1,6 @@
 package bstrees.model.trees.avl
 
-import bstrees.model.trees.Node
+import bstrees.model.trees.BSNode
 import kotlin.math.max
 
 /**
@@ -10,7 +10,7 @@ import kotlin.math.max
  * @generic <K> the type of key stored in the tree. It must be comparable
  * @generic <V> the type of value stored in the tree
  */
-class AvlNode<K : Comparable<K>, V>(key: K, value: V) : Node<K, V, AvlNode<K, V>>(key, value) {
+class AvlNode<K : Comparable<K>, V>(key: K, value: V) : BSNode<K, V, AvlNode<K, V>>(key, value) {
 
     /**
      * The variable that contains a height of the tree

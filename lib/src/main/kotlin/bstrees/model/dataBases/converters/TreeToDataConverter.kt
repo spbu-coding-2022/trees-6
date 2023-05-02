@@ -3,13 +3,13 @@ package bstrees.model.dataBases.converters
 import bstrees.model.dataBases.TreeData
 import bstrees.model.dataBases.converters.utils.ComparableStringConverter
 import bstrees.model.dataBases.converters.utils.StringConverter
-import bstrees.model.trees.BTree
-import bstrees.model.trees.Node
+import bstrees.model.trees.BSTree
+import bstrees.model.trees.BSNode
 
 abstract class TreeToDataConverter<
         K : Comparable<K>, V, M,
-        NODE_TYPE : Node<K, V, NODE_TYPE>,
-        TREE_TYPE : BTree<K, V, NODE_TYPE>>(
+        NODE_TYPE : BSNode<K, V, NODE_TYPE>,
+        TREE_TYPE : BSTree<K, V, NODE_TYPE>>(
     val keyStringConverter: ComparableStringConverter<K>,
     val valueStringConverter: StringConverter<V>,
     val keyType: String,

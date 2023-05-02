@@ -5,22 +5,22 @@ import bstrees.model.dataBases.TreeData
 import bstrees.model.dataBases.converters.TreeToDataConverter
 import bstrees.model.dataBases.converters.utils.ComparableStringConverter
 import bstrees.model.dataBases.converters.utils.StringConverter
-import bstrees.model.trees.binarySearch.BSNode
-import bstrees.model.trees.binarySearch.BSTree
+import bstrees.model.trees.randomBinarySearch.RandomBSNode
+import bstrees.model.trees.randomBinarySearch.RandomBSTree
 
-class BsToDataConverter<K : Comparable<K>, V>(
+class RandomBsToDataConverter<K : Comparable<K>, V>(
     keyStringConverter: ComparableStringConverter<K>,
     valueStringConverter: StringConverter<V>,
     keyType: String,
     valueType: String,
-) : TreeToDataConverter<K, V, Int, BSNode<K, V>, BSTree<K, V>>(
+) : TreeToDataConverter<K, V, Int, RandomBSNode<K, V>, RandomBSTree<K, V>>(
     keyStringConverter,
     valueStringConverter,
     keyType,
     valueType
 ) {
 
-    private fun serializeNode(node: BSNode<K, V>): NodeData = NodeData(
+    private fun serializeNode(node: RandomBSNode<K, V>): NodeData = NodeData(
         keyStringConverter.toString(node.key),
         valueStringConverter.toString(node.value),
         serializeMetadata(node.size),
@@ -30,17 +30,17 @@ class BsToDataConverter<K : Comparable<K>, V>(
         node.rightNode?.let { serializeNode(it) }
     )
 
-    private fun deserializeNode(node: NodeData): BSNode<K, V> {
-        val bsnode: BSNode<K, V> = BSNode(keyStringConverter.fromString(node.key), valueStringConverter.fromString(node.value))
+    private fun deserializeNode(node: NodeData): RandomBSNode<K, V> {
+        val bsnode: RandomBSNode<K, V> = RandomBSNode(keyStringConverter.fromString(node.key), valueStringConverter.fromString(node.value))
         if (node.metadata[0] != 'S') throw Exception("Wrong metadata. Impossible to deserialize")
         bsnode.size = deserializeMetadata(node.metadata)
-        node.leftNode?.let { deserializeNode(it) }
-        node.rightNode?.let { deserializeNode(it) }
+        bsnode.leftNode = node.leftNode?.let { deserializeNode(it) }
+        bsnode.rightNode = node.rightNode?.let { deserializeNode(it) }
         linkParents(bsnode)
         return bsnode
     }
 
-    override fun serializeTree(tree: BSTree<K, V>, treeName: String) = TreeData(
+    override fun serializeTree(tree: RandomBSTree<K, V>, treeName: String) = TreeData(
         name = treeName,
         treeType = "BS",
         keyType = keyType,
@@ -48,9 +48,9 @@ class BsToDataConverter<K : Comparable<K>, V>(
         root = tree.root?.let { serializeNode(it) }
     )
 
-    override fun deserializeTree(tree: TreeData): BSTree<K, V> {
+    override fun deserializeTree(tree: TreeData): RandomBSTree<K, V> {
         if (tree.treeType != "BS") throw Exception("Wrong tree type. Impossible to deserialize")
-        val bstree = BSTree<K, V>()
+        val bstree = RandomBSTree<K, V>()
         bstree.root = tree.root?.let { deserializeNode(it) }
         return bstree
     }

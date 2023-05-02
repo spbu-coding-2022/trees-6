@@ -1,11 +1,11 @@
 package redBlackTree
 
-import bstrees.model.trees.Node
+import bstrees.model.trees.BSNode
 import bstrees.model.trees.redBlack.RBNode
 import utils.TreesInvariants
 
 @Suppress("UNCHECKED_CAST")
-class RBTreeInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> : TreesInvariants<K, V, NODE_TYPE>() {
+class RBTreeInvariants<K : Comparable<K>, V, NODE_TYPE : BSNode<K, V, NODE_TYPE>> : TreesInvariants<K, V, NODE_TYPE>() {
     fun checkRBTreeInvariants(root: RBNode<K, V>?): Boolean {
         return root == null || root.parent == null && checkNodeInvariants(root as NODE_TYPE) && root.color == RBNode.Color.BLACK &&
                 checkRBNodeBlackHeightInvariant(root, 0, getBlackHeightExample(root)) &&

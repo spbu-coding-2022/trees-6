@@ -1,11 +1,11 @@
 package avlTree
 
-import bstrees.model.trees.Node
+import bstrees.model.trees.BSNode
 import bstrees.model.trees.avl.AvlNode
 import utils.TreesInvariants
 
 @Suppress("UNCHECKED_CAST")
-class AVLTreeInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> : TreesInvariants<K, V, NODE_TYPE>() {
+class AVLTreeInvariants<K : Comparable<K>, V, NODE_TYPE : BSNode<K, V, NODE_TYPE>> : TreesInvariants<K, V, NODE_TYPE>() {
     fun checkAvlTreeInvariants(root: AvlNode<K, V>?): Boolean = root == null || checkAvlHeightInvariants(root)
             && checkNodeInvariants(root as NODE_TYPE)
 

@@ -1,6 +1,6 @@
 package bstrees.model.trees.avl
 
-import bstrees.model.trees.BTree
+import bstrees.model.trees.BSTree
 
 /**
  * A class representing an AVL binary search tree.
@@ -9,7 +9,7 @@ import bstrees.model.trees.BTree
  * @generic <K> the type of key stored in the tree. It must be comparable
  * @generic <V> the type of value stored in the tree
  */
-class AvlTree<K : Comparable<K>, V> : BTree<K, V, AvlNode<K, V>>() {
+class AvlTree<K : Comparable<K>, V> : BSTree<K, V, AvlNode<K, V>>() {
 
     /**
      * A balancer class providing balancing of the current node of the tree

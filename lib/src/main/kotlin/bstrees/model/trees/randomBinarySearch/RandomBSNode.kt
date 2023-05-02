@@ -1,6 +1,6 @@
-package bstrees.model.trees.binarySearch
+package bstrees.model.trees.randomBinarySearch
 
-import bstrees.model.trees.Node
+import bstrees.model.trees.BSNode
 
 /**
  * A class representing a randomized binary search tree node.
@@ -9,7 +9,7 @@ import bstrees.model.trees.Node
  * @generic <K> the type of key stored in the tree. It must be comparable
  * @generic <V> the type of value stored in the tree
  */
-class BSNode<K : Comparable<K>, V>(key: K, value: V) : Node<K, V, BSNode<K, V>>(key, value) {
+class RandomBSNode<K : Comparable<K>, V>(key: K, value: V) : BSNode<K, V, RandomBSNode<K, V>>(key, value) {
 
     /**
      * The variable that contains size of the tree
