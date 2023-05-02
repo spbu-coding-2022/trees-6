@@ -1,17 +1,17 @@
 package app.view.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.view.assets.Selector
-import app.view.assets.databaseConnectionJson
-import app.view.assets.databaseConnectionNeo4j
-import app.view.assets.databaseConnectionSQL
+import app.view.assets.*
+import app.view.utils.Databases
 
 @Composable
 fun HomeScreen(
-    header: State<String>,
+    databaseName: State<String>,
     onClickChanges: (String) -> Unit,
     host: State<String>,
     username: State<String>,
@@ -22,9 +22,19 @@ fun HomeScreen(
     approveChange: () -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Selector(header, onClickChanges, listOf("Neo4j", "Json", "SQLite"))
-        when (header.value) {
-            "Neo4j" -> databaseConnectionNeo4j(
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Choose your database:")
+            Spacer(modifier = Modifier.width(10.dp))
+            Selector(
+                databaseName,
+                onClickChanges,
+                listOf(Databases.Neo4j.toString(), Databases.Json.toString(), Databases.SQLite.toString())
+            )
+        }
+
+        when (databaseName.value) {
+
+            Databases.Neo4j.toString() -> databaseConnectionNeo4j(
                 host,
                 username,
                 password,
@@ -34,13 +44,13 @@ fun HomeScreen(
                 approveChange
             )
 
-            "Json" -> databaseConnectionJson(
+            Databases.Json.toString() -> databaseConnectionJson(
                 host,
                 hostChange,
                 approveChange
             )
 
-            "SQLite" -> databaseConnectionSQL(
+            Databases.SQLite.toString() -> databaseConnectionSQL(
                 host,
                 hostChange,
                 approveChange

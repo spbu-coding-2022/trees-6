@@ -3,42 +3,51 @@ package app.presenter
 import bstrees.model.dataBases.NodeData
 import bstrees.model.dataBases.TreeData
 import app.presenter.utils.TreeHeightPresenter
+import kotlin.math.pow
 
 object LayoutPresenter {
 
-    private const val nodeRadius = 50
-    private const val edgeLength = 50
+    private const val windowHeight = 800
+    private const val windowWidth = 800
+    private var edgeLengthY = 10
 
 
-    fun setTreeLayout(tree: TreeData, windowHeight: Int, windowWidth: Int){
+    fun getNodeSize(tree: TreeData): Int{
+        val treeHeight = TreeHeightPresenter.getTreeHeight(tree)
+        return windowHeight / 5 / (treeHeight + 1)
+    }
+
+    fun setTreeLayout(tree: TreeData){
 
         val treeHeight = TreeHeightPresenter.getTreeHeight(tree)
 
+        edgeLengthY = windowHeight / (treeHeight + 1)
+
         tree.root?.let {root->
-            root.posX = 0
+            root.posX = 800
             root.posY = 0
 
-            setNodesLayout(root, treeHeight)
+            setNodesLayout(root, 0)
         }
+
     }
 
     // This method will assign coordinates to the nodes of the tree
     private fun setNodesLayout(node: NodeData, height: Int){
-        val xDiff = (edgeLength + 2 * nodeRadius) * height + (height - 1)
-        val yDiff = (edgeLength + 2 * nodeRadius)
-        node.leftNode?.let {leftNode->
-            leftNode.posX = node.posX - xDiff
-            leftNode.posY = node.posY + yDiff
+        val edgeLengthX = windowWidth / 2.0.pow(height + 1).toInt()
 
-            setNodesLayout(leftNode, height - 1)
+        node.leftNode?.let {leftNode->
+            leftNode.posX = node.posX - edgeLengthX
+            leftNode.posY = node.posY + edgeLengthY
+
+            setNodesLayout(leftNode, height + 1)
         }
 
         node.rightNode?.let { rightNode ->
-            rightNode.posX = node.posX + xDiff
-            rightNode.posY = node.posY + yDiff
+            rightNode.posX = node.posX + edgeLengthX
+            rightNode.posY = node.posY + edgeLengthY
 
-            setNodesLayout(rightNode, height - 1)
+            setNodesLayout(rightNode, height + 1)
         }
     }
-
 }

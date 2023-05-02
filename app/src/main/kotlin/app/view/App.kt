@@ -1,18 +1,15 @@
 package app.view
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.window.*
 import app.presenter.DataBasePresenter
 import app.presenter.TreePresenter
 import app.view.assets.ChildStack
+import app.view.utils.Databases
 import app.view.assets.ProvideComponentContext
-import app.view.screens.ChosingTypesScreen
-import app.view.screens.HomeScreen
-import app.view.screens.ScreenManager
-import app.view.screens.TreeSreen
+import app.view.screens.TreeView
+import app.view.screens.*
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
@@ -22,6 +19,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
+import java.awt.Dimension
 
 fun main() {
 
@@ -34,24 +32,29 @@ fun main() {
             title = "graph",
             state = rememberWindowState(
                 position = WindowPosition(alignment = Alignment.Center),
-                size = DpSize(800.dp, 800.dp)
             ),
-        ) {
+
+            ) {
+            window.minimumSize = Dimension(800, 800)
+            window.maximumSize = Dimension(800, 800)
 
             ProvideComponentContext(rootComponentContext) {
 
-                val header = remember { mutableStateOf("Choose your database") }
+                val databaseChoice = remember { mutableStateOf("▾") }
                 val databaseMetadata = remember { mutableStateOf("") }
-                val username = remember { mutableStateOf("Enter username") }
-                val password = remember { mutableStateOf("Enter password") }
+                val username = remember { mutableStateOf("") }
+                val password = remember { mutableStateOf("") }
                 val navigation = remember { StackNavigation<ScreenManager>() }
-                val treeType = remember { mutableStateOf("Choose your tree") }
-                val treeName = remember { mutableStateOf("Enter tree name") }
-                val keyType =
-                    remember { mutableStateOf("Choose the key type from the following options") }
-                val valueType =
-                    remember { mutableStateOf("Choose the value type from the following options") }
-                var treePresenter: TreePresenter
+                val treeType = remember { mutableStateOf("▾") }
+                val treeName = remember { mutableStateOf("") }
+                val keyType = remember { mutableStateOf("▾") }
+                val valueType = remember { mutableStateOf("▾") }
+                var isDirectoryNameWritten = true
+                var treePresenter: TreePresenter? = null
+
+                // for tree adding and deleting
+                val key = remember { mutableStateOf("Enter key") }
+                val value = remember { mutableStateOf("Enter value") }
 
                 ChildStack(
                     source = navigation,
@@ -63,70 +66,118 @@ fun main() {
 
                         is ScreenManager.HomeScreen -> {
 
-                            when (header.value) {
-
-                                "Neo4j" -> databaseMetadata.value = "Enter host"
-
-                                "Json" -> databaseMetadata.value = "Enter the directory name"
-
-                                "SQLite" -> databaseMetadata.value = "Enter the database name"
-
-                            }
-
                             HomeScreen(
-                                header,
-                                { newHeader -> header.value = newHeader },
+                                databaseChoice,
+                                { newHeader -> databaseChoice.value = newHeader },
                                 databaseMetadata,
                                 username,
                                 password,
-                                { newMeta -> databaseMetadata.value = newMeta },
+                                { newMeta ->
+                                    databaseMetadata.value =
+                                        if (
+                                            databaseMetadata.value == "" &&
+                                            databaseChoice.value == Databases.Json.toString() &&
+                                            !isDirectoryNameWritten
+                                        )
+                                            "jsondir"
+                                        else newMeta
+                                },
                                 { newUsername -> username.value = newUsername },
                                 { newPassword -> password.value = newPassword },
-                                { navigation.push(ScreenManager.TreeScreen) }
+                                {
+                                    if (databaseMetadata.value == "") isDirectoryNameWritten = false
+                                    navigation.push(ScreenManager.TreeChoosingScreen)
+                                }
                             )
 
                         }
 
-                        is ScreenManager.TreeScreen -> {
+                        is ScreenManager.TreeChoosingScreen -> {
 
-                            when (header.value) {
+                            treePresenter = when (databaseChoice.value) {
 
-                                "Neo4j" -> treePresenter = DataBasePresenter.connectNeo4j(
+                                Databases.Neo4j.toString() -> DataBasePresenter.connectNeo4j(
                                     databaseMetadata.value,
                                     username.value,
                                     password.value
                                 )
 
-                                "Json" -> treePresenter = DataBasePresenter.connectJson(databaseMetadata.value)
+                                Databases.Json.toString() -> DataBasePresenter.connectJson(databaseMetadata.value)
 
-                                "SQLite" -> treePresenter = DataBasePresenter.connectSQL(databaseMetadata.value)
+                                Databases.SQLite.toString() -> DataBasePresenter.connectSQL(databaseMetadata.value)
 
                                 else -> throw Exception("Incorrect database")
 
                             }
 
-                            TreeSreen(
-                                treeType,
-                                { newHeader -> treeType.value = newHeader },
-                                treePresenter,
-                                treeName = treeName,
-                                { newName -> treeName.value = newName },
-                                back = navigation::pop,
-                                { navigation.push(ScreenManager.ChosingTypesScreen) },
-                                keyType,
-                                valueType
-                            )
+                            treePresenter?.let { treePresenter ->
+                                TreeChoosingScreen(
+                                    treeType,
+                                    { newHeader -> treeType.value = newHeader },
+                                    treePresenter,
+                                    treeName = treeName,
+                                    { newName -> treeName.value = newName },
+                                    back = navigation::pop,
+                                    { navigation.push(ScreenManager.TypesChoosingScreen) },
+                                    { navigation.push(ScreenManager.TreeScreen) }
+                                )
+                            }
 
                         }
 
-                        is ScreenManager.ChosingTypesScreen -> {
-                            ChosingTypesScreen(
-                                keyType,
-                                valueType,
-                                { newKeyType -> keyType.value = newKeyType },
-                                { newValueType -> valueType.value = newValueType },
-                                approve = navigation::pop
-                            )
+                        is ScreenManager.TypesChoosingScreen -> {
+                            treePresenter?.let { treePresenter ->
+                                TypesChoosingScreen(
+                                    treePresenter,
+                                    treeName,
+                                    treeType,
+                                    keyType,
+                                    valueType,
+                                    { newKeyType -> keyType.value = newKeyType },
+                                    { newValueType -> valueType.value = newValueType },
+                                    back = navigation::pop,
+                                    approve = { navigation.push(ScreenManager.TreeScreen) }
+                                )
+                            }
+                        }
+
+                        is ScreenManager.TreeScreen -> {
+                            treePresenter?.let { treePresenter ->
+                                TreeView(
+                                    treePresenter,
+                                    addNode = { navigation.push(ScreenManager.AddNodeScreen) },
+                                    deleteNode = { navigation.push(ScreenManager.DeleteNodeScreen) },
+                                )
+                            }
+                        }
+
+                        is ScreenManager.AddNodeScreen -> {
+                            key.value = "Enter key"
+                            value.value = "Enter value"
+                            treePresenter?.let { treePresenter ->
+                                AddNodeScreen(
+                                    treePresenter,
+                                    key,
+                                    value,
+                                    { newKey -> key.value = newKey },
+                                    { newValue -> value.value = newValue },
+                                    back = { navigation.pop() },
+                                    approve = { navigation.pop() }
+                                )
+                            }
+                        }
+
+                        is ScreenManager.DeleteNodeScreen -> {
+                            key.value = "Enter key"
+                            treePresenter?.let { treePresenter ->
+                                DeleteNodeScreen(
+                                    treePresenter,
+                                    key,
+                                    { newKey -> key.value = newKey },
+                                    back = { navigation.pop() },
+                                    approve = { navigation.pop() }
+                                )
+                            }
                         }
                     }
                 }
