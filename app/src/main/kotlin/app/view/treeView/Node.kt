@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.view.screens.NODE_SIZE
+import app.view.screens.nodeSize
 import bstrees.model.dataBases.NodeData
 
 @Composable
@@ -31,7 +31,7 @@ fun Node(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>) {
         modifier = Modifier
             .offset { IntOffset(nodeCoords.value.first.toInt(), nodeCoords.value.second.toInt()) }
             .background(Color.Red, CircleShape)
-            .size(NODE_SIZE.dp)
+            .size(nodeSize.dp)
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     nodeCoords.value = Pair(
@@ -47,8 +47,8 @@ fun Node(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>) {
                 else Color.Magenta,
                 shape = CircleShape
             )
-            .width(NODE_SIZE.dp)
-            .height(NODE_SIZE.dp)
+            .width(nodeSize.dp)
+            .height(nodeSize.dp)
             .border(
                 width = 1.dp,
                 color = Color.Blue,
@@ -63,13 +63,13 @@ fun Node(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>) {
                 text = "Key: ${node.value.key}",
                 textAlign = TextAlign.Center,
                 color = Color.White,
-                fontSize = if (((NODE_SIZE / 4)) > 20) 20.sp else (NODE_SIZE / 4).sp
+                fontSize = if (((nodeSize / 4)) > 20) 20.sp else (nodeSize / 4).sp
             )
             Text(
                 text = "Value: ${node.value.value}",
                 textAlign = TextAlign.Center,
                 color = Color.White,
-                fontSize = if (((NODE_SIZE / 4)) > 20) 20.sp else (NODE_SIZE / 4).sp
+                fontSize = if (((nodeSize / 4)) > 20) 20.sp else (nodeSize / 4).sp
             )
         }
     }

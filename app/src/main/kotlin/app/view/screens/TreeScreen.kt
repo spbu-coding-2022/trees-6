@@ -12,9 +12,9 @@ import app.presenter.LayoutPresenter
 import app.presenter.TreePresenter
 import app.view.treeView.Tree
 
-
-const val NODE_SIZE = 30
 const val WINDOW_SIZE = 800
+
+var nodeSize = 30
 
 @Composable
 fun TreeActionButtons(
@@ -24,17 +24,22 @@ fun TreeActionButtons(
 ) {
 
     Row(modifier = Modifier.background(Color.Cyan).fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-        Button(onClick = addNode) {
+        Button(onClick = {
+            addNode()
+        }) {
             Text("Add Node")
         }
 
-        Spacer(modifier = Modifier.width(NODE_SIZE.dp))
+        Spacer(modifier = Modifier.width(nodeSize.dp))
 
-        Button(onClick = deleteNode) {
+        Button(onClick =
+        {
+            deleteNode()
+        }){
             Text(text = "Delete Node")
         }
 
-        Spacer(modifier = Modifier.width(NODE_SIZE.dp))
+        Spacer(modifier = Modifier.width(nodeSize.dp))
 
         Button(onClick = {
             treePresenter.saveTree()
@@ -51,13 +56,12 @@ fun TreeView(
     deleteNode: () -> Unit,
 ) {
     val tree = treePresenter.tree
-    LayoutPresenter.setTreeLayout(tree, WINDOW_SIZE, WINDOW_SIZE)
     Column {
         TreeActionButtons(treePresenter, addNode, deleteNode)
-
+        LayoutPresenter.setTreeLayout(tree)
+        nodeSize = LayoutPresenter.getNodeSize(tree)
         Box(
             modifier = Modifier.height(WINDOW_SIZE.dp).width(WINDOW_SIZE.dp),
-
         ) {
 
             tree.root?.let { root ->

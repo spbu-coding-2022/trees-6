@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import app.view.screens.NODE_SIZE
+import app.view.screens.nodeSize
 import app.view.screens.WINDOW_SIZE
 import bstrees.model.dataBases.NodeData
 
@@ -22,8 +22,8 @@ fun Edge(
         modifier = modifier.size(WINDOW_SIZE.dp),
         onDraw = {
             drawLine(
-                start = Offset(x = node1.value.posX.toFloat() + NODE_SIZE, y = node1.value.posY.toFloat() + NODE_SIZE),
-                end = Offset(x = node2.value.posX.toFloat() + NODE_SIZE, y = node2.value.posY.toFloat() + NODE_SIZE),
+                start = Offset(x = node1.value.posX.toFloat() + nodeSize, y = node1.value.posY.toFloat() + nodeSize),
+                end = Offset(x = node2.value.posX.toFloat() + nodeSize, y = node2.value.posY.toFloat() + nodeSize),
                 color = Color.Black,
                 strokeWidth = 3F
             )
