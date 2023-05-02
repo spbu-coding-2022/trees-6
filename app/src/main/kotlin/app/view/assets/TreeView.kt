@@ -13,12 +13,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import bstrees.model.dataBases.serialize.types.SerializableNode
+import bstrees.model.dataBases.NodeData
 import app.presenter.TreePresenter
 
 @Composable
 fun Tree(
-    root: State<SerializableNode>,
+    root: State<NodeData>,
     nodeSize: Double,
     xOffset: Double,
     yOffset: Double,
@@ -55,7 +55,7 @@ fun Tree(
 
 @Composable
 fun Node(
-    node: State<SerializableNode>,
+    node: State<NodeData>,
     nodeSize: Double,
 ) {
 

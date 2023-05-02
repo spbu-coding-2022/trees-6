@@ -2,7 +2,7 @@ package bstrees.model.dataBases.reps
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import bstrees.model.dataBases.serialize.types.SerializableTree
+import bstrees.model.dataBases.TreeData
 import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import java.io.*
@@ -12,7 +12,7 @@ import java.nio.file.FileAlreadyExistsException
 private val logger = KotlinLogging.logger { }
 
 
-class JsonTreeRepo(private val dir: String) : DBTreeRepo {
+class JsonTreeRepo(private val dir: String) : TreeRepo {
 
     init {
         makeDir(dir)
@@ -30,7 +30,7 @@ class JsonTreeRepo(private val dir: String) : DBTreeRepo {
         return Path(dir, typeTree, "${treeName}.json").toString()
     }
 
-    override fun getTree(treeName: String, treeType: String): SerializableTree? {
+    override fun getTree(treeName: String, treeType: String): TreeData? {
         val filePath = getPathToFile(treeName, treeType)
         lateinit var file: FileReader
         var fileFound = true
@@ -39,7 +39,7 @@ class JsonTreeRepo(private val dir: String) : DBTreeRepo {
             file = FileReader(filePath)
             val jsonText = file.readText()
 
-            Json.decodeFromString<SerializableTree>(jsonText)
+            Json.decodeFromString<TreeData>(jsonText)
         } catch (e: FileNotFoundException) {
             logger.warn { "[JSON] Tree file not found" }
             fileFound = false
@@ -55,8 +55,8 @@ class JsonTreeRepo(private val dir: String) : DBTreeRepo {
         }
     }
 
-    override fun setTree(serializableTree: SerializableTree) {
-        val filePath = getPathToFile(serializableTree.name, serializableTree.treeType)
+    override fun setTree(treeData: TreeData) {
+        val filePath = getPathToFile(treeData.name, treeData.treeType)
         lateinit var file: FileWriter
         var fileAlreadyExists = false
 
@@ -66,7 +66,7 @@ class JsonTreeRepo(private val dir: String) : DBTreeRepo {
                 throw FileAlreadyExistsException("")
             }
             file = FileWriter(filePath)
-            file.write(Json.encodeToString(serializableTree))
+            file.write(Json.encodeToString(treeData))
         } catch (e: FileAlreadyExistsException) {
             logger.warn { "[JSON] A tree with that name already exists" }
         } catch (e: Exception) {
@@ -78,7 +78,7 @@ class JsonTreeRepo(private val dir: String) : DBTreeRepo {
                 file.close()
             }
         }
-        logger.info { "[JSON] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
+        logger.info { "[JSON] Set tree - treeName: ${treeData.name}, treeType: ${treeData.treeType}" }
     }
 
     override fun deleteTree(treeName: String, treeType: String) {

@@ -1,7 +1,7 @@
 package bstrees.model.dataBases.reps
 
-import bstrees.model.dataBases.serialize.types.SerializableNode
-import bstrees.model.dataBases.serialize.types.SerializableTree
+import bstrees.model.dataBases.NodeData
+import bstrees.model.dataBases.TreeData
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -60,7 +60,7 @@ class NodeEntity(id: EntityID<Int>) : IntEntity(id) {
     var tree by TreeEntity referencedOn NodesTable.tree
 }
 
-class SQLTreeRepo(dbName: String) : DBTreeRepo {
+class SQLTreeRepo(dbName: String) : TreeRepo {
 
     init {
         connectDB(dbName)
@@ -82,7 +82,7 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
         logger.info { "[SQLite] Database tables have been created successfully" }
     }
 
-    override fun getTree(treeName: String, treeType: String): SerializableTree? {
+    override fun getTree(treeName: String, treeType: String): TreeData? {
         var treeEntity: TreeEntity? = null
         transaction {
             treeEntity = TreeEntity.find { (TreesTable.treeName eq treeName) and (TreesTable.treeType eq treeType) }
@@ -94,10 +94,10 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
             return null
         }
 
-        var serializableTree: SerializableTree? = null
+        var treeData: TreeData? = null
         transaction {
             treeEntity?.let { tree ->
-                serializableTree = SerializableTree(
+                treeData = TreeData(
                     treeName,
                     tree.treeType,
                     tree.keyType,
@@ -109,11 +109,11 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
 
         logger.info { "[SQLite] Got tree - treeName: $treeName, treeType: $treeType" }
 
-        return serializableTree
+        return treeData
     }
 
-    private fun NodeEntity.toSerializableEntity(treeEntity: TreeEntity): SerializableNode {
-        return SerializableNode(
+    private fun NodeEntity.toSerializableEntity(treeEntity: TreeEntity): NodeData {
+        return NodeData(
             this@toSerializableEntity.key,
             this@toSerializableEntity.value,
             this@toSerializableEntity.metadata,
@@ -124,24 +124,24 @@ class SQLTreeRepo(dbName: String) : DBTreeRepo {
         )
     }
 
-    override fun setTree(serializableTree: SerializableTree) {
-        deleteTree(serializableTree.name, serializableTree.treeType)
+    override fun setTree(treeData: TreeData) {
+        deleteTree(treeData.name, treeData.treeType)
 
         transaction {
             val newTree = TreeEntity.new {
-                treeName = serializableTree.name
-                treeType = serializableTree.treeType
-                keyType = serializableTree.keyType
-                valueType = serializableTree.valueType
+                treeName = treeData.name
+                treeType = treeData.treeType
+                keyType = treeData.keyType
+                valueType = treeData.valueType
             }
 
-            newTree.root = serializableTree.root?.toNodeEntity(newTree)
+            newTree.root = treeData.root?.toNodeEntity(newTree)
         }
 
-        logger.info { "[SQLite] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
+        logger.info { "[SQLite] Set tree - treeName: ${treeData.name}, treeType: ${treeData.treeType}" }
     }
 
-    private fun SerializableNode.toNodeEntity(treeEntity: TreeEntity): NodeEntity {
+    private fun NodeData.toNodeEntity(treeEntity: TreeEntity): NodeEntity {
         return NodeEntity.new {
             key = this@toNodeEntity.key
             value = this@toNodeEntity.value
