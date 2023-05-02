@@ -86,13 +86,13 @@ fun main() {
                                 { newPassword -> password.value = newPassword },
                                 {
                                     if (databaseMetadata.value == "") isDirectoryNameWritten = false
-                                    navigation.push(ScreenManager.TreeScreen)
+                                    navigation.push(ScreenManager.TreeChoosingScreen)
                                 }
                             )
 
                         }
 
-                        is ScreenManager.TreeScreen -> {
+                        is ScreenManager.TreeChoosingScreen -> {
 
                             treePresenter = when (databaseChoice.value) {
 
@@ -118,16 +118,16 @@ fun main() {
                                     treeName = treeName,
                                     { newName -> treeName.value = newName },
                                     back = navigation::pop,
-                                    { navigation.push(ScreenManager.ChosingTypesScreen) },
-                                    { navigation.push(ScreenManager.TreeView) }
+                                    { navigation.push(ScreenManager.TypesChoosingScreen) },
+                                    { navigation.push(ScreenManager.TreeScreen) }
                                 )
                             }
 
                         }
 
-                        is ScreenManager.ChosingTypesScreen -> {
+                        is ScreenManager.TypesChoosingScreen -> {
                             treePresenter?.let { treePresenter ->
-                                ChosingTypesScreen(
+                                TypesChoosingScreen(
                                     treePresenter,
                                     treeName,
                                     treeType,
@@ -136,12 +136,12 @@ fun main() {
                                     { newKeyType -> keyType.value = newKeyType },
                                     { newValueType -> valueType.value = newValueType },
                                     back = navigation::pop,
-                                    approve = { navigation.push(ScreenManager.TreeView) }
+                                    approve = { navigation.push(ScreenManager.TreeScreen) }
                                 )
                             }
                         }
 
-                        is ScreenManager.TreeView -> {
+                        is ScreenManager.TreeScreen -> {
                             treePresenter?.let { treePresenter ->
                                 TreeView(
                                     treePresenter,

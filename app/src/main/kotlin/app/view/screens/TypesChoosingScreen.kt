@@ -12,7 +12,7 @@ import app.presenter.TreePresenter
 import app.view.assets.Selector
 
 @Composable
-fun ChosingTypesScreen(
+fun TypesChoosingScreen(
     treePresenter: TreePresenter,
     treeName: State<String>,
     treeType: State<String>,

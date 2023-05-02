@@ -9,13 +9,13 @@ sealed class ScreenManager : Parcelable {
     object HomeScreen : ScreenManager()
 
     @Parcelize
-    object TreeScreen : ScreenManager()
+    object TreeChoosingScreen : ScreenManager()
 
     @Parcelize
-    object ChosingTypesScreen: ScreenManager()
+    object TypesChoosingScreen: ScreenManager()
 
     @Parcelize
-    object TreeView: ScreenManager()
+    object TreeScreen: ScreenManager()
 
     @Parcelize
     object AddNodeScreen: ScreenManager()
