@@ -28,7 +28,7 @@ bsTree.delete("bruh")
 ## Storing BSTs
 You can store any tree in any of the three databases presented. These are `Neo4j`, `SQLite` and `Json`. You can choose the types of key and value on wich the tree is built, but supported only string and int if you want to store it
 
-To use `Neo4j`, you need to install the desktop application `Neo4j` and `Doсker` and perform the necessary manipulations in the console
+To use `Neo4j`, you need to install the desktop application `Doсker`, open it and perform `neo4j_up.sh` with with the necessary configurations, which are in the `CONTAINER.conf` file
 
 # User Interface
 
