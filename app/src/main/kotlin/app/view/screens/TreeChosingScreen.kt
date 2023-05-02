@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.presenter.TreePresenter
 import app.view.assets.Selector
+import app.view.utils.Trees
 
 @Composable
 fun TreeActions(
@@ -47,7 +48,7 @@ fun TreeActions(
 }
 
 @Composable
-fun TreeSreen(
+fun TreeChoosingScreen(
     treeType: State<String>,
     onClickChanges: (String) -> Unit,
     treePresenter: TreePresenter,
@@ -62,7 +63,7 @@ fun TreeSreen(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Choose your tree:")
             Spacer(modifier = Modifier.width(10.dp))
-            Selector(treeType, onClickChanges, listOf("BS", "AVL", "RB"))
+            Selector(treeType, onClickChanges, listOf(Trees.BS.toString(), Trees.RB.toString(), Trees.AVL.toString()))
         }
 
         if (treeType.value != "▾") {

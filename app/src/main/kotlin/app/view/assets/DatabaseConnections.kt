@@ -13,19 +13,17 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun databaseConnectionJson(
-    host: State<String>,
+    directory: State<String>,
     hostChange: (String) -> Unit,
     approveChange: () -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
 
         OutlinedTextField(
-            value = host.value,
+            value = directory.value,
             onValueChange = hostChange,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = if (host.value == "Enter the directory name") Color.Gray else Color.Black,
-                backgroundColor = Color.White,
-            )
+            label = { Text("Enter the directory name") },
+            placeholder = { Text("JsonDir") }
         )
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -38,17 +36,18 @@ fun databaseConnectionJson(
 
 @Composable
 fun databaseConnectionSQL(
-    host: State<String>,
+    name: State<String>,
     hostChange: (String) -> Unit,
     approveChange: () -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
 
         OutlinedTextField(
-            value = host.value,
+            value = name.value,
             onValueChange = hostChange,
+            label = { Text("Enter the database name") },
             colors = TextFieldDefaults.textFieldColors(
-                textColor = if (host.value == "Enter the database name") Color.Gray else Color.Black,
+                textColor = if (name.value == "Enter the database name") Color.Gray else Color.Black,
                 backgroundColor = Color.White,
             )
         )
@@ -63,7 +62,7 @@ fun databaseConnectionSQL(
 
 @Composable
 fun databaseConnectionNeo4j(
-    host: State<String>,
+    databaseMetadata: State<String>,
     username: State<String>,
     password: State<String>,
     hostChange: (String) -> Unit,
@@ -74,10 +73,11 @@ fun databaseConnectionNeo4j(
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
 
         OutlinedTextField(
-            value = host.value,
+            value = databaseMetadata.value,
             onValueChange = hostChange,
+            label = { Text("Enter host") },
             colors = TextFieldDefaults.textFieldColors(
-                textColor = if (host.value == "Enter host") Color.Gray else Color.Black,
+                textColor = if (databaseMetadata.value == "Enter host") Color.Gray else Color.Black,
                 backgroundColor = Color.White,
             )
         )
@@ -87,6 +87,7 @@ fun databaseConnectionNeo4j(
         OutlinedTextField(
             value = username.value,
             onValueChange = usernameChange,
+            label = { Text("Enter username") },
             colors = TextFieldDefaults.textFieldColors(
                 textColor = if (username.value == "Enter username") Color.Gray else Color.Black,
                 backgroundColor = Color.White,
@@ -98,6 +99,7 @@ fun databaseConnectionNeo4j(
         OutlinedTextField(
             value = password.value,
             onValueChange = passwordChange,
+            label = { Text("Enter password") },
             colors = TextFieldDefaults.textFieldColors(
                 textColor = if (password.value == "Enter password") Color.Gray else Color.Black,
                 backgroundColor = Color.White,

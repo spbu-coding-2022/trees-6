@@ -6,10 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.view.assets.Selector
-import app.view.assets.databaseConnectionJson
-import app.view.assets.databaseConnectionNeo4j
-import app.view.assets.databaseConnectionSQL
+import app.view.assets.*
+import app.view.utils.Databases
 
 @Composable
 fun HomeScreen(
@@ -27,11 +25,16 @@ fun HomeScreen(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Choose your database:")
             Spacer(modifier = Modifier.width(10.dp))
-            Selector(databaseName, onClickChanges, listOf("Neo4j", "Json", "SQLite"))
+            Selector(
+                databaseName,
+                onClickChanges,
+                listOf(Databases.Neo4j.toString(), Databases.Json.toString(), Databases.SQLite.toString())
+            )
         }
 
         when (databaseName.value) {
-            "Neo4j" -> databaseConnectionNeo4j(
+
+            Databases.Neo4j.toString() -> databaseConnectionNeo4j(
                 host,
                 username,
                 password,
@@ -41,13 +44,13 @@ fun HomeScreen(
                 approveChange
             )
 
-            "Json" -> databaseConnectionJson(
+            Databases.Json.toString() -> databaseConnectionJson(
                 host,
                 hostChange,
                 approveChange
             )
 
-            "SQLite" -> databaseConnectionSQL(
+            Databases.SQLite.toString() -> databaseConnectionSQL(
                 host,
                 hostChange,
                 approveChange

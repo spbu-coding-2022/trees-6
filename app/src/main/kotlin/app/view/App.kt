@@ -6,6 +6,7 @@ import androidx.compose.ui.window.*
 import app.presenter.DataBasePresenter
 import app.presenter.TreePresenter
 import app.view.assets.ChildStack
+import app.view.utils.Databases
 import app.view.assets.ProvideComponentContext
 import app.view.assets.TreeView
 import app.view.screens.*
@@ -41,13 +42,14 @@ fun main() {
 
                 val databaseChoice = remember { mutableStateOf("▾") }
                 val databaseMetadata = remember { mutableStateOf("") }
-                val username = remember { mutableStateOf("Enter username") }
-                val password = remember { mutableStateOf("Enter password") }
+                val username = remember { mutableStateOf("") }
+                val password = remember { mutableStateOf("") }
                 val navigation = remember { StackNavigation<ScreenManager>() }
                 val treeType = remember { mutableStateOf("▾") }
                 val treeName = remember { mutableStateOf("Enter tree name") }
                 val keyType = remember { mutableStateOf("▾") }
                 val valueType = remember { mutableStateOf("▾") }
+                var isDirectoryNameWritten = true
                 var treePresenter: TreePresenter? = null
 
                 // for tree adding and deleting
@@ -64,26 +66,23 @@ fun main() {
 
                         is ScreenManager.HomeScreen -> {
 
-                            when (databaseChoice.value) {
-
-                                "Neo4j" -> databaseMetadata.value = "Enter host"
-
-                                "Json" -> databaseMetadata.value = "Enter the directory name"
-
-                                "SQLite" -> databaseMetadata.value = "Enter the database name"
-
-                            }
-
                             HomeScreen(
                                 databaseChoice,
                                 { newHeader -> databaseChoice.value = newHeader },
                                 databaseMetadata,
                                 username,
                                 password,
-                                { newMeta -> databaseMetadata.value = newMeta },
+                                { newMeta ->
+                                    databaseMetadata.value =
+                                        if (databaseMetadata.value == "" && databaseChoice.value == "Json" && !isDirectoryNameWritten) "JsonDir"
+                                        else newMeta
+                                },
                                 { newUsername -> username.value = newUsername },
                                 { newPassword -> password.value = newPassword },
-                                { navigation.push(ScreenManager.TreeScreen) }
+                                {
+                                    navigation.push(ScreenManager.TreeScreen)
+                                    if (databaseMetadata.value == "") isDirectoryNameWritten = false
+                                }
                             )
 
                         }
@@ -92,22 +91,22 @@ fun main() {
 
                             treePresenter = when (databaseChoice.value) {
 
-                                "Neo4j" -> DataBasePresenter.connectNeo4j(
+                                Databases.Neo4j.toString() -> DataBasePresenter.connectNeo4j(
                                     databaseMetadata.value,
                                     username.value,
                                     password.value
                                 )
 
-                                "Json" -> DataBasePresenter.connectJson(databaseMetadata.value)
+                                Databases.Json.toString() -> DataBasePresenter.connectJson(databaseMetadata.value)
 
-                                "SQLite" -> DataBasePresenter.connectSQL(databaseMetadata.value)
+                                Databases.SQLite.toString() -> DataBasePresenter.connectSQL(databaseMetadata.value)
 
                                 else -> throw Exception("Incorrect database")
 
                             }
 
                             treePresenter?.let { treePresenter ->
-                                TreeSreen(
+                                TreeChoosingScreen(
                                     treeType,
                                     { newHeader -> treeType.value = newHeader },
                                     treePresenter,
