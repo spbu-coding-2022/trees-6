@@ -1,9 +1,7 @@
 package app.view
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.window.*
 import app.presenter.DataBasePresenter
 import app.presenter.TreePresenter
@@ -35,23 +33,21 @@ fun main() {
                 position = WindowPosition(alignment = Alignment.Center),
             ),
 
-        ) {
+            ) {
             window.minimumSize = Dimension(800, 800)
             window.maximumSize = Dimension(800, 800)
 
             ProvideComponentContext(rootComponentContext) {
 
-                val header = remember { mutableStateOf("Choose your database") }
+                val databaseChoice = remember { mutableStateOf("▾") }
                 val databaseMetadata = remember { mutableStateOf("") }
                 val username = remember { mutableStateOf("Enter username") }
                 val password = remember { mutableStateOf("Enter password") }
                 val navigation = remember { StackNavigation<ScreenManager>() }
-                val treeType = remember { mutableStateOf("Choose your tree") }
+                val treeType = remember { mutableStateOf("▾") }
                 val treeName = remember { mutableStateOf("Enter tree name") }
-                val keyType =
-                    remember { mutableStateOf("Choose the key type from the following options") }
-                val valueType =
-                    remember { mutableStateOf("Choose the value type from the following options") }
+                val keyType = remember { mutableStateOf("▾") }
+                val valueType = remember { mutableStateOf("▾") }
                 var treePresenter: TreePresenter? = null
 
                 // for tree adding and deleting
@@ -68,7 +64,7 @@ fun main() {
 
                         is ScreenManager.HomeScreen -> {
 
-                            when (header.value) {
+                            when (databaseChoice.value) {
 
                                 "Neo4j" -> databaseMetadata.value = "Enter host"
 
@@ -79,8 +75,8 @@ fun main() {
                             }
 
                             HomeScreen(
-                                header,
-                                { newHeader -> header.value = newHeader },
+                                databaseChoice,
+                                { newHeader -> databaseChoice.value = newHeader },
                                 databaseMetadata,
                                 username,
                                 password,
@@ -94,7 +90,7 @@ fun main() {
 
                         is ScreenManager.TreeScreen -> {
 
-                            treePresenter = when (header.value) {
+                            treePresenter = when (databaseChoice.value) {
 
                                 "Neo4j" -> DataBasePresenter.connectNeo4j(
                                     databaseMetadata.value,
@@ -152,9 +148,9 @@ fun main() {
                         }
 
                         is ScreenManager.AddNodeScreen -> {
-                            key.value =  "Enter key"
-                            value.value =  "Enter value"
-                            treePresenter?.let {treePresenter ->
+                            key.value = "Enter key"
+                            value.value = "Enter value"
+                            treePresenter?.let { treePresenter ->
                                 AddNodeScreen(
                                     treePresenter,
                                     key,
@@ -168,7 +164,7 @@ fun main() {
                         }
 
                         is ScreenManager.DeleteNodeScreen -> {
-                            key.value =  "Enter key"
+                            key.value = "Enter key"
                             treePresenter?.let { treePresenter ->
                                 DeleteNodeScreen(
                                     treePresenter,

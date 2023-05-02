@@ -1,13 +1,14 @@
 package app.view.assets
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -18,9 +19,18 @@ fun databaseConnectionJson(
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
 
-        OutlinedTextField(value = host.value, onValueChange = hostChange)
+        OutlinedTextField(
+            value = host.value,
+            onValueChange = hostChange,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = if (host.value == "Enter the directory name") Color.Gray else Color.Black,
+                backgroundColor = Color.White,
+            )
+        )
 
-        Button(onClick = approveChange){
+        Spacer(modifier = Modifier.height(15.dp))
+
+        Button(onClick = approveChange) {
             Text("Approve")
         }
     }
@@ -34,9 +44,18 @@ fun databaseConnectionSQL(
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
 
-        OutlinedTextField(value = host.value, onValueChange = hostChange)
+        OutlinedTextField(
+            value = host.value,
+            onValueChange = hostChange,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = if (host.value == "Enter the database name") Color.Gray else Color.Black,
+                backgroundColor = Color.White,
+            )
+        )
 
-        Button(onClick = approveChange){
+        Spacer(modifier = Modifier.height(15.dp))
+
+        Button(onClick = approveChange) {
             Text("Approve")
         }
     }
@@ -54,13 +73,40 @@ fun databaseConnectionNeo4j(
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
 
-        OutlinedTextField(value = host.value, onValueChange = hostChange)
+        OutlinedTextField(
+            value = host.value,
+            onValueChange = hostChange,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = if (host.value == "Enter host") Color.Gray else Color.Black,
+                backgroundColor = Color.White,
+            )
+        )
 
-        OutlinedTextField(value = username.value, onValueChange = usernameChange)
+        Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedTextField(value = password.value, onValueChange = passwordChange)
+        OutlinedTextField(
+            value = username.value,
+            onValueChange = usernameChange,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = if (username.value == "Enter username") Color.Gray else Color.Black,
+                backgroundColor = Color.White,
+            )
+        )
 
-        Button(onClick = approveChange){
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = password.value,
+            onValueChange = passwordChange,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = if (password.value == "Enter password") Color.Gray else Color.Black,
+                backgroundColor = Color.White,
+            )
+        )
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        Button(onClick = approveChange) {
             Text("Approve")
         }
 
