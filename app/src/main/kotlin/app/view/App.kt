@@ -51,14 +51,14 @@ fun main() {
                     remember { mutableStateOf("Choose the key type from the following options") }
                 val valueType =
                     remember { mutableStateOf("Choose the value type from the following options") }
-                var treePresenter: TreePresenter
+                var treePresenter: TreePresenter? = null
 
                 ChildStack(
                     source = navigation,
                     initialStack = { listOf(ScreenManager.HomeScreen) },
                     handleBackButton = true,
                     animation = stackAnimation(fade() + scale()),
-                ) { screen ->
+                )   { screen ->
                     when (screen) {
 
                         is ScreenManager.HomeScreen -> {
@@ -89,44 +89,56 @@ fun main() {
 
                         is ScreenManager.TreeScreen -> {
 
-                            when (header.value) {
+                            treePresenter = when (header.value) {
 
-                                "Neo4j" -> treePresenter = DataBasePresenter.connectNeo4j(
+                                "Neo4j" -> DataBasePresenter.connectNeo4j(
                                     databaseMetadata.value,
                                     username.value,
                                     password.value
                                 )
 
-                                "Json" -> treePresenter = DataBasePresenter.connectJson(databaseMetadata.value)
+                                "Json" -> DataBasePresenter.connectJson(databaseMetadata.value)
 
-                                "SQLite" -> treePresenter = DataBasePresenter.connectSQL(databaseMetadata.value)
+                                "SQLite" -> DataBasePresenter.connectSQL(databaseMetadata.value)
 
                                 else -> throw Exception("Incorrect database")
 
                             }
 
-                            TreeSreen(
-                                treeType,
-                                { newHeader -> treeType.value = newHeader },
-                                treePresenter,
-                                treeName = treeName,
-                                { newName -> treeName.value = newName },
-                                back = navigation::pop,
-                                { navigation.push(ScreenManager.ChosingTypesScreen) },
-                                keyType,
-                                valueType
-                            )
+                            treePresenter?.let { treePresenter ->
+                                TreeSreen(
+                                    treeType,
+                                    { newHeader -> treeType.value = newHeader },
+                                    treePresenter,
+                                    treeName = treeName,
+                                    { newName -> treeName.value = newName },
+                                    back = navigation::pop,
+                                    { navigation.push(ScreenManager.ChosingTypesScreen) },
+                                    keyType,
+                                    valueType
+                                )
+                            }
 
                         }
 
                         is ScreenManager.ChosingTypesScreen -> {
-                            ChosingTypesScreen(
-                                keyType,
-                                valueType,
-                                { newKeyType -> keyType.value = newKeyType },
-                                { newValueType -> valueType.value = newValueType },
-                                approve = navigation::pop
-                            )
+                            treePresenter?.let { treePresenter ->
+                                ChosingTypesScreen(
+                                    treePresenter,
+                                    treeName,
+                                    treeType,
+                                    keyType,
+                                    valueType,
+                                    { newKeyType -> keyType.value = newKeyType },
+                                    { newValueType -> valueType.value = newValueType },
+                                    back = navigation::pop,
+                                    approve= { navigation.push(ScreenManager.TreeView) }
+                                )
+                            }
+                        }
+
+                        is ScreenManager.TreeView -> {
+
                         }
                     }
                 }

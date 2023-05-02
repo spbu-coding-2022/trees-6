@@ -10,14 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.presenter.TreePresenter
 import app.view.assets.Selector
 
 @Composable
 fun ChosingTypesScreen(
+    treePresenter: TreePresenter,
+    treeName: State<String>,
+    treeType: State<String>,
     keyType: State<String>,
     valueType: State<String>,
     onClickChangesKey: (String) -> Unit,
     onClickChangesValue: (String) -> Unit,
+    back: () -> Unit,
     approve: () -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
@@ -42,10 +47,16 @@ fun ChosingTypesScreen(
             keyType.value != "Choose the key type from the following options" &&
             valueType.value != "Choose the value type from the following options"
         ) {
-            Button(onClick = approve) {
+            Button(onClick = {
+                treePresenter.createTree(treeName.value, treeType.value, keyType.value, valueType.value)
+                approve()
+            }) {
                 Text("Approve and create")
             }
         }
 
+        Button(onClick = back){
+            Text("back")
+        }
     }
 }

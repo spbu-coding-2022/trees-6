@@ -19,14 +19,12 @@ fun TreeActions(
     createTreeMenu: () -> Unit,
     keyType: State<String>,
     valueType: State<String>,
-
     ) {
 
     Column {
 
         Button(onClick = {
             createTreeMenu()
-            treePresenter.createTree(treeName.value, treeType.value, keyType.value, valueType.value)
         }
         ) {
             Text("Create Tree")

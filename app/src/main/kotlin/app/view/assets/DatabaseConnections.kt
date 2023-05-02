@@ -17,7 +17,9 @@ fun databaseConnectionJson(
     approveChange: () -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
+
         OutlinedTextField(value = host.value, onValueChange = hostChange)
+
         Button(onClick = approveChange){
             Text("Approve")
         }
@@ -31,7 +33,9 @@ fun databaseConnectionSQL(
     approveChange: () -> Unit
 ) {
     Column(modifier = Modifier.padding(vertical = 16.dp)) {
+
         OutlinedTextField(value = host.value, onValueChange = hostChange)
+
         Button(onClick = approveChange){
             Text("Approve")
         }
