@@ -8,7 +8,7 @@ import app.presenter.TreePresenter
 import app.view.assets.ChildStack
 import app.view.utils.Databases
 import app.view.assets.ProvideComponentContext
-import app.view.assets.TreeView
+import app.view.screens.TreeView
 import app.view.screens.*
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
@@ -46,7 +46,7 @@ fun main() {
                 val password = remember { mutableStateOf("") }
                 val navigation = remember { StackNavigation<ScreenManager>() }
                 val treeType = remember { mutableStateOf("▾") }
-                val treeName = remember { mutableStateOf("Enter tree name") }
+                val treeName = remember { mutableStateOf("") }
                 val keyType = remember { mutableStateOf("▾") }
                 val valueType = remember { mutableStateOf("▾") }
                 var isDirectoryNameWritten = true
@@ -74,14 +74,19 @@ fun main() {
                                 password,
                                 { newMeta ->
                                     databaseMetadata.value =
-                                        if (databaseMetadata.value == "" && databaseChoice.value == "Json" && !isDirectoryNameWritten) "JsonDir"
+                                        if (
+                                            databaseMetadata.value == "" &&
+                                            databaseChoice.value == Databases.Json.toString() &&
+                                            !isDirectoryNameWritten
+                                        )
+                                            "jsondir"
                                         else newMeta
                                 },
                                 { newUsername -> username.value = newUsername },
                                 { newPassword -> password.value = newPassword },
                                 {
-                                    navigation.push(ScreenManager.TreeScreen)
                                     if (databaseMetadata.value == "") isDirectoryNameWritten = false
+                                    navigation.push(ScreenManager.TreeScreen)
                                 }
                             )
 

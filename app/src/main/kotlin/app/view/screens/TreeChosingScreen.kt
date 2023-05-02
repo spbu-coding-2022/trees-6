@@ -5,7 +5,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.presenter.TreePresenter
 import app.view.assets.Selector
@@ -71,10 +70,7 @@ fun TreeChoosingScreen(
             OutlinedTextField(
                 value = treeName.value,
                 onValueChange = treeNameChange,
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = if (treeName.value == "Enter tree name") Color.Gray else Color.Black,
-                    backgroundColor = Color.White,
-                )
+                label = { Text("Enter the tree name") },
             )
             Spacer(modifier = Modifier.height(8.dp))
             TreeActions(treePresenter, treeName, treeType, createTreeMenu, treeView)

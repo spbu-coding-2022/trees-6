@@ -23,7 +23,7 @@ fun databaseConnectionJson(
             value = directory.value,
             onValueChange = hostChange,
             label = { Text("Enter the directory name") },
-            placeholder = { Text("JsonDir") }
+            placeholder = { Text("jsondir") }
         )
 
         Spacer(modifier = Modifier.height(15.dp))
