@@ -1,7 +1,8 @@
 package app.view.assets
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
@@ -9,92 +10,84 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.presenter.LayoutPresenter
-import bstrees.model.dataBases.NodeData
 import app.presenter.TreePresenter
+import bstrees.model.dataBases.NodeData
 
 @Composable
 fun Tree(
-    root: State<NodeData>,
-    nodeSize: Double,
-    xOffset: Double,
-    yOffset: Double,
-    modifier: Modifier = Modifier
+    node: State<NodeData>,
 ) {
-    Box(modifier = modifier) {
-        Node(root, nodeSize)
 
-        val checkLeftSon = root.value.leftNode
-        checkLeftSon?.let { leftSon ->
-            val temp = remember { mutableStateOf(leftSon) }
-            Tree(
-                temp,
-                nodeSize,
-                xOffset - nodeSize / 2,
-                yOffset + nodeSize,
-                modifier = Modifier.absoluteOffset(x = (xOffset - nodeSize / 1.5).dp, y = (yOffset + nodeSize).dp)
-            )
-        }
+    val nodeCoords = remember { mutableStateOf(Pair(node.value.posX.toFloat(), node.value.posY.toFloat())) }
 
-        val checkRightSon = root.value.rightNode
-        checkRightSon?.let { rightSon ->
-            val temp = remember { mutableStateOf(rightSon) }
-            Tree(
-                temp,
-                nodeSize,
-                xOffset + nodeSize / 2,
-                yOffset + nodeSize,
-                modifier = Modifier.absoluteOffset(x = (xOffset + nodeSize / 1.5).dp, y = (yOffset + nodeSize).dp)
-            )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            node.value.leftNode?.let { leftNode->
+                Tree(mutableStateOf(leftNode))
+            }
+            node.value.rightNode?.let { rightNode->
+                Tree(mutableStateOf(rightNode))
+            }
         }
+        TreeNode(node, nodeCoords)
     }
 }
 
-@Composable
-fun Node(
-    node: State<NodeData>,
-    nodeSize: Double,
-) {
 
+@Composable
+fun TreeNode(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>) {
+    node.value.posX = nodeCoords.value.first.toInt()
+    node.value.posY = nodeCoords.value.second.toInt()
     Box(
-        contentAlignment = Alignment.Center,
         modifier = Modifier
-            .background(
-                color = if (node.value.metadata == "RED") Color.Red
-                else if (node.value.metadata == "BLACK") Color.Black
-                else Color.Magenta,
-                shape = CircleShape
-            )
-            .width(nodeSize.dp)
-            .height(nodeSize.dp)
-            .border(
-                width = 1.dp,
-                color = Color.Blue,
-                shape = CircleShape
-            )
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Key: ${node.value.key}",
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = if (((nodeSize / 4).toInt()) > 20) 20.sp else (nodeSize / 4).toInt().sp
-            )
-            Text(
-                text = "Value: ${node.value.value}",
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = if (((nodeSize / 4).toInt()) > 20) 20.sp else (nodeSize / 4).toInt().sp
+            .offset { IntOffset(nodeCoords.value.first.toInt(), nodeCoords.value.second.toInt()) }
+            .background(Color.Red, CircleShape)
+            .size(50.dp)
+            .pointerInput(Unit) {
+                // Обработчик перемещения узла
+                detectDragGestures { change, dragAmount ->
+                    nodeCoords.value = Pair(
+                        nodeCoords.value.first + dragAmount.x,
+                        nodeCoords.value.second + dragAmount.y
+                    )
+                    if (change.positionChange() != Offset.Zero) change.consume()
+                }
+            }
+
+    )
+}
+
+
+@Composable
+fun Edge(
+    node1: State<NodeData>,
+    node2: State<NodeData>,
+    modifier: Modifier = Modifier
+) {
+    Canvas(
+        modifier = modifier.size(800.dp),
+        onDraw = {
+            drawLine(
+                start = Offset(x = node1.value.posX.toFloat() + 800, y = node1.value.posY.toFloat() + 100),
+                end = Offset(x = node2.value.posX.toFloat() + 800, y = node2.value.posY.toFloat() + 100),
+                color = Color.Black,
+                strokeWidth = 5F
             )
         }
-    }
-
+    )
 }
 
 @Composable
@@ -146,12 +139,11 @@ fun TreeView(
         ) {
             tree.root?.let { root ->
                 Tree(
-                    mutableStateOf(root),
-                    50.0,
-                    0.0,
-                    0.0,
+                    mutableStateOf(root)
                 )
             }
         }
     }
 }
+
+
