@@ -1,9 +1,10 @@
 package balancers
 
-import bstrees.model.trees.Balancer
-import bstrees.model.trees.BSNode
+import bstrees.model.dataBases.converters.utils.ComparableStringConverter
+import bstrees.model.dataBases.converters.utils.StringConverter
+import bstrees.model.dataBases.converters.utils.createStringConverter
 import bstrees.model.trees.randomBinarySearch.RandomBSBalancer
-import bstrees.model.trees.randomBinarySearch.RandomBSNode
+import bstrees.model.trees.randomBinarySearch.RandomBSTree
 
 import org.junit.jupiter.api.Test
 import utils.BSTreeUtil
@@ -13,23 +14,37 @@ class BalancerTest {
 
     @Test
     fun `left rotate`() {
-        val balancer = RandomBSBalancer<Int, Int>()
+        fun <K : Comparable<K>, V> helper(keyStringConverter: ComparableStringConverter<K>, valueStringConverter: StringConverter<V>) {
+            val balancer = RandomBSBalancer<K, V>()
 
-        val privateLeftRotateField = Balancer::class.java.getDeclaredMethod("leftRotate", BSNode::class.java)
-        privateLeftRotateField.isAccessible = true
-        val newNode = privateLeftRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as RandomBSNode<Int, Int>
+            val tree: RandomBSTree<K, V> = BSTreeUtil.createTree(keyStringConverter, valueStringConverter, "BS")
+            val newNode = balancer.bsLeftRotate(tree.root!!)
 
-        assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createLeftRotatedBSTree().root))
+            val leftRotatedTree: RandomBSTree<K, V> = BSTreeUtil.createLeftRotatedTree(keyStringConverter, valueStringConverter, "BS")
+
+            assert(BSTreeUtil.checkNodeEquals(newNode, leftRotatedTree.root))
+        }
+        helper(
+            keyStringConverter = createStringConverter("Int"),
+            valueStringConverter = createStringConverter("Int"),
+        )
     }
 
     @Test
     fun `right rotate`() {
-        val balancer = RandomBSBalancer<Int, Int>()
+        fun <K : Comparable<K>, V> helper(keyStringConverter: ComparableStringConverter<K>, valueStringConverter: StringConverter<V>) {
+            val balancer = RandomBSBalancer<K, V>()
 
-        val privateRightRotateField = Balancer::class.java.getDeclaredMethod("rightRotate", BSNode::class.java)
-        privateRightRotateField.isAccessible = true
-        val newNode = privateRightRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as RandomBSNode<Int, Int>
+            val tree: RandomBSTree<K, V> = BSTreeUtil.createTree(keyStringConverter, valueStringConverter, "BS")
+            val newNode = balancer.bsRightRotate(tree.root!!)
 
-        assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createRightRotatedBSTree().root))
+            val rightRotatedTree: RandomBSTree<K, V> = BSTreeUtil.createRightRotatedTree(keyStringConverter, valueStringConverter, "BS")
+
+            assert(BSTreeUtil.checkNodeEquals(newNode, rightRotatedTree.root))
+        }
+        helper(
+            keyStringConverter = createStringConverter("Int"),
+            valueStringConverter = createStringConverter("Int"),
+        )
     }
 }

@@ -7,7 +7,6 @@ import kotlinx.serialization.encodeToString
 import mu.KotlinLogging
 import java.io.*
 import kotlin.io.path.Path
-import java.nio.file.FileAlreadyExistsException
 
 private val logger = KotlinLogging.logger { }
 
@@ -58,25 +57,16 @@ class JsonTreeRepo(private val dir: String) : TreeRepo {
     override fun setTree(treeData: TreeData) {
         val filePath = getPathToFile(treeData.name, treeData.treeType)
         lateinit var file: FileWriter
-        var fileAlreadyExists = false
 
         try {
-            if (File(filePath).exists()) {
-                fileAlreadyExists = true
-                throw FileAlreadyExistsException("")
-            }
             file = FileWriter(filePath)
             file.write(Json.encodeToString(treeData))
-        } catch (e: FileAlreadyExistsException) {
-            logger.warn { "[JSON] A tree with that name already exists" }
         } catch (e: Exception) {
             logger.error { "[JSON] Error getting the tree: $e" }
             throw e
         } finally {
-            if (!fileAlreadyExists) {
-                file.flush()
-                file.close()
-            }
+            file.flush()
+            file.close()
         }
         logger.info { "[JSON] Set tree - treeName: ${treeData.name}, treeType: ${treeData.treeType}" }
     }

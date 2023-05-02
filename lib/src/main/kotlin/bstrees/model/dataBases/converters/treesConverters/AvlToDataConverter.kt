@@ -33,8 +33,8 @@ class AvlToDataConverter<K : Comparable<K>, V>(
         val avlnode: AvlNode<K, V> = AvlNode(keyStringConverter.fromString(node.key), valueStringConverter.fromString(node.value))
         if (node.metadata[0] != 'H') throw Exception("Wrong metadata. Impossible to deserialize")
         avlnode.height = deserializeMetadata(node.metadata)
-        node.leftNode?.let { deserializeNode(it) }
-        node.rightNode?.let { deserializeNode(it) }
+        avlnode.leftNode = node.leftNode?.let { deserializeNode(it) }
+        avlnode.rightNode = node.rightNode?.let { deserializeNode(it) }
         linkParents(avlnode)
         return avlnode
     }

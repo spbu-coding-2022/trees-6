@@ -34,8 +34,8 @@ class RbToDataConverter<K : Comparable<K>, V>(
         val rbnode: RBNode<K, V> = RBNode(keyStringConverter.fromString(node.key), valueStringConverter.fromString(node.value))
         if (node.metadata != "RED" && node.metadata != "BLACK") throw Exception("Wrong metadata. Impossible to deserialize")
         rbnode.color = deserializeMetadata(node.metadata)
-        node.leftNode?.let { deserializeNode(it) }
-        node.rightNode?.let { deserializeNode(it) }
+        rbnode.leftNode = node.leftNode?.let { deserializeNode(it) }
+        rbnode.rightNode = node.rightNode?.let { deserializeNode(it) }
         linkParents(rbnode)
         return rbnode
     }

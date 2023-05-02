@@ -34,8 +34,8 @@ class RandomBsToDataConverter<K : Comparable<K>, V>(
         val bsnode: RandomBSNode<K, V> = RandomBSNode(keyStringConverter.fromString(node.key), valueStringConverter.fromString(node.value))
         if (node.metadata[0] != 'S') throw Exception("Wrong metadata. Impossible to deserialize")
         bsnode.size = deserializeMetadata(node.metadata)
-        node.leftNode?.let { deserializeNode(it) }
-        node.rightNode?.let { deserializeNode(it) }
+        bsnode.leftNode = node.leftNode?.let { deserializeNode(it) }
+        bsnode.rightNode = node.rightNode?.let { deserializeNode(it) }
         linkParents(bsnode)
         return bsnode
     }
