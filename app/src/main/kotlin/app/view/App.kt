@@ -149,6 +149,8 @@ fun main() {
                         }
 
                         is ScreenManager.AddNodeScreen -> {
+                            key.value =  "Enter key"
+                            value.value =  "Enter value"
                             treePresenter?.let {treePresenter ->
                                 AddNodeScreen(
                                     treePresenter,
@@ -163,6 +165,7 @@ fun main() {
                         }
 
                         is ScreenManager.DeleteNodeScreen -> {
+                            key.value =  "Enter key"
                             treePresenter?.let { treePresenter ->
                                 DeleteNodeScreen(
                                     treePresenter,

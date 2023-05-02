@@ -99,7 +99,6 @@ fun Node(
 
 @Composable
 fun TreeActionButtons(
-    treePresenter: TreePresenter,
     addNode: () -> Unit,
     deleteNode: () -> Unit,
 ) {
@@ -131,7 +130,7 @@ fun TreeView(
     val tree = treePresenter.tree
     LayoutPresenter.setTreeLayout(tree, 800, 800)
     Column {
-        TreeActionButtons(treePresenter, addNode, deleteNode)
+        TreeActionButtons(addNode, deleteNode)
 
         Box(
             modifier = Modifier.height(800.dp).width(800.dp),
