@@ -99,6 +99,7 @@ fun Node(
 
 @Composable
 fun TreeActionButtons(
+    treePresenter: TreePresenter,
     addNode: () -> Unit,
     deleteNode: () -> Unit,
 ) {
@@ -117,8 +118,15 @@ fun TreeActionButtons(
         }) {
             Text(text = "Delete Node")
         }
-    }
 
+        Spacer(modifier = Modifier.width(30.dp))
+
+        Button(onClick = {
+            treePresenter.saveTree()
+        }) {
+            Text(text = "Save tree")
+        }
+    }
 }
 
 @Composable
@@ -130,7 +138,7 @@ fun TreeView(
     val tree = treePresenter.tree
     LayoutPresenter.setTreeLayout(tree, 800, 800)
     Column {
-        TreeActionButtons(addNode, deleteNode)
+        TreeActionButtons(treePresenter, addNode, deleteNode)
 
         Box(
             modifier = Modifier.height(800.dp).width(800.dp),

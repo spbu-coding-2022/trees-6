@@ -1,11 +1,14 @@
 package app.presenter
 
+import androidx.compose.ui.unit.dp
 import bstrees.model.dataBases.NodeData
 import bstrees.model.dataBases.TreeData
 import app.presenter.utils.TreeHeightPresenter
 
 object LayoutPresenter {
 
+    private const val windowHeight = 800
+    private const val windowWidth = 800
     private const val nodeRadius = 50
     private const val edgeLength = 50
 

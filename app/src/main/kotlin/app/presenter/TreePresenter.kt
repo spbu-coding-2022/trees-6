@@ -18,6 +18,10 @@ class TreePresenter(private val db: TreeRepo) {
         tree = db.getTree(treeName, treeType) ?: throw IllegalArgumentException("There is no tree with that name: $treeName")
     }
 
+    fun saveTree(){
+        db.setTree(tree)
+    }
+
     fun createTree(treeName: String, treeType: String, keyType: String, valueType: String) {
         tree = TreeData(treeName, treeType, keyType, valueType, null)
         db.setTree(tree)
