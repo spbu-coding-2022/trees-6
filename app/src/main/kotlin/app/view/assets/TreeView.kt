@@ -2,6 +2,7 @@ package app.view.assets
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -21,6 +22,21 @@ import app.presenter.LayoutPresenter
 import app.presenter.TreePresenter
 import bstrees.model.dataBases.NodeData
 import bstrees.model.dataBases.TreeData
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
+
+
+const val NODE_SIZE = 30
+
+
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
+
+
+@Composable
+fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 @Composable
 fun Tree(
@@ -29,23 +45,20 @@ fun Tree(
 
     val nodeCoords = remember { mutableStateOf(Pair(node.value.posX.toFloat(), node.value.posY.toFloat())) }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            node.value.leftNode?.let { leftNode->
-                Tree(mutableStateOf(leftNode))
-            }
-            node.value.rightNode?.let { rightNode->
-                Tree(mutableStateOf(rightNode))
-            }
-        }
-        TreeNode(node, nodeCoords)
+    node.value.leftNode?.let { it ->
+        Edge(node, mutableStateOf(it))
     }
+    node.value.rightNode?.let { it ->
+        Edge(node, mutableStateOf(it))
+    }
+    node.value.leftNode?.let { leftNode ->
+        Tree(mutableStateOf(leftNode))
+    }
+    node.value.rightNode?.let { rightNode ->
+        Tree(mutableStateOf(rightNode))
+    }
+
+    TreeNode(node, nodeCoords)
 }
 
 
@@ -54,10 +67,11 @@ fun TreeNode(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>
     node.value.posX = nodeCoords.value.first.toInt()
     node.value.posY = nodeCoords.value.second.toInt()
     Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .offset { IntOffset(nodeCoords.value.first.toInt(), nodeCoords.value.second.toInt()) }
             .background(Color.Red, CircleShape)
-            .size(50.dp)
+            .size(NODE_SIZE.dp)
             .pointerInput(Unit) {
                 // Обработчик перемещения узла
                 detectDragGestures { change, dragAmount ->
@@ -68,8 +82,38 @@ fun TreeNode(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>
                     if (change.positionChange() != Offset.Zero) change.consume()
                 }
             }
+            .background(
+                color = if (node.value.metadata == "RED") Color.Red
+                else if (node.value.metadata == "BLACK") Color.Black
+                else Color.Magenta,
+                shape = CircleShape
+            )
+            .width(NODE_SIZE.dp)
+            .height(NODE_SIZE.dp)
+            .border(
+                width = 1.dp,
+                color = Color.Blue,
+                shape = CircleShape
+            )
 
-    )
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Key: ${node.value.key}",
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                fontSize = if (((NODE_SIZE / 4)) > 20) 20.sp else (NODE_SIZE / 4).sp
+            )
+            Text(
+                text = "Value: ${node.value.value}",
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                fontSize = if (((NODE_SIZE / 4)) > 20) 20.sp else (NODE_SIZE / 4).sp
+            )
+        }
+    }
 }
 
 
@@ -83,8 +127,8 @@ fun Edge(
         modifier = modifier.size(800.dp),
         onDraw = {
             drawLine(
-                start = Offset(x = node1.value.posX.toFloat() + 800, y = node1.value.posY.toFloat() + 100),
-                end = Offset(x = node2.value.posX.toFloat() + 800, y = node2.value.posY.toFloat() + 100),
+                start = Offset(x = node1.value.posX.toFloat() + NODE_SIZE, y = node1.value.posY.toFloat() + NODE_SIZE),
+                end = Offset(x = node2.value.posX.toFloat() + NODE_SIZE, y = node2.value.posY.toFloat() + NODE_SIZE),
                 color = Color.Black,
                 strokeWidth = 5F
             )
@@ -137,48 +181,13 @@ fun TreeView(
 
         Box(
             modifier = Modifier.height(800.dp).width(800.dp),
-            contentAlignment = Alignment.Center
         ) {
-            TransformableSample(tree)
+            tree.root?.let { root ->
+                Tree(
+                    mutableStateOf(root)
+                )
+            }
         }
     }
 }
-
-
-@Composable
-private fun TransformableSample(tree: TreeData) {
-    // set up all transformation states
-    var scale by remember { mutableStateOf(1f) }
-    var rotation by remember { mutableStateOf(0f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
-    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
-        scale *= zoomChange
-        rotation += rotationChange
-        offset += offsetChange
-    }
-    Box(
-        Modifier
-            // apply other transformations like rotation and zoom
-            // on the pizza slice emoji
-            .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotation,
-                translationX = offset.x,
-                translationY = offset.y
-            )
-            // add transformable to listen to multitouch transformation events
-            // after offset
-            .transformable(state = state)
-            .fillMaxSize()
-    ){
-        tree.root?.let { root ->
-            Tree(
-                mutableStateOf(root)
-            )
-        }
-    }
-
-}
-
 
