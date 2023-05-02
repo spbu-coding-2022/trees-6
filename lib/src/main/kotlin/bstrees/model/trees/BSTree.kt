@@ -7,7 +7,7 @@ package bstrees.model.trees
  * @generic <V> the type of value stored in the tree
  * @generic <NODE_TYPE> the type of node used in the tree
  */
-abstract class BTree<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
+abstract class BSTree<K : Comparable<K>, V, NODE_TYPE : BSNode<K, V, NODE_TYPE>> {
     /**
      * The root node of the tree.
      */

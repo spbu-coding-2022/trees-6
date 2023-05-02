@@ -1,6 +1,6 @@
 package bstrees.model.trees.redBlack
 
-import bstrees.model.trees.Node
+import bstrees.model.trees.BSNode
 
 /**
  * A class representing an AVL binary search tree node.
@@ -9,7 +9,7 @@ import bstrees.model.trees.Node
  * @generic <K> the type of key stored in the tree. It must be comparable
  * @generic <V> the type of value stored in the tree
  */
-class RBNode<K : Comparable<K>, V>(key: K, value: V) : Node<K, V, RBNode<K, V>>(key, value) {
+class RBNode<K : Comparable<K>, V>(key: K, value: V) : BSNode<K, V, RBNode<K, V>>(key, value) {
 
     /**
      * An auxiliary enum class that contains the color of the node

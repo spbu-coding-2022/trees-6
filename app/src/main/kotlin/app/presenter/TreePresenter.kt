@@ -4,10 +4,10 @@ import bstrees.model.dataBases.reps.TreeRepo
 import bstrees.model.dataBases.TreeData
 import bstrees.model.dataBases.converters.TreeToDataConverter
 import bstrees.model.dataBases.converters.treesConverters.AvlToDataConverter
-import bstrees.model.dataBases.converters.treesConverters.BsToDataConverter
+import bstrees.model.dataBases.converters.treesConverters.RandomBsToDataConverter
 import bstrees.model.dataBases.converters.treesConverters.RbToDataConverter
 import bstrees.model.dataBases.converters.utils.createStringConverter
-import bstrees.model.trees.BTree
+import bstrees.model.trees.BSTree
 
 
 class TreePresenter(private val db: TreeRepo) {
@@ -36,7 +36,7 @@ class TreePresenter(private val db: TreeRepo) {
             keyType = tree.keyType,
             valueType = tree.valueType
         )
-        "BS" -> BsToDataConverter(
+        "BS" -> RandomBsToDataConverter(
             keyStringConverter = createStringConverter(tree.keyType),
             valueStringConverter = createStringConverter(tree.valueType),
             keyType = tree.keyType,
@@ -47,7 +47,7 @@ class TreePresenter(private val db: TreeRepo) {
 
 
     fun addNode(key: String, value: String) {
-        fun <K : Comparable<K>, V, TREE_TYPE : BTree<K, V, *>> helper(strategy: TreeToDataConverter<K, V, *, *, TREE_TYPE>) {
+        fun <K : Comparable<K>, V, TREE_TYPE : BSTree<K, V, *>> helper(strategy: TreeToDataConverter<K, V, *, *, TREE_TYPE>) {
             val bTree = strategy.deserializeTree(tree)
             bTree.insert(
                 strategy.keyStringConverter.fromString(key),
@@ -60,7 +60,7 @@ class TreePresenter(private val db: TreeRepo) {
 
 
     fun deleteNode(key: String) {
-        fun <K : Comparable<K>, V, TREE_TYPE : BTree<K, V, *>> helper(strategy: TreeToDataConverter<K, V, *, *, TREE_TYPE>) {
+        fun <K : Comparable<K>, V, TREE_TYPE : BSTree<K, V, *>> helper(strategy: TreeToDataConverter<K, V, *, *, TREE_TYPE>) {
             val bTree = strategy.deserializeTree(tree)
             bTree.delete(
                 strategy.keyStringConverter.fromString(key),

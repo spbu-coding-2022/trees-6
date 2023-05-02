@@ -2,20 +2,20 @@ package binarySearchTree
 
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
-import bstrees.model.trees.binarySearch.BSNode
-import bstrees.model.trees.binarySearch.BSTree
+import bstrees.model.trees.randomBinarySearch.RandomBSNode
+import bstrees.model.trees.randomBinarySearch.RandomBSTree
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import kotlin.random.Random
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 
-class BSTreeTest {
+class RandomBSTreeTest {
 
     private lateinit var keyValue: List<Pair<Int, Int>>
     private lateinit var bigKeyValue: List<Pair<Int, Int>>
-    private val tree = BSTree<Int, Int>()
-    private val treeChecker = BSTreeInvariants<Int, Int, BSNode<Int, Int>>()
+    private val tree = RandomBSTree<Int, Int>()
+    private val treeChecker = BSTreeInvariants<Int, Int, RandomBSNode<Int, Int>>()
 
     @BeforeAll
     fun prepareNodes() {
@@ -30,7 +30,7 @@ class BSTreeTest {
 
     @Test
     fun `init null tree`() {
-        val tree = BSTree<Int, Int>()
+        val tree = RandomBSTree<Int, Int>()
         Assertions.assertNull(tree.root) { "After initialization, the tree must have NULL root" }
     }
 

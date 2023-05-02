@@ -1,6 +1,6 @@
-package bstrees.model.trees.binarySearch
+package bstrees.model.trees.randomBinarySearch
 
-import bstrees.model.trees.BTree
+import bstrees.model.trees.BSTree
 import kotlin.random.Random
 
 /**
@@ -10,12 +10,12 @@ import kotlin.random.Random
  * @generic <K> the type of key stored in the tree. It must be comparable
  * @generic <V> the type of value stored in the tree
  */
-class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
+class RandomBSTree<K : Comparable<K>, V> : BSTree<K, V, RandomBSNode<K, V>>() {
 
     /**
      * A balancer class providing rotations of the tree with updating the size
      */
-    private val balancer = BSBalancer<K, V>()
+    private val balancer = RandomBSBalancer<K, V>()
 
     /**
      * Insert a node to the tree.
@@ -25,7 +25,7 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
      * @param key the key under which the value is stored
      */
     override fun insert(key: K, value: V) {
-        add(BSNode(key, value))
+        add(RandomBSNode(key, value))
     }
 
     /**
@@ -34,7 +34,7 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
      *
      * @param node the node to add
      */
-    private fun addRoot(node: BSNode<K, V>): BSNode<K, V> {
+    private fun addRoot(node: RandomBSNode<K, V>): RandomBSNode<K, V> {
         //temp is needed to avoid possibility of changing the root
         val temp = this.root
         return if (temp == null) node
@@ -47,7 +47,7 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
              * Creating subtree to execute add function again
              * Then we return the node to the desired son
              */
-            val subTree = BSTree<K, V>()
+            val subTree = RandomBSTree<K, V>()
             //We make the usual adding, then we put the node in the root by rotation it tom the top
             if (node.key < temp.key) {
                 subTree.root = temp.leftNode
@@ -67,7 +67,7 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
      *
      * @param node the node to add
      */
-    private fun add(node: BSNode<K, V>) {
+    private fun add(node: RandomBSNode<K, V>) {
         //temp is needed to avoid possibility of changing the root
         val temp = this.root
         if (temp == null) this.root = node
@@ -90,7 +90,7 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
                  * Creating subtree to execute add function again
                  * Then we return the node to the desired son
                  */
-                val subTree = BSTree<K, V>()
+                val subTree = RandomBSTree<K, V>()
                 if (temp.key > node.key) {
                     subTree.root = temp.leftNode
                     subTree.add(node)
@@ -118,7 +118,7 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
      * @param right
      * The nodes to merge
      */
-    private fun join(left: BSNode<K, V>?, right: BSNode<K, V>?): BSNode<K, V>? {
+    private fun join(left: RandomBSNode<K, V>?, right: RandomBSNode<K, V>?): RandomBSNode<K, V>? {
 
         //If one of the nodes is null then we can just return the second one
         if (left == null) return right
@@ -152,13 +152,13 @@ class BSTree<K : Comparable<K>, V> : BTree<K, V, BSNode<K, V>>() {
 
             if (temp.key == key) this.root = join(temp.leftNode, temp.rightNode)
             else if (key < temp.key) {
-                val subTree = BSTree<K, V>()
+                val subTree = RandomBSTree<K, V>()
                 subTree.root = temp.leftNode
                 subTree.delete(key)
                 subTree.root?.parent = this.root
                 this.root?.leftNode = subTree.root
             } else {
-                val subTree = BSTree<K, V>()
+                val subTree = RandomBSTree<K, V>()
                 subTree.root = temp.rightNode
                 subTree.delete(key)
                 subTree.root?.parent = this.root

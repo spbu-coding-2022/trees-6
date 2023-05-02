@@ -1,8 +1,8 @@
 package utils
 
-import bstrees.model.trees.Node
+import bstrees.model.trees.BSNode
 
-open class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : Node<K, V, NODE_TYPE>> {
+open class TreesInvariants<K : Comparable<K>, V, NODE_TYPE : BSNode<K, V, NODE_TYPE>> {
     protected fun checkNodeInvariants(node: NODE_TYPE): Boolean {
         return (node.leftNode == null || node.leftNode!!.parent == node &&
                 node.leftNode!!.key < node.key && checkNodeInvariants(node.leftNode!!)) &&

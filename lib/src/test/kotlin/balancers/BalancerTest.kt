@@ -1,9 +1,9 @@
 package balancers
 
 import bstrees.model.trees.Balancer
-import bstrees.model.trees.Node
-import bstrees.model.trees.binarySearch.BSBalancer
-import bstrees.model.trees.binarySearch.BSNode
+import bstrees.model.trees.BSNode
+import bstrees.model.trees.randomBinarySearch.RandomBSBalancer
+import bstrees.model.trees.randomBinarySearch.RandomBSNode
 
 import org.junit.jupiter.api.Test
 import utils.BSTreeUtil
@@ -13,22 +13,22 @@ class BalancerTest {
 
     @Test
     fun `left rotate`() {
-        val balancer = BSBalancer<Int, Int>()
+        val balancer = RandomBSBalancer<Int, Int>()
 
-        val privateLeftRotateField = Balancer::class.java.getDeclaredMethod("leftRotate", Node::class.java)
+        val privateLeftRotateField = Balancer::class.java.getDeclaredMethod("leftRotate", BSNode::class.java)
         privateLeftRotateField.isAccessible = true
-        val newNode = privateLeftRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as BSNode<Int, Int>
+        val newNode = privateLeftRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as RandomBSNode<Int, Int>
 
         assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createLeftRotatedBSTree().root))
     }
 
     @Test
     fun `right rotate`() {
-        val balancer = BSBalancer<Int, Int>()
+        val balancer = RandomBSBalancer<Int, Int>()
 
-        val privateRightRotateField = Balancer::class.java.getDeclaredMethod("rightRotate", Node::class.java)
+        val privateRightRotateField = Balancer::class.java.getDeclaredMethod("rightRotate", BSNode::class.java)
         privateRightRotateField.isAccessible = true
-        val newNode = privateRightRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as BSNode<Int, Int>
+        val newNode = privateRightRotateField.invoke(balancer, BSTreeUtil.createBSTree().root) as RandomBSNode<Int, Int>
 
         assert(BSTreeUtil.checkNodeEquals(newNode, BSTreeUtil.createRightRotatedBSTree().root))
     }

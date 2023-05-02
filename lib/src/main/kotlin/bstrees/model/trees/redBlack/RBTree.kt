@@ -1,6 +1,6 @@
 package bstrees.model.trees.redBlack
 
-import bstrees.model.trees.BTree
+import bstrees.model.trees.BSTree
 import bstrees.model.trees.redBlack.RBNode.Color
 
 /**
@@ -11,7 +11,7 @@ import bstrees.model.trees.redBlack.RBNode.Color
  * @generic <K> the type of key stored in the tree. It must be comparable
  * @generic <V> the type of value stored in the tree
  */
-class RBTree<K : Comparable<K>, V> : BTree<K, V, RBNode<K, V>>() {
+class RBTree<K : Comparable<K>, V> : BSTree<K, V, RBNode<K, V>>() {
     /**
      * A balancer class providing balancing the tree when adding or deleting nodes
      */
