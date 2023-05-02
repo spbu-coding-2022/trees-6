@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.unit.IntOffset
@@ -21,35 +20,27 @@ import androidx.compose.ui.unit.dp
 import app.presenter.LayoutPresenter
 import app.presenter.TreePresenter
 import bstrees.model.dataBases.NodeData
-import bstrees.model.dataBases.TreeData
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 
 
 const val NODE_SIZE = 30
+const val WINDOW_SIZE = 800
 
-
-@Composable
-fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
-
-
-@Composable
-fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 @Composable
 fun Tree(
     node: State<NodeData>,
 ) {
 
-    val nodeCoords = remember { mutableStateOf(Pair(node.value.posX.toFloat(), node.value.posY.toFloat())) }
+    val nodeCoords = remember { mutableStateOf(Pair(
+        node.value.posX.toFloat(), node.value.posY.toFloat())) }
 
-    node.value.leftNode?.let { it ->
-        Edge(node, mutableStateOf(it))
+    node.value.leftNode?.let { leftNode ->
+        Edge(node, mutableStateOf(leftNode))
     }
-    node.value.rightNode?.let { it ->
-        Edge(node, mutableStateOf(it))
+    node.value.rightNode?.let { rightNode ->
+        Edge(node, mutableStateOf(rightNode))
     }
     node.value.leftNode?.let { leftNode ->
         Tree(mutableStateOf(leftNode))
@@ -73,7 +64,6 @@ fun TreeNode(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>
             .background(Color.Red, CircleShape)
             .size(NODE_SIZE.dp)
             .pointerInput(Unit) {
-                // Обработчик перемещения узла
                 detectDragGestures { change, dragAmount ->
                     nodeCoords.value = Pair(
                         nodeCoords.value.first + dragAmount.x,
@@ -124,13 +114,13 @@ fun Edge(
     modifier: Modifier = Modifier
 ) {
     Canvas(
-        modifier = modifier.size(800.dp),
+        modifier = modifier.size(WINDOW_SIZE.dp),
         onDraw = {
             drawLine(
                 start = Offset(x = node1.value.posX.toFloat() + NODE_SIZE, y = node1.value.posY.toFloat() + NODE_SIZE),
                 end = Offset(x = node2.value.posX.toFloat() + NODE_SIZE, y = node2.value.posY.toFloat() + NODE_SIZE),
                 color = Color.Black,
-                strokeWidth = 5F
+                strokeWidth = 3F
             )
         }
     )
@@ -150,7 +140,7 @@ fun TreeActionButtons(
             Text("Add Node")
         }
 
-        Spacer(modifier = Modifier.width(30.dp))
+        Spacer(modifier = Modifier.width(NODE_SIZE.dp))
 
         Button(onClick = {
             deleteNode()
@@ -158,7 +148,7 @@ fun TreeActionButtons(
             Text(text = "Delete Node")
         }
 
-        Spacer(modifier = Modifier.width(30.dp))
+        Spacer(modifier = Modifier.width(NODE_SIZE.dp))
 
         Button(onClick = {
             treePresenter.saveTree()
@@ -175,13 +165,15 @@ fun TreeView(
     deleteNode: () -> Unit,
 ) {
     val tree = treePresenter.tree
-    LayoutPresenter.setTreeLayout(tree, 800, 800)
+    LayoutPresenter.setTreeLayout(tree, WINDOW_SIZE, WINDOW_SIZE)
     Column {
         TreeActionButtons(treePresenter, addNode, deleteNode)
 
         Box(
-            modifier = Modifier.height(800.dp).width(800.dp),
+            modifier = Modifier.height(WINDOW_SIZE.dp).width(WINDOW_SIZE.dp),
+
         ) {
+
             tree.root?.let { root ->
                 Tree(
                     mutableStateOf(root)

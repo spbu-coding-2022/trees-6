@@ -8,7 +8,7 @@ object LayoutPresenter {
 
     private const val windowHeight = 800
     private const val windowWidth = 800
-    private const val nodeRadius = 30
+    private const val nodeSize = 30
     private const val edgeLength = 10
 
 
@@ -27,8 +27,8 @@ object LayoutPresenter {
 
     // This method will assign coordinates to the nodes of the tree
     private fun setNodesLayout(node: NodeData, height: Int){
-        val xDiff = (edgeLength + 2 * nodeRadius) * height + (height - 1)
-        val yDiff = (edgeLength + 2 * nodeRadius) * 3
+        val xDiff = (edgeLength + 2 * nodeSize) * height + (height - 1)
+        val yDiff = (edgeLength + 2 * nodeSize) * 3
         node.leftNode?.let {leftNode->
             leftNode.posX = node.posX - xDiff
             leftNode.posY = node.posY + yDiff
