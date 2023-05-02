@@ -17,8 +17,7 @@ fun TreeActions(
     treeName: State<String>,
     treeType: State<String>,
     createTreeMenu: () -> Unit,
-    keyType: State<String>,
-    valueType: State<String>,
+    treeView: () -> Unit,
     ) {
 
     Column {
@@ -32,12 +31,11 @@ fun TreeActions(
 
         Button(onClick = {
             treePresenter.loadTree(treeName.value, treeType.value)
+            treeView()
         }
         ) {
             Text("Load Tree")
         }
-
-        //TODO(Add a call to the TreeView method)
     }
 }
 
@@ -50,8 +48,7 @@ fun TreeSreen(
     treeNameChange: (String) -> Unit,
     back: () -> Unit,
     createTreeMenu: () -> Unit,
-    keyType: State<String>,
-    valueType: State<String>
+    treeView: () -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         Selector(treeType, onClickChanges, listOf("BS", "AVL", "RB"))
@@ -59,7 +56,7 @@ fun TreeSreen(
         if (treeType.value != "Choose your tree") {
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(value = treeName.value, onValueChange = treeNameChange)
-            TreeActions(treePresenter, treeName, treeType, createTreeMenu, keyType, valueType)
+            TreeActions(treePresenter, treeName, treeType, createTreeMenu, treeView)
         }
 
         Button(onClick = back) {

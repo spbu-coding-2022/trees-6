@@ -16,4 +16,7 @@ sealed class ScreenManager : Parcelable {
 
     @Parcelize
     object TreeView: ScreenManager()
+
+    @Parcelize
+    object AddNodeScreen: ScreenManager()
 }

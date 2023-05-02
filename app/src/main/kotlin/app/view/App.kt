@@ -9,10 +9,8 @@ import app.presenter.DataBasePresenter
 import app.presenter.TreePresenter
 import app.view.assets.ChildStack
 import app.view.assets.ProvideComponentContext
-import app.view.screens.ChosingTypesScreen
-import app.view.screens.HomeScreen
-import app.view.screens.ScreenManager
-import app.view.screens.TreeSreen
+import app.view.assets.TreeView
+import app.view.screens.*
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
@@ -53,12 +51,16 @@ fun main() {
                     remember { mutableStateOf("Choose the value type from the following options") }
                 var treePresenter: TreePresenter? = null
 
+                // for tree adding and deleting
+                val key = remember { mutableStateOf("Enter key") }
+                val value = remember { mutableStateOf("Enter value") }
+
                 ChildStack(
                     source = navigation,
                     initialStack = { listOf(ScreenManager.HomeScreen) },
                     handleBackButton = true,
                     animation = stackAnimation(fade() + scale()),
-                )   { screen ->
+                ) { screen ->
                     when (screen) {
 
                         is ScreenManager.HomeScreen -> {
@@ -114,8 +116,7 @@ fun main() {
                                     { newName -> treeName.value = newName },
                                     back = navigation::pop,
                                     { navigation.push(ScreenManager.ChosingTypesScreen) },
-                                    keyType,
-                                    valueType
+                                    { navigation.push(ScreenManager.TreeView) }
                                 )
                             }
 
@@ -132,13 +133,32 @@ fun main() {
                                     { newKeyType -> keyType.value = newKeyType },
                                     { newValueType -> valueType.value = newValueType },
                                     back = navigation::pop,
-                                    approve= { navigation.push(ScreenManager.TreeView) }
+                                    approve = { navigation.push(ScreenManager.TreeView) }
                                 )
                             }
                         }
 
                         is ScreenManager.TreeView -> {
+                            treePresenter?.let { treePresenter ->
+                                TreeView(
+                                    treePresenter,
+                                    addNode = { navigation.push(ScreenManager.AddNodeScreen)}
+                                )
+                            }
+                        }
 
+                        is ScreenManager.AddNodeScreen -> {
+                            treePresenter?.let {treePresenter ->
+                                AddNodeScreen(
+                                    treePresenter,
+                                    key,
+                                    value,
+                                    { newKey -> key.value = newKey },
+                                    { newValue -> value.value = newValue },
+                                    back = { navigation.pop() },
+                                    approve = { navigation.pop() }
+                                )
+                            }
                         }
                     }
                 }

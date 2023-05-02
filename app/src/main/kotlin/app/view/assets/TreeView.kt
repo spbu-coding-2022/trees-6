@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.presenter.LayoutPresenter
 import bstrees.model.dataBases.NodeData
 import app.presenter.TreePresenter
 
@@ -97,14 +98,21 @@ fun Node(
 }
 
 @Composable
-fun TreeActionButtons(treePresenter: TreePresenter) {
+fun TreeActionButtons(
+    treePresenter: TreePresenter,
+    addNode: () -> Unit
+) {
 
     Column {
-        Button(onClick = { treePresenter.addNode("0", "0") }) {
+        Button(onClick = {
+            addNode()
+        }) {
             Text("Add Node")
         }
 
-        Button(onClick = { treePresenter.deleteNode("0") }) {
+        Button(onClick = {
+            treePresenter.deleteNode("0")
+        }) {
             Text(text = "Delete Node")
         }
     }
@@ -114,25 +122,22 @@ fun TreeActionButtons(treePresenter: TreePresenter) {
 @Composable
 fun TreeView(
     treePresenter: TreePresenter,
-    treeWidth: Double,
-    treeHeight: Double,
-    nodeSize: Double,
-    xOffset: Double = 0.0,
-    yOffset: Double = 0.0
+    addNode: () -> Unit,
 ) {
     val tree = treePresenter.tree
+    LayoutPresenter.setTreeLayout(tree, 800, 800)
     Row {
-        TreeActionButtons(treePresenter)
+        TreeActionButtons(treePresenter, addNode)
         Box(
-            modifier = Modifier.height(treeHeight.dp).width(treeWidth.dp),
+            modifier = Modifier.height(800.dp).width(800.dp),
             contentAlignment = Alignment.Center
         ) {
-            tree.root?.let {
+            tree.root?.let { root ->
                 Tree(
-                    mutableStateOf(it),
-                    nodeSize,
-                    xOffset,
-                    yOffset
+                    mutableStateOf(root),
+                    50.0,
+                    0.0,
+                    0.0,
                 )
             }
         }

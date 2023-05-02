@@ -53,7 +53,7 @@ class TreePresenter(private val db: TreeRepo) {
                 strategy.keyStringConverter.fromString(key),
                 strategy.valueStringConverter.fromString(value)
             )
-            strategy.serializeTree(bTree, tree.name)
+            tree = strategy.serializeTree(bTree, tree.name)
         }
         helper(createStrategy())
     }
@@ -65,7 +65,7 @@ class TreePresenter(private val db: TreeRepo) {
             bTree.delete(
                 strategy.keyStringConverter.fromString(key),
             )
-            strategy.serializeTree(bTree, tree.name)
+            tree = strategy.serializeTree(bTree, tree.name)
         }
         helper(createStrategy())
     }
