@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.unit.IntOffset
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import app.presenter.LayoutPresenter
 import app.presenter.TreePresenter
 import bstrees.model.dataBases.NodeData
+import bstrees.model.dataBases.TreeData
 
 @Composable
 fun Tree(
@@ -137,13 +139,46 @@ fun TreeView(
             modifier = Modifier.height(800.dp).width(800.dp),
             contentAlignment = Alignment.Center
         ) {
-            tree.root?.let { root ->
-                Tree(
-                    mutableStateOf(root)
-                )
-            }
+            TransformableSample(tree)
         }
     }
+}
+
+
+@Composable
+private fun TransformableSample(tree: TreeData) {
+    // set up all transformation states
+    var scale by remember { mutableStateOf(1f) }
+    var rotation by remember { mutableStateOf(0f) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+        scale *= zoomChange
+        rotation += rotationChange
+        offset += offsetChange
+    }
+    Box(
+        Modifier
+            // apply other transformations like rotation and zoom
+            // on the pizza slice emoji
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                rotationZ = rotation,
+                translationX = offset.x,
+                translationY = offset.y
+            )
+            // add transformable to listen to multitouch transformation events
+            // after offset
+            .transformable(state = state)
+            .fillMaxSize()
+    ){
+        tree.root?.let { root ->
+            Tree(
+                mutableStateOf(root)
+            )
+        }
+    }
+
 }
 
 
