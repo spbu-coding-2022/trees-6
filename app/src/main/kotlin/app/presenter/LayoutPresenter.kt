@@ -1,7 +1,7 @@
 package app.presenter
 
-import bstrees.model.dataBases.serialize.types.SerializableNode
-import bstrees.model.dataBases.serialize.types.SerializableTree
+import bstrees.model.dataBases.NodeData
+import bstrees.model.dataBases.TreeData
 import app.presenter.utils.TreeHeightPresenter
 
 object LayoutPresenter {
@@ -10,7 +10,7 @@ object LayoutPresenter {
     private const val edgeLength = 50
 
 
-    fun setTreeLayout(tree: SerializableTree, windowHeight: Int, windowWidth: Int){
+    fun setTreeLayout(tree: TreeData, windowHeight: Int, windowWidth: Int){
 
         val treeHeight = TreeHeightPresenter.getTreeHeight(tree)
 
@@ -23,7 +23,7 @@ object LayoutPresenter {
     }
 
     // This method will assign coordinates to the nodes of the tree
-    private fun setNodesLayout(node:  SerializableNode, height: Int){
+    private fun setNodesLayout(node: NodeData, height: Int){
         val xDiff = (edgeLength + 2 * nodeRadius) * height + (height - 1)
         val yDiff = (edgeLength + 2 * nodeRadius)
         node.leftNode?.let {leftNode->

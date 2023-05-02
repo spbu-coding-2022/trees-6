@@ -4,18 +4,18 @@ import mu.KotlinLogging
 import org.neo4j.driver.AuthTokens
 import org.neo4j.driver.GraphDatabase
 import org.neo4j.driver.TransactionContext
-import bstrees.model.dataBases.serialize.types.SerializableNode
-import bstrees.model.dataBases.serialize.types.SerializableTree
+import bstrees.model.dataBases.NodeData
+import bstrees.model.dataBases.TreeData
 import java.io.Closeable
 
 private val logger = KotlinLogging.logger { }
 
-class Neo4jTreeRepo(host: String, username: String, password: String) : Closeable, DBTreeRepo {
+class Neo4jTreeRepo(host: String, username: String, password: String) : Closeable, TreeRepo {
     private val driver = GraphDatabase.driver(host, AuthTokens.basic(username, password))
     private val session = driver.session()
 
-    override fun getTree(treeName: String, treeType: String): SerializableTree? {
-        var serializableTree: SerializableTree? = null
+    override fun getTree(treeName: String, treeType: String): TreeData? {
+        var treeData: TreeData? = null
 
         session.executeRead { tx ->
             val resultTreeInfo = tx.run(
@@ -42,7 +42,7 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
 
             if (resultTreeInfo.hasNext()) {
                 val info: Map<String, Any> = resultTreeInfo.next().asMap()
-                serializableTree = SerializableTree(
+                treeData = TreeData(
                     treeName,
                     treeType,
                     info["keyType"].toString(),
@@ -54,11 +54,11 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
 
         logger.info { "[NEO4J] Got tree - treeName: $treeName, treeType: $treeType" }
 
-        return serializableTree
+        return treeData
     }
 
 
-    private fun getSerializedNodes(tx: TransactionContext, nodeKey: String): SerializableNode? {
+    private fun getSerializedNodes(tx: TransactionContext, nodeKey: String): NodeData? {
         var nodeData = mapOf<String, Any>()
         var leftSonKey = mapOf<String, Any>()
         var rightSonKey = mapOf<String, Any>()
@@ -84,7 +84,7 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         }
 
         if (nodeData.isEmpty()) return null
-        return SerializableNode(
+        return NodeData(
             nodeData["key"].toString(),
             nodeData["value"].toString(),
             nodeData["metadata"].toString(),
@@ -95,22 +95,22 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         )
     }
 
-    override fun setTree(serializableTree: SerializableTree) {
+    override fun setTree(treeData: TreeData) {
 
-        deleteTree(serializableTree.name, serializableTree.treeType)
+        deleteTree(treeData.name, treeData.treeType)
 
         session.executeWrite { tx ->
             tx.run(
                 "CREATE (:Tree {name: \$name, type: \$type, keyType: \$keyType, valueType: \$valueType})",
                 mutableMapOf(
-                    "name" to serializableTree.name,
-                    "type" to serializableTree.treeType,
-                    "keyType" to serializableTree.keyType,
-                    "valueType" to serializableTree.valueType,
+                    "name" to treeData.name,
+                    "type" to treeData.treeType,
+                    "keyType" to treeData.keyType,
+                    "valueType" to treeData.valueType,
                 ) as Map<String, Any>?
             )
 
-            serializableTree.root?.let { root ->
+            treeData.root?.let { root ->
                 setNeo4jNodes(tx, root)
                 tx.run(
                     "MATCH (tree: Tree {name: \$name, type: \$type}) " +
@@ -118,17 +118,17 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
                             "CREATE (tree)-[:root]->(node) " +
                             "REMOVE node:NewNode",
                     mutableMapOf(
-                        "name" to serializableTree.name,
-                        "type" to serializableTree.treeType,
+                        "name" to treeData.name,
+                        "type" to treeData.treeType,
                     ) as Map<String, Any>?
                 )
             }
         }
 
-        logger.info { "[NEO4J] Set tree - treeName: ${serializableTree.name}, treeType: ${serializableTree.treeType}" }
+        logger.info { "[NEO4J] Set tree - treeName: ${treeData.name}, treeType: ${treeData.treeType}" }
     }
 
-    private fun setNeo4jNodes(tx: TransactionContext, node: SerializableNode) {
+    private fun setNeo4jNodes(tx: TransactionContext, node: NodeData) {
         tx.run(
             "CREATE (:Node:NewNode {key: ${node.key}, value: ${node.value}, " +
                     "metadata: ${node.metadata}, posX: ${node.posX}, posY: ${node.posY} })"
