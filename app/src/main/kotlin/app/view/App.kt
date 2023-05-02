@@ -142,7 +142,8 @@ fun main() {
                             treePresenter?.let { treePresenter ->
                                 TreeView(
                                     treePresenter,
-                                    addNode = { navigation.push(ScreenManager.AddNodeScreen)}
+                                    addNode = { navigation.push(ScreenManager.AddNodeScreen) },
+                                    deleteNode = { navigation.push(ScreenManager.DeleteNodeScreen) },
                                 )
                             }
                         }
@@ -155,6 +156,18 @@ fun main() {
                                     value,
                                     { newKey -> key.value = newKey },
                                     { newValue -> value.value = newValue },
+                                    back = { navigation.pop() },
+                                    approve = { navigation.pop() }
+                                )
+                            }
+                        }
+
+                        is ScreenManager.DeleteNodeScreen -> {
+                            treePresenter?.let { treePresenter ->
+                                DeleteNodeScreen(
+                                    treePresenter,
+                                    key,
+                                    { newKey -> key.value = newKey },
                                     back = { navigation.pop() },
                                     approve = { navigation.pop() }
                                 )

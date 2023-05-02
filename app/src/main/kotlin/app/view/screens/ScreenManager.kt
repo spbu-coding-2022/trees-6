@@ -19,4 +19,7 @@ sealed class ScreenManager : Parcelable {
 
     @Parcelize
     object AddNodeScreen: ScreenManager()
+
+    @Parcelize
+    object DeleteNodeScreen: ScreenManager()
 }
