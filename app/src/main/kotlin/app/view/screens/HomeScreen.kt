@@ -1,7 +1,9 @@
 package app.view.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.view.assets.Selector
@@ -11,7 +13,7 @@ import app.view.assets.databaseConnectionSQL
 
 @Composable
 fun HomeScreen(
-    header: State<String>,
+    databaseName: State<String>,
     onClickChanges: (String) -> Unit,
     host: State<String>,
     username: State<String>,
@@ -22,8 +24,13 @@ fun HomeScreen(
     approveChange: () -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Selector(header, onClickChanges, listOf("Neo4j", "Json", "SQLite"))
-        when (header.value) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Choose your database:")
+            Spacer(modifier = Modifier.width(10.dp))
+            Selector(databaseName, onClickChanges, listOf("Neo4j", "Json", "SQLite"))
+        }
+
+        when (databaseName.value) {
             "Neo4j" -> databaseConnectionNeo4j(
                 host,
                 username,

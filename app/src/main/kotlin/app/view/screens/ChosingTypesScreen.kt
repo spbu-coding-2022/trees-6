@@ -1,13 +1,11 @@
 package app.view.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.presenter.TreePresenter
@@ -27,25 +25,34 @@ fun ChosingTypesScreen(
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
 
-        Selector(
-            keyType,
-            onClickChangesKey,
-            listOf("Int", "String")
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Choose the key type from the following options:")
+            Spacer(modifier = Modifier.width(10.dp))
+            Selector(
+                keyType,
+                onClickChangesKey,
+                listOf("Int", "String")
+            )
+        }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Selector(
-            valueType,
-            onClickChangesValue,
-            listOf("Int", "String")
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Choose the value type from the following options:")
+            Spacer(modifier = Modifier.width(10.dp))
+            Selector(
+                valueType,
+                onClickChangesValue,
+                listOf("Int", "String")
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         if (
-            keyType.value != "Choose the key type from the following options" &&
-            valueType.value != "Choose the value type from the following options"
+            keyType.value != "▾" &&
+            valueType.value != "▾"
         ) {
             Button(onClick = {
                 treePresenter.createTree(treeName.value, treeType.value, keyType.value, valueType.value)
@@ -55,7 +62,7 @@ fun ChosingTypesScreen(
             }
         }
 
-        Button(onClick = back){
+        Button(onClick = back) {
             Text("back")
         }
     }

@@ -1,12 +1,11 @@
 package app.view.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.presenter.TreePresenter
 import app.view.assets.Selector
@@ -18,24 +17,32 @@ fun TreeActions(
     treeType: State<String>,
     createTreeMenu: () -> Unit,
     treeView: () -> Unit,
-    ) {
+) {
 
     Column {
 
-        Button(onClick = {
-            createTreeMenu()
-        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { createTreeMenu() },
+            modifier = Modifier.width(150.dp)
         ) {
             Text("Create Tree")
         }
 
-        Button(onClick = {
-            treePresenter.loadTree(treeName.value, treeType.value)
-            treeView()
-        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = {
+                treePresenter.loadTree(treeName.value, treeType.value)
+                treeView()
+            },
+            modifier = Modifier.width(150.dp)
         ) {
             Text("Load Tree")
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
@@ -51,15 +58,28 @@ fun TreeSreen(
     treeView: () -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Selector(treeType, onClickChanges, listOf("BS", "AVL", "RB"))
 
-        if (treeType.value != "Choose your tree") {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Choose your tree:")
+            Spacer(modifier = Modifier.width(10.dp))
+            Selector(treeType, onClickChanges, listOf("BS", "AVL", "RB"))
+        }
+
+        if (treeType.value != "▾") {
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(value = treeName.value, onValueChange = treeNameChange)
+            OutlinedTextField(
+                value = treeName.value,
+                onValueChange = treeNameChange,
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = if (treeName.value == "Enter tree name") Color.Gray else Color.Black,
+                    backgroundColor = Color.White,
+                )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             TreeActions(treePresenter, treeName, treeType, createTreeMenu, treeView)
         }
 
-        Button(onClick = back) {
+        Button(onClick = back, modifier = Modifier.width(150.dp)) {
             Text("Back")
         }
     }
