@@ -55,7 +55,8 @@ fun TreeChoosingScreen(
     treeNameChange: (String) -> Unit,
     back: () -> Unit,
     createTreeMenu: () -> Unit,
-    treeView: () -> Unit
+    treeView: () -> Unit,
+    isLoadedTreeChange: (Boolean) -> Unit,
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
 
@@ -74,6 +75,7 @@ fun TreeChoosingScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             TreeActions(treePresenter, treeName, treeType, createTreeMenu, treeView)
+            isLoadedTreeChange(false)
         }
 
         Button(onClick = back, modifier = Modifier.width(150.dp)) {

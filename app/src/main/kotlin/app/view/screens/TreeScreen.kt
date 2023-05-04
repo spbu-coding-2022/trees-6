@@ -54,11 +54,19 @@ fun TreeView(
     treePresenter: TreePresenter,
     addNode: () -> Unit,
     deleteNode: () -> Unit,
+    isUpdatedTree: State<Boolean>,
+    isUpdatedTreeChanges: (Boolean) -> Unit,
 ) {
-    val tree = treePresenter.tree
+
     Column {
+        val tree = treePresenter.tree
+        if(isUpdatedTree.value){
+            LayoutPresenter.setTreeLayout(tree)
+        }
+        else{
+            isUpdatedTreeChanges(true)
+        }
         TreeActionButtons(treePresenter, addNode, deleteNode)
-        LayoutPresenter.setTreeLayout(tree)
         nodeSize = LayoutPresenter.getNodeSize(tree)
         Box(
             modifier = Modifier.height(WINDOW_SIZE.dp).width(WINDOW_SIZE.dp),
