@@ -64,13 +64,22 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         var rightSonKey = mapOf<String, Any>()
 
         val resultNodeData = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) RETURN node.key AS key, node.value AS value, node.metadata AS metadata, node.posX AS posX, node.posY AS posY"
+            "MATCH (node:Node {key: \$nodeKey}) RETURN node.key AS key, node.value AS value, node.metadata AS metadata, node.posX AS posX, node.posY AS posY",
+            mutableMapOf(
+                "nodeKey" to nodeKey,
+            ) as Map<String, Any>?
         )
         val resultLeftSonKey = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:leftSon]->(leftSon) RETURN leftSon.key as key"
+            "MATCH (node:Node {key: \$nodeKey}) MATCH (node)-[:leftSon]->(leftSon) RETURN leftSon.key as key",
+            mutableMapOf(
+                "nodeKey" to nodeKey,
+            ) as Map<String, Any>?
         )
         val resultRightSonKey = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:rightSon]->(rightSon) RETURN rightSon.key as key"
+            "MATCH (node:Node {key: \$nodeKey}) MATCH (node)-[:rightSon]->(rightSon) RETURN rightSon.key as key",
+            mutableMapOf(
+                "nodeKey" to nodeKey,
+            ) as Map<String, Any>?
         )
 
         if (resultNodeData.hasNext()) {
@@ -114,12 +123,13 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
                 setNeo4jNodes(tx, root)
                 tx.run(
                     "MATCH (tree: Tree {name: \$name, type: \$type}) " +
-                            "MATCH (node: NewNode {key: ${root.key} }) " +
+                            "MATCH (node: NewNode {key: \$rootKey }) " +
                             "CREATE (tree)-[:root]->(node) " +
                             "REMOVE node:NewNode",
                     mutableMapOf(
                         "name" to treeData.name,
                         "type" to treeData.treeType,
+                        "rootKey" to root.key,
                     ) as Map<String, Any>?
                 )
             }
@@ -130,25 +140,38 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
 
     private fun setNeo4jNodes(tx: TransactionContext, node: NodeData) {
         tx.run(
-            "CREATE (:Node:NewNode {key: ${node.key}, value: ${node.value}, " +
-                    "metadata: ${node.metadata}, posX: ${node.posX}, posY: ${node.posY} })"
+            "CREATE (:Node:NewNode {key: \$nodeKey, value: \$nodeValue, " +
+                    "metadata: \$nodeMetadata, posX: ${node.posX}, posY: ${node.posY} })",
+            mutableMapOf(
+                "nodeKey" to node.key,
+                "nodeValue" to node.value,
+                "nodeMetadata" to node.metadata,
+            ) as Map<String, Any>?
         )
         node.leftNode?.let { leftNode ->
             setNeo4jNodes(tx, leftNode)
             tx.run(
-                "MATCH (node: NewNode {key: ${node.key}}) " +
-                        "MATCH (leftSon: NewNode {key: ${leftNode.key}}) " +
+                "MATCH (node: NewNode {key: \$nodeKey}) " +
+                        "MATCH (leftSon: NewNode {key: \$leftNodeKey}) " +
                         "CREATE (node)-[:leftSon]->(leftSon) " +
-                        "REMOVE leftSon:NewNode"
+                        "REMOVE leftSon:NewNode",
+                mutableMapOf(
+                    "nodeKey" to node.key,
+                    "leftNodeKey" to leftNode.key,
+                ) as Map<String, Any>?
             )
         }
         node.rightNode?.let { rightNode ->
             setNeo4jNodes(tx, rightNode)
             tx.run(
-                "MATCH (node: NewNode {key: ${node.key}}) " +
-                        "MATCH (rightSon: NewNode {key: ${rightNode.key}}) " +
+                "MATCH (node: NewNode {key: \$nodeKey}) " +
+                        "MATCH (rightSon: NewNode {key: \$rightNodeKey}) " +
                         "CREATE (node)-[:rightSon]->(rightSon) " +
-                        "REMOVE rightSon:NewNode"
+                        "REMOVE rightSon:NewNode",
+                mutableMapOf(
+                    "nodeKey" to node.key,
+                    "rightNodeKey" to rightNode.key,
+                ) as Map<String, Any>?
             )
         }
     }

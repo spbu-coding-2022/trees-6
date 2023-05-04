@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.view.screens.nodeSize
 import bstrees.model.dataBases.NodeData
+import java.lang.Float.max
+import java.lang.Float.min
 
 @Composable
 fun Node(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>) {
@@ -34,9 +36,12 @@ fun Node(node: State<NodeData>, nodeCoords: MutableState<Pair<Float, Float>>) {
             .size(nodeSize.dp)
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
+                    val newXPos = max(0f, min(1550f, nodeCoords.value.first + dragAmount.x))
+                    val newYPos = max(0f, min(1400f, nodeCoords.value.second + dragAmount.y))
+
                     nodeCoords.value = Pair(
-                        nodeCoords.value.first + dragAmount.x,
-                        nodeCoords.value.second + dragAmount.y
+                        newXPos,
+                        newYPos
                     )
                     if (change.positionChange() != Offset.Zero) change.consume()
                 }

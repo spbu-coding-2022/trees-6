@@ -51,6 +51,7 @@ fun main() {
                 val valueType = remember { mutableStateOf("▾") }
                 var isDirectoryNameWritten = true
                 var treePresenter: TreePresenter? = null
+                val isUpdatedTree = remember { mutableStateOf(false) }
 
                 // for tree adding and deleting
                 val key = remember { mutableStateOf("Enter key") }
@@ -119,7 +120,8 @@ fun main() {
                                     { newName -> treeName.value = newName },
                                     back = navigation::pop,
                                     { navigation.push(ScreenManager.TypesChoosingScreen) },
-                                    { navigation.push(ScreenManager.TreeScreen) }
+                                    { navigation.push(ScreenManager.TreeScreen) },
+                                    { newValue -> isUpdatedTree.value = newValue}
                                 )
                             }
 
@@ -142,11 +144,15 @@ fun main() {
                         }
 
                         is ScreenManager.TreeScreen -> {
+
+
                             treePresenter?.let { treePresenter ->
                                 TreeView(
                                     treePresenter,
                                     addNode = { navigation.push(ScreenManager.AddNodeScreen) },
                                     deleteNode = { navigation.push(ScreenManager.DeleteNodeScreen) },
+                                    isUpdatedTree,
+                                    { newValue -> isUpdatedTree.value = newValue}
                                 )
                             }
                         }
