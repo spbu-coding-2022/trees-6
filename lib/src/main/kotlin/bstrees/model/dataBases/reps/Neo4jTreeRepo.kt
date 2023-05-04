@@ -64,13 +64,22 @@ class Neo4jTreeRepo(host: String, username: String, password: String) : Closeabl
         var rightSonKey = mapOf<String, Any>()
 
         val resultNodeData = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) RETURN node.key AS key, node.value AS value, node.metadata AS metadata, node.posX AS posX, node.posY AS posY"
+            "MATCH (node:Node {key: \$nodeKey}) RETURN node.key AS key, node.value AS value, node.metadata AS metadata, node.posX AS posX, node.posY AS posY",
+            mutableMapOf(
+                "nodeKey" to nodeKey,
+            ) as Map<String, Any>?
         )
         val resultLeftSonKey = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:leftSon]->(leftSon) RETURN leftSon.key as key"
+            "MATCH (node:Node {key: \$nodeKey}) MATCH (node)-[:leftSon]->(leftSon) RETURN leftSon.key as key",
+            mutableMapOf(
+                "nodeKey" to nodeKey,
+            ) as Map<String, Any>?
         )
         val resultRightSonKey = tx.run(
-            "MATCH (node:Node {key: $nodeKey}) MATCH (node)-[:rightSon]->(rightSon) RETURN rightSon.key as key"
+            "MATCH (node:Node {key: \$nodeKey}) MATCH (node)-[:rightSon]->(rightSon) RETURN rightSon.key as key",
+            mutableMapOf(
+                "nodeKey" to nodeKey,
+            ) as Map<String, Any>?
         )
 
         if (resultNodeData.hasNext()) {
